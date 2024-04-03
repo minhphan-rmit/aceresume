@@ -1,16 +1,18 @@
 # -*- coding: utf-8 -*-
-from enum import Enum
-from urllib.parse import quote_plus
+from enum import StrEnum
+from dotenv import load_dotenv
 from pydantic import BaseModel
 from pymongo import MongoClient
 import certifi
+import os
+
+load_dotenv()
 
 
 # Define Constant class
-class Constant(str, Enum):
-    escaped_username = quote_plus("mylittlehusky2004")
-    escaped_password = quote_plus("PDanii@279197.")
-    MONGODB_URI = f"mongodb+srv://{escaped_username}:{escaped_password}@cluster0.cbgkxvv.mongodb.net/"
+class Constants(StrEnum):
+    MONGODB_URI = os.environ["DATABASE_URI"]
+    OPENAI_API_KEY = os.environ["OPENAI_API_KEY"]
 
 
 # Define Message class
@@ -19,7 +21,7 @@ class Message(BaseModel):
 
 
 # Create MongoDB client
-client = MongoClient(host=Constant.MONGODB_URI, tlsCAFile=certifi.where(), tls=True)
+client = MongoClient(host=Constants.MONGODB_URI, tlsCAFile=certifi.where(), tls=True)
 
 # Get the database
 db = client.get_database("dev")
