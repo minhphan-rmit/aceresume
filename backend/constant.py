@@ -5,6 +5,8 @@ from pydantic import BaseModel
 from pymongo import MongoClient
 import certifi
 
+from langchain_openai import ChatOpenAI, OpenAIEmbeddings
+
 
 # Define Constant class
 class Constant(str, Enum):
