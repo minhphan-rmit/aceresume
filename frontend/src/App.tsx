@@ -6,7 +6,6 @@ import SigninForm from './_auth/forms/SigninForm';
 import SignupForm from './_auth/forms/SignupForm';
 import { Home } from './_root/pages';
 import RootLayout from './_root/RootLayout';
-import LandingPage from './_root/pages/landing-page/LandingPage';
 
 const App = () => {
   return (
@@ -21,7 +20,6 @@ const App = () => {
         {/* private routes */}
         <Route element={<RootLayout />}>
           <Route path="/home" element={<Home />} />
-          <Route path='/landing-page' element={<LandingPage />}></Route>
         </Route>
       </Routes>
     </main>
