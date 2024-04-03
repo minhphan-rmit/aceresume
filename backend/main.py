@@ -7,14 +7,16 @@ import uvicorn
 from routers import register
 
 
-
 app = FastAPI(
-    openapi_url="/api/v1/openapi.json",
-    docs_url="/api/v1/docs",
+    openapi_url="/api/ace-resume/openapi.json",
+    docs_url="/api/ace-resume/docs",
 )
 
 origins = [
-    "http://localhost:8081",
+    "http://localhost.tiangolo.com",
+    "https://localhost.tiangolo.com",
+    "http://localhost",
+    "http://localhost:8080",
 ]
 
 app.add_middleware(
