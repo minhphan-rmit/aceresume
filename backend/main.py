@@ -1,22 +1,23 @@
-from __future__ import annotations
+# -*- coding: utf-8 -*-
+import logging
 
+import logging_setup  # setup logging
+import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-import uvicorn
 
 from routers import register
 
+logger = logging.getLogger("Backend")
 
-app = FastAPI(
-    openapi_url="/api/ace-resume/openapi.json",
-    docs_url="/api/ace-resume/docs",
-)
+
+app = FastAPI(openapi_url="/api/aceresume/openapi.json", docs_url="/api/aceresume/docs")
 
 origins = [
     "http://localhost.tiangolo.com",
     "https://localhost.tiangolo.com",
     "http://localhost",
-    "http://localhost:8080",
+    "http://localhost:8081",
 ]
 
 app.add_middleware(
