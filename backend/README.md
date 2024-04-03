@@ -11,6 +11,7 @@ git clone https://github.com/minhphan-rmit/rmit2024a-isys2101-aceresume.git
 conda create --name ace-resume python=3.11
 conda activate ace-resume
 cd backend
+touch .env # copy the env format from the .env.example. For specific key, please refer to the team
 
 # install requirement packages
 pip install -r requirements-dev.txt
