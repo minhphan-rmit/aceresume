@@ -3,7 +3,6 @@ import asyncio
 from typing import List
 import io
 import PyPDF2
-from async_lru import alru_cache
 from langchain_core.documents import Document
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 
@@ -57,4 +56,15 @@ async def load_doc(file_content: bytes) -> List[Document]:
     if not document:
         raise ValueError("Scanned PDF identified. Please upload a non-scanned PDF")
 
-    return TEXT_SPLITTER.split_documents([Document(page_content=document)])
+    # return TEXT_SPLITTER.split_documents([Document(page_content=document)])
+    return document
+
+
+# async def process_resume(resume: bytes):
+#     resume_chunks = await load_doc(resume)
+
+#     return resume_chunks
+
+
+# data = "backend\services\Huy_VO_s_CV_FPT.pdf"
+# print(asyncio.run(process_resume(open(data, "rb").read())))

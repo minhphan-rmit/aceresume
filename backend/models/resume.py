@@ -21,3 +21,9 @@ class ResumeInfo(BaseModel):
     candidate_experience: List[CandidateExperience] = Field(
         ..., description="Experience of the candidate"
     )
+
+
+class ResumeAnalysis(BaseModel):
+    pros: List[str] = Field(..., description="List of pros")
+    cons: List[str] = Field(..., description="List of cons")
+    add_ons: List[str] = Field(..., description="List of add-ons")
