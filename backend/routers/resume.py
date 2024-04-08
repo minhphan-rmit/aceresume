@@ -8,8 +8,8 @@ from fastapi import APIRouter, File, HTTPException, UploadFile
 
 # from constant import Message
 from helpers.utility import Utility
-from constant import Message, Constants
-from services.process_resume import process_resume, analyse_resume
+from constant import Message
+from services.process_resume import process_resume, analyse_resume, extract_info
 from models.resume import ResumeAnalysis
 import json
 
@@ -24,7 +24,6 @@ logger = logging.getLogger(MODULE_NAME)
     "/{user_id}/upload",
     status_code=200,
     description="Upload resume for processing",
-    response_model=str,
     response_description="Message to show whether the resume is uploaded successfully or not",
     responses={401: {"model": Message}, 500: {"model": Message}},
 )
@@ -33,7 +32,7 @@ async def upload_resume(
     user_id: str,
     resume: UploadFile = File(..., description="Resume file to upload"),
     filename: str = File(..., description="Filename of the resume"),
-) -> str:
+):
     if filename.split(".")[-1] not in ["docx", "pdf"]:
         raise HTTPException(
             status_code=401,
@@ -43,6 +42,10 @@ async def upload_resume(
     resume_data = await process_resume(
         resume.file.read(), resume.filename.split(".")[-1]
     )
+
+    # TODO: Save the resume data to the database
+
+    extract_info(resume_data)
     return resume_data
 
 
