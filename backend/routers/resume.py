@@ -6,11 +6,10 @@ import logging
 
 from fastapi import APIRouter, File, HTTPException, UploadFile
 
-# from constant import Message
 from helpers.utility import Utility
 from constant import Message
-from services.process_resume import process_resume, analyse_resume, extract_info
-from models.resume import ResumeAnalysis
+from services.process_resume import process_resume, analyse_resume, extract_resume
+from models.resume import ResumeAnalysis, ResumeInfo, CandidateExperience
 import json
 
 MODULE_NAME = "Resume Processing"
@@ -24,6 +23,7 @@ logger = logging.getLogger(MODULE_NAME)
     "/{user_id}/upload",
     status_code=200,
     description="Upload resume for processing",
+    response_model=ResumeInfo,
     response_description="Message to show whether the resume is uploaded successfully or not",
     responses={401: {"model": Message}, 500: {"model": Message}},
 )
@@ -44,9 +44,23 @@ async def upload_resume(
     )
 
     # TODO: Save the resume data to the database
+    data = await extract_resume(resume_data)
 
-    extract_info(resume_data)
-    return resume_data
+    return ResumeInfo(
+        candidate_name=str(data["candidate_name"]),
+        candidate_email=str(data["candidate_email"]),
+        candidate_skill=data["skills"],
+        candidate_experience=[
+            CandidateExperience(
+                company_name=str(value["work_company"]),
+                job_title=str(value["work_title"]),
+                start_date=str(value["work_timeline"][0]),
+                end_date=str(value["work_timeline"][1]),
+                job_description="\n".join(value["work_responsibilities"]),
+            )
+            for value in data["work_exp"]
+        ],
+    )
 
 
 @router.post(

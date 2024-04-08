@@ -44,8 +44,6 @@ class Constants:
         model_name="gpt-4-0125-preview",
         temperature=0.1,
         openai_api_key=OPENAI_API_KEY,
-        frequency_penalty=0.5,
-        presence_penalty=0.5,
         callbacks=[StreamingStdOutCallbackHandler()],
         streaming=True,
     )
