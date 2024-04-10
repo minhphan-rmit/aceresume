@@ -37,7 +37,7 @@ class Constants:
     MOCK_INTERVIEW = db.get_collection("MOCK_INTERVIEW")
 
     # Initialize OpenAI model
-    EMBEDDING_FUNC = OpenAIEmbeddings(OPENAI_API_KEY, model="text-embedding-3-large")
+    EMBEDDING_FUNC = OpenAIEmbeddings(model="text-embedding-3-large")
 
     CHAT_MODEL = ChatOpenAI(
         model_name="gpt-4-0125-preview",
