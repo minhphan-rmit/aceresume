@@ -5,8 +5,7 @@ import logging_setup  # setup logging
 import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-
-from routers import register, job
+from routers import register, job, resume
 
 logger = logging.getLogger("Backend")
 
@@ -30,6 +29,7 @@ app.add_middleware(
 
 app.include_router(register.router)
 app.include_router(job.router)
+app.include_router(resume.router)
 
 if __name__ == "__main__":
     uvicorn.run("main:app", workers=1, host="0.0.0.0", port=8080)
