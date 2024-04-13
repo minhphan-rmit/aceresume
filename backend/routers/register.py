@@ -3,6 +3,7 @@ from fastapi import APIRouter, Form, BackgroundTasks
 from fastapi.responses import JSONResponse
 from models.users import UserInfo
 from constant import Message, Constants
+from pymongo import MongoClient
 
 
 router = APIRouter(prefix="/api/v1", tags=["User Register"])
