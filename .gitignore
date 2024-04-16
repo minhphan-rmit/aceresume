@@ -1,4 +1,8 @@
-.env
-.venv
+node_modules
+dist
+build
+
 .vscode
+.idea
+env
 **/__pycache__/
