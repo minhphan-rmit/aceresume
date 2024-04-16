@@ -1,5 +1,3 @@
-import * as React from 'react';
-import { PaletteMode } from '@mui/material';
 import CssBaseline from '@mui/material/CssBaseline';
 import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
@@ -16,17 +14,12 @@ import Footer from './components/Footer';
 import getLPTheme from './getLPTheme';
 
 export default function LandingPage() {
-  const [mode, setMode] = React.useState<PaletteMode>('light');
-  const LPtheme = createTheme(getLPTheme(mode));
-  const defaultTheme = createTheme({ palette: { mode } });
+  const LPtheme = createTheme(getLPTheme());
 
-  const toggleColorMode = () => {
-    setMode((prev) => (prev === 'dark' ? 'light' : 'dark'));
-  };
   return (
-    <ThemeProvider theme={LPtheme}> {/* Always use LPtheme now */}
+    <ThemeProvider theme={LPtheme}>
       <CssBaseline />
-      <AppAppBar mode={mode} toggleColorMode={toggleColorMode} />
+      <AppAppBar />
       <Hero />
       <Box sx={{ bgcolor: 'background.default' }}>
         <LogoCollection />
