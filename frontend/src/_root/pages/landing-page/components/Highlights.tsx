@@ -1,53 +1,46 @@
-import * as React from 'react';
-import Box from '@mui/material/Box';
-import Card from '@mui/material/Card';
-import Container from '@mui/material/Container';
-import Grid from '@mui/material/Grid';
-import Stack from '@mui/material/Stack';
-import Typography from '@mui/material/Typography';
-import AutoFixHighRoundedIcon from '@mui/icons-material/AutoFixHighRounded';
-import ConstructionRoundedIcon from '@mui/icons-material/ConstructionRounded';
-import QueryStatsRoundedIcon from '@mui/icons-material/QueryStatsRounded';
-import SettingsSuggestRoundedIcon from '@mui/icons-material/SettingsSuggestRounded';
-import SupportAgentRoundedIcon from '@mui/icons-material/SupportAgentRounded';
-import ThumbUpAltRoundedIcon from '@mui/icons-material/ThumbUpAltRounded';
+import * as React from "react";
+import Box from "@mui/material/Box";
+import Card from "@mui/material/Card";
+import Container from "@mui/material/Container";
+import Grid from "@mui/material/Grid";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
+import AssessmentRoundedIcon from "@mui/icons-material/AssessmentRounded"; // For CV Analysis
+import VideoCallRoundedIcon from "@mui/icons-material/VideoCallRounded"; // For Mock Interviews
+import FeedbackRoundedIcon from "@mui/icons-material/FeedbackRounded"; // For Real-time Feedback
+import WorkRoundedIcon from "@mui/icons-material/WorkRounded"; // For Job Matching
+import SupportAgentRoundedIcon from "@mui/icons-material/SupportAgentRounded"; // For Support
 
 const items = [
   {
-    icon: <SettingsSuggestRoundedIcon />,
-    title: 'Adaptable performance',
+    icon: <AssessmentRoundedIcon />,
+    title: "Detailed CV Analysis",
     description:
-      'Our product effortlessly adjusts to your needs, boosting efficiency and simplifying your tasks.',
+      "Utilize advanced algorithms to analyze and optimize your CV, ensuring you highlight the skills that matter most.",
   },
   {
-    icon: <ConstructionRoundedIcon />,
-    title: 'Built to last',
+    icon: <VideoCallRoundedIcon />,
+    title: "Realistic Mock Interviews",
     description:
-      'Experience unmatched durability that goes above and beyond with lasting investment.',
+      "Engage in simulated interviews with our AI-driven system to practice and perfect your interview techniques.",
   },
   {
-    icon: <ThumbUpAltRoundedIcon />,
-    title: 'Great user experience',
+    icon: <FeedbackRoundedIcon />,
+    title: "Instant Feedback",
     description:
-      'Integrate our product into your routine with an intuitive and easy-to-use interface.',
+      "Receive immediate, actionable feedback on your interview performance to rapidly improve your skills.",
   },
   {
-    icon: <AutoFixHighRoundedIcon />,
-    title: 'Innovative functionality',
+    icon: <WorkRoundedIcon />,
+    title: "Smart Job Matching",
     description:
-      'Stay ahead with features that set new standards, addressing your evolving needs better than the rest.',
+      "Get matched with job opportunities that fit your profile and preparation, making your job search smarter and more targeted.",
   },
   {
     icon: <SupportAgentRoundedIcon />,
-    title: 'Reliable support',
+    title: "24/7 Expert Support",
     description:
-      'Count on our responsive customer support, offering assistance that goes beyond the purchase.',
-  },
-  {
-    icon: <QueryStatsRoundedIcon />,
-    title: 'Precision in every detail',
-    description:
-      'Enjoy a meticulously crafted product where small touches make a significant impact on your overall experience.',
+      "Access around-the-clock support from career experts to answer your questions and guide you through your job search journey.",
   },
 ];
 
@@ -58,62 +51,66 @@ export default function Highlights() {
       sx={{
         pt: { xs: 4, sm: 12 },
         pb: { xs: 8, sm: 16 },
-        color: 'white',
-        bgcolor: '#06090a',
+        color: "white",
+        bgcolor: "#06090a",
       }}
     >
       <Container
         sx={{
-          position: 'relative',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
+          position: "relative",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
           gap: { xs: 3, sm: 6 },
         }}
       >
-        <Box
-          sx={{
-            width: { sm: '100%', md: '60%' },
-            textAlign: { sm: 'left', md: 'center' },
-          }}
+        <Typography component="h2" variant="h4" textAlign="center">
+          Ace your interviews with our tools
+        </Typography>
+        <Typography
+          variant="body1"
+          sx={{ color: "grey.400", textAlign: "center" }}
         >
-          <Typography component="h2" variant="h4">
-            Highlights
-          </Typography>
-          <Typography variant="body1" sx={{ color: 'grey.400' }}>
-            Explore why our product stands out: adaptability, durability,
-            user-friendly design, and innovation. Enjoy reliable customer support and
-            precision in every detail.
-          </Typography>
-        </Box>
-        <Grid container spacing={2.5}>
+          Discover our project’s cutting-edge tools designed for comprehensive
+          interview preparation: from CV optimization to real-time practice
+          sessions.
+        </Typography>
+        <Grid container spacing={2} justifyContent="center">
           {items.map((item, index) => (
-            <Grid item xs={12} sm={6} md={4} key={index}>
-              <Stack
-                direction="column"
-                color="inherit"
-                component={Card}
-                spacing={1}
-                useFlexGap
+            <Grid
+              item
+              xs={12}
+              sm={6}
+              md={4}
+              key={index}
+              sx={{ display: "flex", justifyContent: "center" }}
+            >
+              <Card
                 sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
                   p: 3,
-                  height: '100%',
-                  border: '1px solid',
-                  borderColor: 'grey.800',
-                  background: 'transparent',
-                  backgroundColor: 'grey.900',
+                  height: "100%",
+                  width: "100%",
+                  maxWidth: 345, // Set a max width for each card for better visual consistency
+                  border: "1px solid",
+                  borderColor: "grey.800",
+                  background: "transparent",
+                  backgroundColor: "grey.900",
                 }}
               >
-                <Box sx={{ opacity: '50%' }}>{item.icon}</Box>
-                <div>
-                  <Typography fontWeight="medium" gutterBottom>
-                    {item.title}
-                  </Typography>
-                  <Typography variant="body2" sx={{ color: 'grey.400' }}>
-                    {item.description}
-                  </Typography>
-                </div>
-              </Stack>
+                <Box sx={{ opacity: 0.6 }}>{item.icon}</Box>
+                <Typography fontWeight="medium" gutterBottom component="div">
+                  {item.title}
+                </Typography>
+                <Typography
+                  variant="body2"
+                  sx={{ color: "grey.400", textAlign: "center" }}
+                >
+                  {item.description}
+                </Typography>
+              </Card>
             </Grid>
           ))}
         </Grid>
