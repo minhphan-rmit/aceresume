@@ -1,6 +1,6 @@
 import { Routes, Route } from 'react-router-dom';
 
-import './globals.css';
+import './styles/globals.css';
 import AuthLayout from './_auth/AuthLayout';
 import SigninForm from './_auth/forms/SigninForm';
 import SignupForm from './_auth/forms/SignupForm';
@@ -11,7 +11,7 @@ import MockInterview from './_root/pages/mock-interview/MockInterview';
 
 const App = () => {
   return (
-    <main className='flex h-screen'>
+    <main>
       <Routes>
         {/* public routes */}
         <Route element={<AuthLayout />}>
@@ -24,6 +24,7 @@ const App = () => {
         <Route path="/landing-page" element={<LandingPage />} />
         <Route element={<RootLayout />}>
           <Route path="/home" element={<Home />} />
+          
         </Route>
       </Routes>
     </main>
