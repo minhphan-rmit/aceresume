@@ -2,7 +2,7 @@
 from fastapi import APIRouter, Form, BackgroundTasks
 from fastapi.responses import JSONResponse
 from models.users import UserInfo
-from constant import Message, USERS
+from constant import Message, Constants
 from pymongo import MongoClient
 
 
@@ -20,7 +20,7 @@ def register_user(
     address: str = Form(None, description="Address of the user"),
 ):
     try:
-        USERS.insert_one(
+        Constants.USERS.insert_one(
             UserInfo(
                 username=user_name,
                 full_name=full_name,
@@ -36,8 +36,10 @@ def register_user(
             status_code=422, content={"message": str(e)}
         )  # error for email and number
 
-    assert USERS.find_one({"username": user_name})["username"] == user_name  # test case
-    assert len(list(USERS.find({"username": user_name}))) == 1  # test case
+    assert (
+        Constants.USERS.find_one({"username": user_name})["username"] == user_name
+    )  # test case
+    assert len(list(Constants.USERS.find({"username": user_name}))) == 1  # test case
 
     return JSONResponse(
         content={
@@ -47,6 +49,6 @@ def register_user(
             "number": number,
             "email": email,
             "address": address,
-            "key": USERS.find_one({"username": user_name})["key"],
+            "key": Constants.USERS.find_one({"username": user_name})["key"],
         }
     )
