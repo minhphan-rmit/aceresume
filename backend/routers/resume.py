@@ -40,7 +40,6 @@ logger = logging.getLogger(MODULE_NAME)
 )
 @Utility.measure_runtime
 async def upload_resume(
-    user_id: str,
     resume: UploadFile = File(..., description="Resume file to upload"),
     filename: str = File(..., description="Filename of the resume"),
 ):

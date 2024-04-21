@@ -7,7 +7,6 @@ from email_validator import validate_email
 from typing_extensions import Annotated
 from pymongo import ReturnDocument
 from bson import ObjectId
-import uuid
 from typing import Optional
 
 
@@ -17,17 +16,26 @@ class UserInfo(BaseModel):
     """
 
     username: str = Field(..., description="Username of the user")
-    full_name: str = Field(..., description="Full name of the user")
     password: str = Field(..., description="Password of the user")
     number: Optional[str] = Field(None, description="Phone number of the user")
+    preference_field: Optional[str] = Field(None, description="Interest Field")
+    level: Optional[str] = Field(None, description="Level of the user")
     email: EmailStr = Field(..., description="Email address of the user")
-    address: Optional[str] = Field(None, description="Address of the user")
     created_at: datetime = Field(
         default_factory=datetime.now, description="Creation timestamp of the user"
     )
-    key: str = Field(
-        default_factory=lambda: uuid.uuid1().hex, description="Key for login"
+    is_activate: bool = Field(
+        default=False, description="Check if the user account is activated"
     )
+    verified_at: Optional[datetime] = Field(
+        default=None, description="Verify account activated timestamp"
+    )
+    updated_at: Optional[datetime] = Field(
+        default=None, description="Verify account activated timestamp"
+    )
+
+    def get_context_string(self, context: str):
+        return f"{context}{self.password[-6:]}{self.updated_at.strftime('%m%d%Y%H%M%S')}".strip()
 
     @validator("number")
     def validate_number(cls, v):
@@ -54,3 +62,11 @@ class UserInfo(BaseModel):
                 "Username should not contain spaces or special characters."
             )
         return v
+
+
+class UserToken(BaseModel):
+    user_id: Optional[str]  # Reference to the user
+    access_key: Optional[str] = None
+    refresh_key: Optional[str] = None
+    created_at: Optional[datetime] = None
+    expires_at: Optional[datetime] = None

@@ -1,12 +1,39 @@
 # -*- coding: utf-8 -*-
+import jwt
+import os
+import uuid
 from fastapi import APIRouter, Form, BackgroundTasks
 from fastapi.responses import JSONResponse
 from models.users import UserInfo
 from constant import Message, Constants
-from pymongo import MongoClient
+import bcrypt
+from models.email import EmailSchema, send_email
+from datetime import datetime, timedelta
+from jinja2 import Environment, FileSystemLoader
+
+router = APIRouter(prefix="/api/aceresume", tags=["User Register"])
 
 
-router = APIRouter(prefix="/api/v1", tags=["User Register"])
+def generate_token(
+    user_id: str, email: str, is_activated: bool, expiry_hours: int = 24
+):
+    secret_key = os.environ.get(
+        "JWT_SECRET", "649fb93ef34e4fdf4187709c84d643dd61ce730d91856418fdcf563f895ea40f"
+    )
+    unique_id = str(uuid.uuid4())
+    payload = {
+        "user_id": user_id,
+        "email": email,
+        "is_activated": is_activated,
+        "unique_id": unique_id,
+        "exp": datetime.utcnow() + timedelta(hours=expiry_hours),
+    }
+    token = jwt.encode(payload, secret_key, algorithm="HS256")
+
+    # Store the token in the USERS database
+    Constants.USERS.update_one({"_id": user_id}, {"$set": {"token": token}})
+
+    return token
 
 
 @router.post("/register", responses={409: {"model": Message}, 422: {"model": Message}})
@@ -14,22 +41,29 @@ def register_user(
     background_tasks: BackgroundTasks,  # this for email send
     user_name: str = Form(..., description="Username of the user"),
     password: str = Form(..., description="Password of the user"),
-    full_name: str = Form(..., description="Full name of the user"),
     number: str = Form(None, description="Phone number of the user"),
     email: str = Form(..., description="Email address of the user"),
-    address: str = Form(None, description="Address of the user"),
 ):
     try:
-        Constants.USERS.insert_one(
-            UserInfo(
-                username=user_name,
-                full_name=full_name,
-                password=password,
-                number=number,
-                email=email,
-                address=address,
-            ).dict()
+        hashed_password = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt())
+
+        user_info = UserInfo(
+            username=user_name,
+            password=hashed_password,
+            number=number,
+            email=email,
+            is_activate=False,
         )
+        user_info_dict = user_info.dict()
+        Constants.USERS.insert_one(user_info_dict)
+
+        token = generate_token(str(user_info_dict["_id"]), email, is_activated=False)
+
+        subject = "Activation Link for AceResume Application"
+        body = f"Please click on the following link to activate your account: http://localhost:3000/auth/account-verify?token={token}&email={user_info.email}"
+        data = EmailSchema(to=email, subject=subject, body=body).dict()
+        background_tasks.add_task(send_email, data["to"], data["subject"], data["body"])
+
     except ValueError as e:
         # Handle Pydantic validation errors
         return JSONResponse(
@@ -44,11 +78,9 @@ def register_user(
     return JSONResponse(
         content={
             "user_name": user_name,
-            "password": password.decode("utf-8"),
-            "full_name": full_name,
+            "password": password,
             "number": number,
             "email": email,
-            "address": address,
-            "key": Constants.USERS.find_one({"username": user_name})["key"],
+            "token": token,
         }
     )
