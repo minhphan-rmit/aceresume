@@ -4,5 +4,5 @@ build
 
 .vscode
 .idea
-env
+.env
 **/__pycache__/
