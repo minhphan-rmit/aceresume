@@ -82,13 +82,14 @@ const SignupForm: React.FC = () => {
       console.log('Submission data:', submissionData);
       const response = await axios.post('http://localhost:8000/api/aceresume/register', submissionData, {
         headers: {
-            'Content-Type': 'application/json'  // Explicitly stating the content type
-        }
+          'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+        },
+
     });
-      console.log('Verify your email to complete registration:', response.data);
+
       alert('Verify your email to complete registration');
     } catch (error) {
-      console.error('Registration failed:', error.response.data.message);
+      console.error('Registration failed:', error.response.detail || error.message);
       alert(`Registration failed: ${error.response.data.message || error.message}`);
     }
   };
