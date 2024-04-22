@@ -32,8 +32,8 @@ const CVAnalysis = () => {
         <div className="flex flex-row w-full gap-4 h-full">
 
           <div className="flex flex-col p-5 items-center w-3/5 h-full  text-gray-700 bg-white rounded-lg shadow-lg overflow-y-auto	">
-          {/* <NewAnalysis/> */}
-            <HistoryAnalysis/>
+          <NewAnalysis/>
+            {/* <HistoryAnalysis/> */}
           </div>
           <div className="flex flex-col items-center w-2/5 h-full overflow-hidden text-gray-700 bg-white rounded-lg shadow-lg p-5">
           <ToggleButtonGroup
