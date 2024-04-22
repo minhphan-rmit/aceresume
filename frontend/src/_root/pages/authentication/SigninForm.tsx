@@ -1,11 +1,15 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import useGoogleAuth from './useGoogleAuth';
+import getLPTheme from "../../../styles/getLPTheme";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
 
 
 
 
 const SigninForm = () => {
+
+  const LPtheme = createTheme(getLPTheme());
    const { signInWithGoogle, user, error } = useGoogleAuth();
   const logoStyle = {
     width: "auto",
@@ -13,6 +17,7 @@ const SigninForm = () => {
     cursor: "pointer",
   };
   return (
+    <ThemeProvider theme={LPtheme}>
     <div className="lg:flex w-full">
       <div className="lg:w-1/2 xl:max-w-screen-sm">
         <div className="py-12 bg-indigo-100 lg:bg-white flex justify-center lg:justify-start lg:px-12">
@@ -151,13 +156,14 @@ const SigninForm = () => {
       </div>
       <div
         style={{
-          backgroundImage: 'url(/Architecture-Resume-2.jpg)',
+          backgroundImage: 'url(../../static/landing-bg.jpg)',
           backgroundSize: 'cover',
           backgroundPosition: '10% center'
         }}
         className="hidden lg:flex items-center justify-center flex-1 h-screen"
       ></div>
     </div>
+    </ThemeProvider>
   );
 }
 

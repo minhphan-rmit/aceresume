@@ -1,13 +1,19 @@
 //import React from 'react'
 import {Link} from 'react-router-dom';
+import getLPTheme from "../../../styles/getLPTheme";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
 
 const SignupForm = () => {
+
+  const LPtheme = createTheme(getLPTheme());
   const logoStyle = {
     width: "auto",
     height: "32px",
     cursor: "pointer",
   };
   return (
+<>
+    <ThemeProvider theme={LPtheme}>
     <div className="lg:flex w-full">
     <div className="lg:w-1/2 xl:max-w-screen-sm">
       <div
@@ -27,7 +33,7 @@ const SignupForm = () => {
         </div>
       </div>
       <div
-        className="mt-10 px-12 sm:px-24 md:px-48 lg:px-12 lg:mt-16 xl:px-24 xl:max-w-2xl"
+        className=" px-12 sm:px-24 md:px-48 lg:px-12 lg:mt-6 xl:px-24 xl:max-w-2xl"
       >
         <h2
           className="text-center text-4xl text-indigo-900 font-display font-semibold lg:text-left xl:text-5xl xl:text-bold"
@@ -35,7 +41,7 @@ const SignupForm = () => {
           Register to be a member
         </h2>
         <div className="mt-12">
-          <form>
+          <div id="form">
             <div className="flex justify-between items-center gap-4">
               <div className="w-1/2">
                 <div className="text-sm font-bold text-gray-700 tracking-wide">
@@ -159,7 +165,7 @@ const SignupForm = () => {
                 <span></span>
               </button>
             </div>
-          </form>
+          </div>
           <div className="mt-5 text-sm font-display font-semibold text-gray-700 text-center">
   Already have an account ?{' '}
   <Link to="/sign-in" className="cursor-pointer text-indigo-600 hover:text-indigo-800">
@@ -172,14 +178,14 @@ const SignupForm = () => {
     </div>
     <div
      style={{
-      backgroundImage: 'url(/Architecture-Resume-2.jpg)',
+      backgroundImage: 'url(../../static/landing-bg.jpg)',
       backgroundSize: 'cover',
       backgroundPosition: '10% center'
     }}
       className="hidden lg:flex items-center justify-center flex-1 h-screen"
     ></div>
   </div>
-
+</ThemeProvider></>
   )
 }
 
