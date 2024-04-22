@@ -2,6 +2,7 @@
 import jwt
 import os
 import uuid
+
 from fastapi import APIRouter, Form, BackgroundTasks
 from fastapi.responses import JSONResponse
 from models.users import UserInfo
@@ -60,7 +61,17 @@ def register_user(
         token = generate_token(str(user_info_dict["_id"]), email, is_activated=False)
 
         subject = "Activation Link for AceResume Application"
-        body = f"Please click on the following link to activate your account: http://localhost:3000/auth/account-verify?token={token}&email={user_info.email}"
+        body = f"""
+        <html>
+            <head></head>
+            <body>
+                <h1 style="color: #312e81;">Activate Your Account</h1>
+                <p>Hello <strong style="color: #312e81;">{user_name}</strong>,</p>
+                <p>Please click on the link below to activate your account:</p>
+                <a href="http://localhost:8081/auth/account-verify?token={token}&email={email}" style="color: blue;">Activate Account</a>
+            </body>
+        </html>
+        """
         data = EmailSchema(to=email, subject=subject, body=body).dict()
         background_tasks.add_task(send_email, data["to"], data["subject"], data["body"])
 
