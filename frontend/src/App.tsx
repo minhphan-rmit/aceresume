@@ -8,6 +8,7 @@ import { Home } from './_root/pages';
 import RootLayout from './_root/RootLayout';
 import LandingPage from './_root/pages/landing-page/LandingPage';
 import MockInterview from './_root/pages/mock-interview/MockInterview';
+import MatchingJobs from './_root/pages/matching-jobs/MatchingJobs';
 
 const App = () => {
   return (
@@ -20,6 +21,7 @@ const App = () => {
         </Route>
 
         {/* private routes */}
+        <Route path="/matching-jobs" element={<MatchingJobs />} />
         <Route path="/mock-interview" element={<MockInterview />} />
         <Route path="/landing-page" element={<LandingPage />} />
         <Route element={<RootLayout />}>
