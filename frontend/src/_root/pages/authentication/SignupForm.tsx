@@ -1,9 +1,99 @@
-//import React from 'react'
+import React, { ChangeEvent, FormEvent, MouseEventHandler, useRef, useState} from 'react';
+import axios from 'axios';
+import useGoogleAuth from './useGoogleAuth';
 import {Link} from 'react-router-dom';
 import getLPTheme from "../../../styles/getLPTheme";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
+import {
+  clearErrorStyles,
+  displayErrorMessage,
+  validateEmail,
+  validatePassword
+} from './validationTool';
 
-const SignupForm = () => {
+interface FormData {
+
+  user_name: string;
+  password: string;
+  repassword?: string;
+  email: string;
+}
+
+const SignupForm: React.FC = () => {
+  const [formData, setFormData] = useState<FormData>({
+    user_name: '',
+    password: '',
+    email: '',
+  });
+
+  // Refs for form inputs to display error styles and messages
+  const inputRefs = {
+
+    user_name: useRef<HTMLInputElement>(null),
+    password: useRef<HTMLInputElement>(null),
+    repassword: useRef<HTMLInputElement>(null),
+
+    email: useRef<HTMLInputElement>(null),
+  };
+
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const register = async (e: FormEvent<HTMLFormElement>) => {
+
+    e.preventDefault();
+    clearErrorStyles(inputRefs);
+    const errors: string[] = [];
+
+
+
+    if (!validateEmail(formData.email)) {
+
+      errors.push("Invalid Email");
+      displayErrorMessage(inputRefs, "email", "Enter a valid email");
+    }
+
+    if (!validatePassword(formData.password)) {
+      errors.push("Password too short");
+      displayErrorMessage(inputRefs, "password", "Password must be at least 8 characters long");
+    }
+
+    if (formData.password !== formData.repassword) {
+      errors.push("Passwords do not match");
+      displayErrorMessage(inputRefs, "repassword", "Password does not match");
+    }
+
+    if (errors.length > 0) {
+      return;
+    }
+
+    // Placeholder for actual API call
+    console.log("Form data is valid and can be submitted:", formData);
+    // Here you would make your API call to register the user
+
+    submitFormData(formData);
+
+  };
+
+  const submitFormData = async (formData: FormData) => {
+    try {
+      const { repassword, ...submissionData } = formData;
+      console.log('Submission data:', submissionData);
+      const response = await axios.post('http://localhost:8000/api/aceresume/register', submissionData, {
+        headers: {
+            'Content-Type': 'application/json'  // Explicitly stating the content type
+        }
+    });
+      console.log('Verify your email to complete registration:', response.data);
+      alert('Verify your email to complete registration');
+    } catch (error) {
+      console.error('Registration failed:', error.response.data.message);
+      alert(`Registration failed: ${error.response.data.message || error.message}`);
+    }
+  };
+  const {signUpWithGoogle, user, error} = useGoogleAuth();
+
 
   const LPtheme = createTheme(getLPTheme());
   const logoStyle = {
@@ -11,6 +101,8 @@ const SignupForm = () => {
     height: "32px",
     cursor: "pointer",
   };
+
+
   return (
 <>
     <ThemeProvider theme={LPtheme}>
@@ -41,7 +133,7 @@ const SignupForm = () => {
           Register to be a member
         </h2>
         <div className="mt-12">
-          <div id="form">
+          <form id="form"  onSubmit={register}>
             <div className="flex justify-between items-center gap-4">
               <div className="w-1/2">
                 <div className="text-sm font-bold text-gray-700 tracking-wide">
@@ -51,6 +143,8 @@ const SignupForm = () => {
                   className="w-full text-lg py-2 border-b border-gray-300 focus:outline-none focus:border-indigo-500"
                   type="email"
                   placeholder="mike@gmail.com"
+                  value={formData.email} onChange={handleChange}
+                  name='email'
                 />
               </div>
               <div className="w-1/2">
@@ -61,6 +155,8 @@ const SignupForm = () => {
                   className="w-full text-lg py-2 border-b border-gray-300 focus:outline-none focus:border-indigo-500"
                   type="text"
                   placeholder="Enter your username"
+                  value={formData.user_name} onChange={handleChange}
+                  name='user_name'
                 />
               </div>
             </div>
@@ -76,6 +172,8 @@ const SignupForm = () => {
                 className="w-full text-lg py-2 border-b border-gray-300 focus:outline-none focus:border-indigo-500"
                 type="password"
                 placeholder="Enter your password"
+                value={formData.password} onChange={handleChange}
+                name='password'
               />
             </div>
             <div className="mt-8">
@@ -89,10 +187,15 @@ const SignupForm = () => {
                 className="w-full text-lg py-2 border-b border-gray-300 focus:outline-none focus:border-indigo-500"
                 type="password"
                 placeholder="Re-enter your password"
+                value={formData.repassword} onChange={handleChange}
+                name='repassword'
               />
+
             </div>
             <div className="mt-10">
               <button
+              type="submit"
+
                 className="bg-indigo-500 text-gray-100 p-4 w-full rounded-full tracking-wide font-semibold font-display focus:outline-none focus:shadow-outline hover:bg-indigo-600 shadow-lg"
               >
                 Sign Up
@@ -100,6 +203,7 @@ const SignupForm = () => {
             </div>
             <div className="mt-5">
               <button
+             onClick={signUpWithGoogle}
                 className="flex justify-between outline outline-gray-300 text-black p-4 w-full rounded-full tracking-wide font-semibold font-display focus:outline-none focus:shadow-outline hover:bg-gray-200 shadow-lg"
               >
                <svg
@@ -165,7 +269,7 @@ const SignupForm = () => {
                 <span></span>
               </button>
             </div>
-          </div>
+          </form>
           <div className="mt-5 text-sm font-display font-semibold text-gray-700 text-center">
   Already have an account ?{' '}
   <Link to="/sign-in" className="cursor-pointer text-indigo-600 hover:text-indigo-800">

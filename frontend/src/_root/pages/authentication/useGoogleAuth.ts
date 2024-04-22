@@ -14,7 +14,7 @@ const useGoogleAuth = () => {
   // Function to send email to backend
   const sendEmailToBackend = async (email: string) => {
     try {
-      const response = await fetch('/api/send-email', {
+      const response = await fetch('http://localhost:8000/api/aceresume/loginWithGoogle', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -33,7 +33,7 @@ const useGoogleAuth = () => {
 
   const sendRegisteredDetailsToBackend = async (email: string, username: string, password: string) => {
     try {
-      const response = await fetch('/api/signup', {
+      const response = await fetch('http://localhost:8000/api/aceresume/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
