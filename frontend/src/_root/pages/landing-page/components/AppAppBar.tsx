@@ -42,12 +42,11 @@ const AppAppBar = () => {
               style={logoStyle}
               alt="Logo"
             />
-            <Typography
-              variant="h6"
-              sx={{ ml: 1, color: theme.palette.text.primary }}
-            >
-              Ace Resume
-            </Typography>
+
+              <div className="text-2xl text-black tracking-wide ml-2 font-semibold">
+            ace<span className="text-indigo-900">resume</span>
+          </div>
+
           </Box>
           <Box sx={{ flexGrow: 1, display: "flex", justifyContent: "center" }}>
             <MenuItem

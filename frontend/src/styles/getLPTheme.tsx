@@ -46,7 +46,7 @@ export const getLPTheme = () =>
       },
     },
     typography: {
-    //  fontFamily: '"Inter", "sans-serif"',
+     // fontFamily: '"Inter", "sans-serif"',
       h1: {
         fontSize: "2.125rem",
         fontWeight: 600,
