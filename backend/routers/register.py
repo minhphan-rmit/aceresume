@@ -63,14 +63,19 @@ def register_user(
         subject = "Activation Link for AceResume Application"
         body = f"""
         <html>
-            <head></head>
-            <body>
-                <h1 style="color: #312e81;">Activate Your Account</h1>
-                <p>Hello <strong style="color: #312e81;">{user_name}</strong>,</p>
-                <p>Please click on the link below to activate your account:</p>
-                <a href="http://localhost:8081/auth/account-verify?token={token}&email={email}" style="color: blue;">Activate Account</a>
-            </body>
-        </html>
+<head></head>
+<body>
+    <h1 style="color:#312e81;">Welcome to AceResume!</h1>
+    <p>Hello <strong style="color:#312e81;">{user_name}</strong>,</p>
+    <p>We're excited to have you join AceResume, your ultimate destination for crafting the perfect resume and landing your dream job.</p>
+    <p>To get started, simply click the button below to activate your account:</p>
+    <div style="text-align:center;">
+        <a href="http://localhost:8081/auth/account-verify?token={token}&email={email}" style="background-color: #312e81; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Activate Account</a>
+    </div>
+    <p>If you have any questions or need assistance, feel free to reach out to our support team at support@aceresume.com.</p>
+    <p>Thank you for choosing AceResume!</p>
+</body>
+</html>
         """
         data = EmailSchema(to=email, subject=subject, body=body).dict()
         background_tasks.add_task(send_email, data["to"], data["subject"], data["body"])
