@@ -3,11 +3,21 @@ import { Link } from 'react-router-dom';
 import useGoogleAuth from './useGoogleAuth';
 import getLPTheme from "../../../styles/getLPTheme";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
+import useForm from './useForm';
 
 
 
 
-const SigninForm = () => {
+
+
+  const SigninForm: React.FC = () => {
+    const { formData, handleChange, signin } = useForm({
+      initialValues: {
+        password: '',
+        email: '',
+      },
+    });
+
 
   const LPtheme = createTheme(getLPTheme());
    const { signInWithGoogle, user, error } = useGoogleAuth();
@@ -23,7 +33,7 @@ const SigninForm = () => {
         <div className="py-12 bg-indigo-100 lg:bg-white flex justify-center lg:justify-start lg:px-12">
           <div className="cursor-pointer flex items-center">
           <img
-              src={"./static/aceresume_logo.svg"}
+              src={"../../static/aceresume_logo.svg"}
               style={logoStyle}
               alt="Logo"
             />
@@ -37,15 +47,18 @@ const SigninForm = () => {
             Sign in
           </h2>
           <div className="mt-12">
-            <div id="form">
+            <form id="form" onSubmit={signin}>
               <div>
                 <div className="text-sm font-bold text-gray-700 tracking-wide">
-                  Email / Username
+                  Email
                 </div>
                 <input
                   className="w-full text-lg py-2 border-b border-gray-300 focus:outline-none focus:border-indigo-500"
                   type="email"
                   placeholder="mike@gmail.com"
+                  value={formData.email}
+                  onChange={handleChange}
+                  name="email"
                 />
               </div>
               <div className="mt-8">
@@ -65,6 +78,9 @@ const SigninForm = () => {
                   className="w-full text-lg py-2 border-b border-gray-300 focus:outline-none focus:border-indigo-500"
                   type="password"
                   placeholder="Enter your password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  name="password"
                 />
               </div>
               <div className="mt-10">
@@ -143,7 +159,7 @@ const SigninForm = () => {
                   <span></span>
                 </button>
               </div>
-            </div>
+            </form>
             <div className="mt-12 text-sm font-display font-semibold text-gray-700 text-center">
   Don't have an account ?{' '}
   <Link to="/sign-up" className="cursor-pointer text-indigo-600 hover:text-indigo-800">
