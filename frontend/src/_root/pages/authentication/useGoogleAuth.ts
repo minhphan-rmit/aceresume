@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react';
-import { getAuth, signInWithRedirect, GoogleAuthProvider, User, getRedirectResult, signInWithPopup } from 'firebase/auth';
+import { useState } from 'react';
+import { getAuth, GoogleAuthProvider, User, signInWithPopup } from 'firebase/auth';
 import firebaseApp from '../../../config/firebase-config'; // Ensure the path is correct
 import { FormEvent } from 'react';
 import axios from 'axios';
-
+import {useNavigate} from 'react-router-dom';
 import showNotification from '../../components/Notification/Notification';
 
 const useGoogleAuth = () => {
@@ -12,6 +12,7 @@ const useGoogleAuth = () => {
 
   const auth = getAuth(firebaseApp);
   const provider = new GoogleAuthProvider();
+  const navigate = useNavigate();
   provider.addScope('profile');
   provider.addScope('email');
 
@@ -39,10 +40,11 @@ const useGoogleAuth = () => {
     }
   };
 
-  const sendRegisteredDetailsToBackend = async (email: string, username: string) => {
+  const sendRegisteredDetailsToBackend = async (email: string, user_name: string, password:string) => {
     try {
-      const user_name = username;
-     const submissionData = {email, user_name};
+
+     const submissionData = {email, user_name, password};
+     console.log(submissionData);
       const response = await axios.post('http://localhost:8000/api/aceresume/google/register', submissionData,{
 
         headers: {
@@ -55,6 +57,7 @@ const useGoogleAuth = () => {
         throw new Error(data.message || 'Failed to sign up with Google');
       }
       if (response.status === 200) {
+        navigate('/auth/activation-success');
        showNotification({type: 'success', message: 'Registration complete! Check your email to explore more!'})
       }
     } catch (error: any) {
@@ -103,21 +106,27 @@ const useGoogleAuth = () => {
       // Check if email and displayName are not null
       const email = result.user.email;
       const displayName = result.user.displayName || ''; // Default to empty string if null
-      // delete whitespace in displayName
-      const username = displayName.replace(/\s/g, '');
-      // alert(email);
-      // alert(username);
+
+
 
       if (!email) throw new Error('Email is required but was not provided.');
+      if (!displayName) throw new Error('Username is required but was not provided.');
+
+      // delete whitespace in displayName and special characters
+      const username = displayName.replace(/\s/g, '');
+
+
+      // success
+      navigate('/auth/add-password?email=' + email + '&username=' + username);
 
       setUser(result.user);
-     await sendRegisteredDetailsToBackend(email, username);
+
     } catch (error: any) {
       console.error('Error during Google sign-up:', error);
       setError(error.message || 'Error signing up with Google. Please try again.');
     }
   };
-  return { signInWithGoogle, signUpWithGoogle, user, error };
+  return { signInWithGoogle, signUpWithGoogle, user, error, sendRegisteredDetailsToBackend };
 
 }
 export default useGoogleAuth;

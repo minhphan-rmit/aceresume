@@ -10,6 +10,7 @@ import RootLayout from './_root/RootLayout';
 import LandingPage from './_root/pages/landing-page/LandingPage';
 import MockInterview from './_root/pages/mock-interview/MockInterview';
 import ActivateAccount from './_root/pages/authentication/ActivateAccount';
+import AddPassword from './_root/pages/authentication/AddPassword';
 
 import ActivatingAccount from './_root/pages/authentication/ActivatingAccount';
 const App = () => {
@@ -23,6 +24,7 @@ const App = () => {
         </Route>
 
         {/* private routes */}
+        <Route path="/auth/add-password" element={<AddPassword />} />
         <Route path="/auth/account-verify" element={<ActivatingAccount />} />
         <Route path="/auth/activation-success" element={<ActivateAccount />} />
         <Route path="/mock-interview" element={<MockInterview />} />

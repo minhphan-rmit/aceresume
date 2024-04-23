@@ -54,9 +54,13 @@ const ActivateAccount=()=>{
               </div >
               <div className="mt-5">
               <Link to="/sign-in" className="cursor-pointer text-indigo-600 hover:text-indigo-800">
-              <Button  variant="contained" color="primary" >
-  Back to Login
-</Button>
+              <button
+
+
+                className="bg-indigo-500 text-gray-100 p-4 w-full rounded-full tracking-wide font-semibold font-display focus:outline-none focus:shadow-outline hover:bg-indigo-600 shadow-lg"
+              >
+                Back to Login
+              </button>
   </Link>
               </div>
             </div>

@@ -96,7 +96,7 @@ def register_user(
     user_name: str = Form(..., description="Username of the user"),
     email: str = Form(..., description="Email address of the user"),
     password: str = Form(
-        "00000000", description="Password of the user"
+        ..., description="Password of the user"
     ),  # Default password set here if needed
 ):
     try:
