@@ -71,7 +71,7 @@ const ActivateAccount=()=>{
             <div className=" flex justify-center  lg:px-12">
               <div className="cursor-pointer flex items-center">
               <img
-                  src={"./static/aceresume_logo.svg"}
+                  src={"../../static/aceresume_logo.svg"}
                   style={logoStyle}
                   alt="Logo"
                 />
