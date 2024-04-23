@@ -37,7 +37,7 @@ const ActivateAccount=()=>{
            // redirect to successful activation page
 
 
-navigate('/auth/activation-success');
+            navigate('/auth/activation-success');
         } catch (error) {
             console.error('Error activating account:', error);
             // Assuming setError is a function to set error state in your component
