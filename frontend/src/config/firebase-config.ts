@@ -8,7 +8,7 @@ import { initializeApp } from "firebase/app";
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
   apiKey: "AIzaSyCaoPW1vXDyEI62onEiWFLGcL3LGn0UuEM",
-  authDomain: "aceresume-d9997.firebaseapp.com",
+  authDomain: "aceresume-d9997.web.app",
   projectId: "aceresume-d9997",
   storageBucket: "aceresume-d9997.appspot.com",
   messagingSenderId: "24238477201",
