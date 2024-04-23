@@ -18,7 +18,7 @@ const useGoogleAuth = () => {
   // Function to send email to backend
   const sendEmailToBackend = async (email: string) => {
     try {
-      alert(email);
+
       const response = await axios.post('http://localhost:8000/api/aceresume/google/login', { email },{
 
         headers: {
@@ -29,6 +29,9 @@ const useGoogleAuth = () => {
       if (response.status !== 200) {
         const data = await response.data();
         throw new Error(data.message || 'Failed to sign in with Google');
+      }
+      if (response.status === 200) {
+       showNotification({type: 'success', message: 'Login successful! Welcome back!, ' + email + '!'})
       }
     } catch (error: any) {
       console.error('Error sending email to backend:', error);
@@ -71,12 +74,13 @@ const useGoogleAuth = () => {
 
       // retrieve email from user
 
-      alert(result.user.email);
+
       if (!result.user) throw new Error('No credentials returned from Google.');
        const email = result.user.email;
        if (!email) throw new Error('Email is required but was not provided.');
 
       setUser(result.user);
+
        await sendEmailToBackend(email);
     } catch (error: any) {
         console.log(error);
