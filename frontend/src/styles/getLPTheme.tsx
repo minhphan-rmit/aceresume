@@ -1,6 +1,7 @@
 import { createTheme } from "@mui/material/styles";
 import { indigo, red, grey, green } from "@mui/material/colors";
 
+
 // Define the primary and secondary colors using the indigo and grey palettes
 const primaryColor = indigo;
 const secondaryColor = grey;
@@ -46,7 +47,7 @@ export const getLPTheme = () =>
       },
     },
     typography: {
-      fontFamily: '"Inter", "sans-serif"',
+     fontFamily: '"Poppins", "sans-serif"',
       h1: {
         fontSize: "2.125rem",
         fontWeight: 600,
