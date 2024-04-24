@@ -25,7 +25,11 @@ def send_email(to_addresses, subject, body):
     message["To"] = to_addresses
     message["Subject"] = subject
 
-    message.attach(MIMEText(body, "plain"))
+    # accept html or plain text
+    if "<html>" in body:
+        message.attach(MIMEText(body, "html"))
+    else:
+        message.attach(MIMEText(body, "plain"))
 
     with smtplib.SMTP("smtp.gmail.com", 587) as server:
         server.starttls()

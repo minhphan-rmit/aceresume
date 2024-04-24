@@ -19,6 +19,8 @@ origins = [
     "https://localhost.tiangolo.com",
     "http://localhost",
     "http://localhost:8081",
+    "https://aceresume-d9997.firebaseapp.com",
+    "https://aceresume-d9997.web.app",
 ]
 
 app.add_middleware(
