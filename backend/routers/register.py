@@ -84,3 +84,39 @@ def register_user(
             "token": token,
         }
     )
+
+
+@router.post(
+    "/google/register", responses={409: {"model": Message}, 422: {"model": Message}}
+)
+def register_user(
+    user_name: str = Form(..., description="Username of the user"),
+    email: str = Form(..., description="Email address of the user"),
+):
+    try:
+        user_info = UserInfo(
+            username=user_name,
+            email=email,
+            is_activate=True,
+            verified_at=datetime.utcnow(),
+        )
+        user_info_dict = user_info.dict()
+        Constants.USERS.insert_one(user_info_dict)
+
+    except ValueError as e:
+        # Handle Pydantic validation errors
+        return JSONResponse(
+            status_code=422, content={"message": str(e)}
+        )  # error for email and number
+
+    assert (
+        Constants.USERS.find_one({"username": user_name})["username"] == user_name
+    )  # test case
+    assert len(list(Constants.USERS.find({"username": user_name}))) == 1  # test case
+
+    return JSONResponse(
+        content={
+            "user_name": user_name,
+            "email": email,
+        }
+    )
