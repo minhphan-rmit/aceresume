@@ -17,9 +17,9 @@ load_dotenv(os.path.join(os.path.dirname(__file__), ".env.local"))
 
 class Constants:
     MONGODB_URI = os.environ["DATABASE_URI"]
-    #  OPENAI_API_KEY = os.environ["OPENAI_API_KEY"]
-    # QDRANT_URI = os.environ["QDRANT_URI"]
-    # QDRANT_API_KEY = os.environ["QDRANT_API_KEY"]
+    OPENAI_API_KEY = os.environ["OPENAI_API_KEY"]
+    QDRANT_URI = os.environ["QDRANT_URI"]
+    QDRANT_API_KEY = os.environ["QDRANT_API_KEY"]
 
     parsed_uri = urllib.parse.urlparse(MONGODB_URI)
     encoded_uri = MONGODB_URI.replace(
@@ -57,8 +57,8 @@ class Constants:
     )
 
     qdrant_client = QdrantClient(
-        # url=QDRANT_URI,
-        # api_key=QDRANT_API_KEY,
+        url=QDRANT_URI,
+        api_key=QDRANT_API_KEY,
         prefer_grpc=True,
     )
 
