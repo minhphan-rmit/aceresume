@@ -51,7 +51,7 @@ class Constants:
     CHAT_MODEL = ChatOpenAI(
         model_name="gpt-4-0125-preview",
         temperature=0.1,
-        # openai_api_key=OPENAI_API_KEY,
+        openai_api_key=OPENAI_API_KEY,
         callbacks=[StreamingStdOutCallbackHandler()],
         streaming=True,
     )
