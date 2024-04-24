@@ -12,7 +12,7 @@ from langchain_community.vectorstores.qdrant import Qdrant
 from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 from qdrant_client import QdrantClient
 
-load_dotenv(os.path.join(os.path.dirname(__file__), ".env.local"))
+load_dotenv(os.path.join(os.path.dirname(__file__), ".env.example"))
 
 
 class Constants:
