@@ -24,7 +24,7 @@ const App = () => {
         <Route path="/landing-page" element={<LandingPage />} />
         <Route element={<RootLayout />}>
           <Route path="/home" element={<Home />} />
-          
+
         </Route>
       </Routes>
     </main>
