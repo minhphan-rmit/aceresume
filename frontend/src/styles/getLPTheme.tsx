@@ -4,6 +4,7 @@ import { indigo, red, grey, green } from "@mui/material/colors";
 
 // Define the primary and secondary colors using the indigo and grey palettes
 const primaryColor = indigo;
+
 const secondaryColor = grey;
 
 // Simplified theme configuration function

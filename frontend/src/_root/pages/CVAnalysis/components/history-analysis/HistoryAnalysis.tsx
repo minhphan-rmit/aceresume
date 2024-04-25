@@ -5,7 +5,8 @@ import { Button } from "@mui/material";
 const HistoryAnalysis = () => {
     return (
         <>
-            <div className="container w-full px-5 bg-white rounded-xl z-10">
+        <div className="w-full bg-white h-full rounded-lg  flex flex-col items-center p-10 overflow-y-auto">
+            <div className="container w-full h-full px-5 rounded-xl z-10">
                 <div className="flex items-center justify-between">
                 <div className="text-left">
                     <h2 className="mt-5 text-3xl font-bold text-gray-900">
@@ -34,7 +35,7 @@ const HistoryAnalysis = () => {
                     <HistoryCard />
 
                 </div>
-            </div>
+            </div></div>
         </>
     );
 };

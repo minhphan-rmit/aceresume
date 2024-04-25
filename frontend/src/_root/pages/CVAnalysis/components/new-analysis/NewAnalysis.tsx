@@ -3,8 +3,8 @@ const NewAnalysis = () => {
     return (
     <>
 
-
-       <div className="sm:max-w-lg w-full p-10 bg-white rounded-xl z-10">
+<div className="w-full bg-white h-full rounded-lg  flex flex-col items-center p-10">
+       <div className="sm:max-w-lg w-full  bg-white rounded-xl z-10">
 		<div className="text-center">
 			<h2 className="mt-5 text-3xl font-bold text-gray-900">
 				 Upload Your Resume Here!
@@ -43,7 +43,7 @@ const NewAnalysis = () => {
                     </button>
                     </div>
         </form>
-	</div>
+	</div></div>
     </>)
  }
 

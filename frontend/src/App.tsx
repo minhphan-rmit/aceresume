@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route , BrowserRouter} from 'react-router-dom';
 
 import './styles/globals.css';
 import AuthLayout from './_auth/AuthLayout';

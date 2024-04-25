@@ -1,25 +1,72 @@
-import React from 'react';
-import AppNavBar from '../landing-page/components/AppAppBar';
+import React,{useEffect} from 'react';
+import AppNavBar from '../../components/NavBar/AppAppBar';
 import CVAnalysisSideBar from './components/CVAnalysisSideBar';
-import NewAnalysis from './components/NewAnalysis';
+import NewAnalysis from './components/new-analysis/NewAnalysis';
 import CVPreview from './components/CVPreview';
-import HistoryAnalysis from './components/HistoryAnalysis';
+import Examples from './components/examples/Examples';
+import Guide from './components/guide/Guide';
+import HistoryAnalysis from './components/history-analysis/HistoryAnalysis';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import getLPTheme from "../../../styles/getLPTheme";
+import YourAnalysis from './components/your-analysis/YourAnalysis';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 
 
-const CVAnalysis = () => {
-    const LPtheme = createTheme(getLPTheme());
-    const [alignment, setAlignment] = React.useState('web');
 
-  const handleChange = (
-    event: React.MouseEvent<HTMLElement>,
-    newAlignment: string,
-  ) => {
-    setAlignment(newAlignment);
+const CVAnalysis = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const query = new URLSearchParams(location.search);
+  const LPtheme = createTheme(getLPTheme());
+  const [selectedComponent, setSelectedComponent] = React.useState(query.get('component') || 'newAnalysis');
+  const [selectedAlignment, setSelectedAlignment] = React.useState(query.get('toggle') || 'preview');
+
+  // Update URL whenever the selected component or toggle changes
+  useEffect(() => {
+    navigate(`?component=${selectedComponent}&toggle=${selectedAlignment}`, { replace: true });
+  }, [selectedComponent, selectedAlignment, navigate]);
+
+  const handleComponentChange = (component) => {
+    setSelectedComponent(component);
   };
+
+  const handleToggleChange = (event, newSelectedAlignment) => {
+    if (newSelectedAlignment !== null) { // Ensuring we don't set undefined or null
+      setSelectedAlignment(newSelectedAlignment);
+    }
+  };
+
+  // render component based on selected component
+  const renderComponent = () => {
+    switch (selectedComponent) {
+      case 'newAnalysis':
+        return <NewAnalysis />;
+      case 'yourAnalysis':
+        return <YourAnalysis />;
+      case 'historyAnalysis':
+        return <HistoryAnalysis />;
+      default:
+        return <NewAnalysis />;
+    }
+  };
+
+  // render toggle button based on selected component
+  const renderToggleButton = () => {
+    switch(selectedAlignment){
+      case 'preview':
+        return <CVPreview/>
+      case 'guides':
+        return <Guide/>
+      case 'examples':
+        return <Examples/>
+      default:
+        return <CVPreview/>
+    }
+  }
+
+
   return (
 
     <>
@@ -27,20 +74,23 @@ const CVAnalysis = () => {
       <AppNavBar/>
       <div className="flex items-start justify-center w-screen h-screen p-10 space-x-6 bg-gray-100">
         {/* Sidebar Component */}
-        <CVAnalysisSideBar/>
+        <CVAnalysisSideBar onChange={handleComponentChange} />
         {/* Main Content Area */}
         <div className="flex flex-row w-full gap-4 h-full">
 
-          <div className="flex flex-col p-5 items-center w-3/5 h-full  text-gray-700 bg-white rounded-lg shadow-lg overflow-y-auto	">
-          <NewAnalysis/>
-            {/* <HistoryAnalysis/> */}
-          </div>
-          <div className="flex flex-col items-center w-2/5 h-full overflow-hidden text-gray-700 bg-white rounded-lg shadow-lg p-5">
+        <div className="flex flex-col gap-4 items-center w-3/5 h-full text-gray-700 bg-none rounded-lg overflow-y-auto  ">
+        {renderComponent()}
+</div>
+
+
+
+
+          <div className="flex flex-col items-center w-2/5 h-full overflow-y-auto text-gray-700 bg-white rounded-lg shadow-lg p-5">
           <ToggleButtonGroup
       color="primary"
-      value={alignment}
+      value={selectedAlignment}
       exclusive
-      onChange={handleChange}
+      onChange={handleToggleChange}
       aria-label="Platform"
       className="mt-5 rounded-lg"
     >
@@ -57,9 +107,7 @@ const CVAnalysis = () => {
       <svg width="20px" height="20px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M8 5.00005C7.01165 5.00082 6.49359 5.01338 6.09202 5.21799C5.71569 5.40973 5.40973 5.71569 5.21799 6.09202C5 6.51984 5 7.07989 5 8.2V17.8C5 18.9201 5 19.4802 5.21799 19.908C5.40973 20.2843 5.71569 20.5903 6.09202 20.782C6.51984 21 7.07989 21 8.2 21H15.8C16.9201 21 17.4802 21 17.908 20.782C18.2843 20.5903 18.5903 20.2843 18.782 19.908C19 19.4802 19 18.9201 19 17.8V8.2C19 7.07989 19 6.51984 18.782 6.09202C18.5903 5.71569 18.2843 5.40973 17.908 5.21799C17.5064 5.01338 16.9884 5.00082 16 5.00005M8 5.00005V7H16V5.00005M8 5.00005V4.70711C8 4.25435 8.17986 3.82014 8.5 3.5C8.82014 3.17986 9.25435 3 9.70711 3H14.2929C14.7456 3 15.1799 3.17986 15.5 3.5C15.8201 3.82014 16 4.25435 16 4.70711V5.00005M15 12H12M15 16H12M9 12H9.01M9 16H9.01" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>        </span>
         Examples</ToggleButton>
     </ToggleButtonGroup>
-            <CVPreview/>
-            {/* <Guide/>
-            <Examples/> */}
+    {renderToggleButton()}
           </div>
         </div>
       </div>
