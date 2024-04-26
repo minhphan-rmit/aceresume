@@ -107,7 +107,7 @@ const AppAppBar = () => {
             </Button>
             <Button
               variant="contained"
-              color="primary[main]"
+              color="primary"
               component="a"
               href="/sign-up/"
               sx={{ width: 100 }}

@@ -1,7 +1,6 @@
 import CssBaseline from "@mui/material/CssBaseline";
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
-import { ThemeProvider, createTheme } from "@mui/material/styles";
 import AppAppBar from "./components/AppAppBar";
 import Hero from "./components/Hero";
 import LogoCollection from "./components/LogoCollection";
@@ -12,6 +11,7 @@ import Testimonials from "./components/Testimonials";
 import FAQ from "./components/FAQ";
 import Footer from "./components/Footer";
 import getLPTheme from "../../../styles/getLPTheme";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
 import TrendingJobs from "./components/TrendingJobs";
 
 export default function LandingPage() {
@@ -19,6 +19,7 @@ export default function LandingPage() {
 
   return (
     <ThemeProvider theme={LPtheme}>
+
       <CssBaseline />
       <AppAppBar />
       <Hero />
