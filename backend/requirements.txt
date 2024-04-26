@@ -16,7 +16,7 @@ pymongo[srv]==4.6.3
 PyPDF2==3.0.1
 pytest==8.1.1
 python-dotenv==1.0.1
-python-jobspy==1.1.15
+python-jobspy==1.1.51
 python-multipart==0.0.9
 qdrant-client==1.8.2
 tiktoken==0.6.0

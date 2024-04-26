@@ -29,8 +29,8 @@ def data_to_joblist(data: dict) -> JobList:
             company_industry=data["company_industry"][index],
             job_type=data["job_type"][index],
             date_posted=data["date_posted"][index],
-            min_amount=data["min_amount"][index],
-            max_amount=data["max_amount"][index],
+            min_amount=str(data["min_amount"][index]),
+            max_amount=str(data["max_amount"][index]),
             is_remote=data["is_remote"][index],
             contact_email=data["emails"][index],
             logo_photo_url=data["logo_photo_url"][index],
@@ -50,15 +50,16 @@ def data_to_joblist(data: dict) -> JobList:
     response_description="Message to show whether the resume is uploaded successfully or not",
     responses={401: {"model": Message}, 500: {"model": Message}},
 )
-async def find_job_data(job_title: str) -> JobList:
+async def find_job_data(job_title: str, location: str, country_indeed: str) -> JobList:
     jobs = scrape_jobs(
         site_name=["indeed", "linkedin", "zip_recruiter", "glassdoor"],
         search_term=job_title,
-        location="Vietnam",
+        location=location,
         results_wanted=2,
         hours_old=72,  # (only Linkedin/Indeed is hour specific, others round up to days old)
-        country_indeed="Vietnam",  # only needed for indeed / glassdoor
+        country_indeed=country_indeed,  # only needed for indeed / glassdoor
     )
+
     jobs = jobs[
         [
             "site",
