@@ -3,7 +3,7 @@ import jwt
 import os
 import uuid
 
-from fastapi import APIRouter, Form, BackgroundTasks
+from fastapi import APIRouter, Form, BackgroundTasks, HTTPException
 from fastapi.responses import JSONResponse
 from models.users import UserInfo
 from constant import Message, Constants
@@ -46,6 +46,24 @@ def register_user(
     email: str = Form(..., description="Email address of the user"),
 ):
     try:
+        if Constants.USERS.find_one({"username": user_name}):
+            raise HTTPException(status_code=409, detail="Username already used.")
+
+        existing_user = Constants.USERS.find_one({"email": email})
+        if existing_user:
+            if (
+                existing_user.get("is_activate") is False
+                and existing_user.get("verified_at") is None
+            ):
+                # If email is not activated, send a message to check email for activation
+                raise HTTPException(
+                    status_code=409,
+                    detail="This email have already been used for registered. Please check your email for account activation.",
+                )
+            else:
+                # If email is already registered and activated
+                raise HTTPException(status_code=409, detail="Email already used.")
+
         hashed_password = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt())
 
         user_info = UserInfo(
@@ -72,11 +90,6 @@ def register_user(
             status_code=422, content={"message": str(e)}
         )  # error for email and number
 
-    assert (
-        Constants.USERS.find_one({"username": user_name})["username"] == user_name
-    )  # test case
-    assert len(list(Constants.USERS.find({"username": user_name}))) == 1  # test case
-
     return JSONResponse(
         content={
             "user_name": user_name,
@@ -100,6 +113,12 @@ def register_user(
     ),  # Default password set here if needed
 ):
     try:
+        if Constants.USERS.find_one({"username": user_name}):
+            raise HTTPException(status_code=409, detail="Username already in use.")
+
+        if Constants.USERS.find_one({"email": email}):
+            raise HTTPException(status_code=409, detail="Email already used.")
+
         # Hash the password
         hashed_password = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt())
 
