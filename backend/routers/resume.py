@@ -9,7 +9,7 @@ from fastapi import APIRouter, File, HTTPException, UploadFile
 from fastapi.responses import JSONResponse, StreamingResponse
 
 from datetime import datetime
-from bson import Binary
+from bson import ObjectId
 from helpers.utility import Utility
 from constant import Message, Constants
 from services.process_resume import process_resume, analyse_resume, extract_resume
@@ -45,7 +45,7 @@ async def upload_resume(
         resume.file.read(), resume.filename.split(".")[-1]
     )
     # Insert resume data into MongoDB
-    Constants.RESUME_INFO.insert_one(
+    add_resume = Constants.RESUME_INFO.insert_one(
         {
             "user_id": user_id,
             "filename": filename,
@@ -53,7 +53,10 @@ async def upload_resume(
         }
     )
 
-    return {"message": "Resume uploaded successfully."}
+    return {
+        "message": "Resume uploaded successfully.",
+        "object_id": str(add_resume.inserted_id),
+    }
 
 
 @router.get(
@@ -76,7 +79,7 @@ async def get_all_cv(user_id: str):
             all_resumes.append(
                 {
                     "filename": resume["filename"],
-                    "url": f"/api/aceresume/resume/{user_id}/{resume['filename']}",
+                    "resume_id": str(resume["_id"]),
                 }
             )
 
@@ -84,13 +87,15 @@ async def get_all_cv(user_id: str):
 
 
 @router.get(
-    "{user_id}/{filename}",
+    "{user_id}/{resume_id}",
     status_code=200,
     description="Get a specific resume",
     responses={404: {"model": Message}, 500: {"model": Message}},
 )
-async def get_cv_pdf(user_id: str, filename: str):
-    resume = Constants.RESUME_INFO.find_one({"user_id": user_id, "filename": filename})
+async def get_cv_pdf(user_id: str, resume_id: str):
+    resume = Constants.RESUME_INFO.find_one(
+        {"user_id": user_id, "_id": ObjectId(resume_id)}
+    )
     if not resume:
         raise HTTPException(status_code=404, detail="Resumes not found")
 
@@ -100,7 +105,7 @@ async def get_cv_pdf(user_id: str, filename: str):
 
 
 @router.post(
-    "{user_id}/{filename}/summarize",
+    "{user_id}/{resume_id}/summarize",
     status_code=200,
     description="Extract and categorize the Resume Info",
     response_model=ResumeInfo,  # Assuming this model exists
@@ -112,10 +117,10 @@ async def get_cv_pdf(user_id: str, filename: str):
 )
 async def extract_resume_data(
     user_id: str,
-    filename: str,
+    resume_id: str,
 ) -> ResumeInfo:
     resume_data = Constants.RESUME_INFO.find_one(
-        {"user_id": user_id, "filename": filename}
+        {"user_id": user_id, "_id": ObjectId(resume_id)}
     )
     if not resume_data:
         raise HTTPException(status_code=404, detail="No resume found")
@@ -143,7 +148,7 @@ async def extract_resume_data(
 
 
 @router.post(
-    "/{user_id}/{filename}/analyse",
+    "/{user_id}/{resume_id}/analyse",
     status_code=200,
     description="Analyse the Resume Info",
     response_model=ResumeAnalysis,
@@ -151,13 +156,14 @@ async def extract_resume_data(
     responses={401: {"model": Message}, 500: {"model": Message}},
 )
 async def feedback_resume(
-    user_id: str, filename: str, resume_info: str
+    user_id: str, resume_id: str, filename: str, resume_info: str
 ) -> ResumeAnalysis:
     analysis_result = await analyse_resume(resume_info)
     json_result = json.loads(analysis_result[8:].strip().replace("`", ""))
 
     analysis_data = {
         "user_id": user_id,
+        "resume_id": resume_id,
         "filename": filename,
         "analyse_at": datetime.utcnow(),
         "pros": json_result["pros"],
