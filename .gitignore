@@ -6,5 +6,6 @@ build
 .idea
 env
 .env.local
+.env
 
 **/__pycache__/
