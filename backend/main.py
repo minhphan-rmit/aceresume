@@ -7,8 +7,8 @@ import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-# from routers.manage_account import delete_inactive_accounts
-# from routers import register, login, activate_account, resume, job, profile
+from routers.manage_account import delete_inactive_accounts
+from routers import register, login, activate_account, resume, job, profile
 from routers import interview
 
 logger = logging.getLogger("Backend")
@@ -33,15 +33,15 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# app.include_router(register.router)
-# app.include_router(resume.router)
-# app.include_router(job.router)
-# app.include_router(login.router)
-# app.include_router(profile.router)
-# app.include_router(activate_account.router)
-
-# delete_inactive_accounts()
+app.include_router(register.router)
+app.include_router(resume.router)
+app.include_router(job.router)
+app.include_router(login.router)
+app.include_router(profile.router)
+app.include_router(activate_account.router)
 app.include_router(interview.router)
+
+delete_inactive_accounts()
 
 if __name__ == "__main__":
     uvicorn.run("main:app", workers=1, host="0.0.0.0", port=8080)
