@@ -12,6 +12,7 @@ import MockInterview from './_root/pages/mock-interview/MockInterview';
 import ActivateAccount from './_root/pages/authentication/ActivateAccount';
 import AddPassword from './_root/pages/authentication/AddPassword';
 import MatchingJobs from './_root/pages/matching-jobs/MatchingJobs';
+import Roadmap from './_root/pages/roadmap/Roadmap';
 
 import ActivatingAccount from './_root/pages/authentication/ActivatingAccount';
 const App = () => {
@@ -32,6 +33,7 @@ const App = () => {
         <Route path="/mock-interview" element={<MockInterview />} />
         <Route path="/landing-page" element={<LandingPage />} />
         <Route path="/cv-analysis" element={<CVAnalysis />} />
+        <Route path="/roadmap" element={<Roadmap />} />
         <Route path="/sign-in" element={<SigninForm />} />
         <Route path="/sign-up" element={<SignupForm />} />
         <Route element={<RootLayout />}>
