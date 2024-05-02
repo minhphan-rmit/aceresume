@@ -1,5 +1,6 @@
 import React,{useEffect} from 'react';
 import AppNavBar from '../../components/NavBar/AppAppBar';
+import FeatureBar from '../../components/FeatureBar/FeatureBar';
 import CVAnalysisSideBar from './components/CVAnalysisSideBar';
 import NewAnalysis from './components/new-analysis/NewAnalysis';
 import CVPreview from './components/CVPreview';
@@ -72,6 +73,7 @@ const CVAnalysis = () => {
     <>
         <ThemeProvider theme={LPtheme}>
       <AppNavBar/>
+      <div><FeatureBar/></div>
       <div className="flex items-start justify-center w-screen h-screen p-10 space-x-6 bg-gray-100">
         {/* Sidebar Component */}
         <CVAnalysisSideBar onChange={handleComponentChange} />
