@@ -8,8 +8,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from routers.manage_account import delete_inactive_accounts
-from routers import register, login, activate_account, resume, job, profile
-from routers import interview
+from routers import register, login, activate_account, resume, job, profile, interview
 
 logger = logging.getLogger("Backend")
 

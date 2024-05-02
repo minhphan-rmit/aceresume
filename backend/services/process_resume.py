@@ -29,6 +29,20 @@ ANALYSIS_PROMPT_TEMPLATE = ChatPromptTemplate.from_messages(
     [ANALYSIS_SYSTEM_PROMPT, ANALYSIS_HUMAN_PROMPT]
 )
 
+ROADMAP_SYSTEM_PROMPT = SystemMessagePromptTemplate.from_template(prompt.ROADMAP_PROMPT)
+ROADMAP_HUMAN_PROMPT = HumanMessagePromptTemplate.from_template(
+    """
+    Now given this resume: {candidate_resume}
+
+    Along with the job description: {job_description}
+
+    Generate the roadmap for the client to follow based on their resume and the job description: <list_of_roadmap>
+    """
+)
+ROADMAP_PROMPT_TEMPLATE = ChatPromptTemplate.from_messages(
+    [ROADMAP_SYSTEM_PROMPT, ROADMAP_HUMAN_PROMPT]
+)
+
 PROMPT = """
     resume:
     <begin>
@@ -135,3 +149,23 @@ async def extract_resume(resume_info: str) -> str:
     parsed_cv = json.loads(parsed_cv)
 
     return parsed_cv
+
+
+@alru_cache
+async def roadmap_generator(resume_info: str, job_description: str) -> str:
+    """
+    Generates a roadmap for the user based on the given resume information and job description.
+
+    Args:
+        resume_info (str): The resume information.
+        job_description (str): The job description.
+
+    Returns:
+        str: The generated roadmap for the user.
+    """
+    response = await Constants.CHAT_MODEL.ainvoke(
+        ROADMAP_PROMPT_TEMPLATE.format_prompt(
+            candidate_resume=resume_info, job_description=job_description
+        )
+    )
+    return response.content

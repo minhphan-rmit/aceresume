@@ -27,3 +27,15 @@ class ResumeAnalysis(BaseModel):
     pros: List[str] = Field(..., description="List of pros")
     cons: List[str] = Field(..., description="List of cons")
     add_ons: List[str] = Field(..., description="List of add-ons")
+
+
+class Target(BaseModel):
+    topic_name: str = Field(..., description="Name of the topic")
+    topic_description: str = Field(..., description="Description of the topic")
+    resources: List[str] = Field(..., description="List of resources")
+    knowledge_list: List[str] = Field(..., description="List of knowledge")
+
+
+class RoadmapModel(BaseModel):
+    level: str = Field(..., description="The level of knowledge of the client")
+    list_of_roadmap: List[Target] = Field(..., description="A Roadmap for user")
