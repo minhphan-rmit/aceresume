@@ -7,5 +7,6 @@ build
 env
 .env
 .env.local
+.env
 
 **/__pycache__/

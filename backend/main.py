@@ -44,4 +44,4 @@ app.include_router(interview.router)
 delete_inactive_accounts()
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", workers=1, host="0.0.0.0", port=8080)
+    uvicorn.run("main:app", workers=-1, host="0.0.0.0", port=8080)
