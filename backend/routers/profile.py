@@ -4,6 +4,7 @@ from fastapi.responses import JSONResponse
 from models.users import UserInfo
 from constant import Message, Constants
 from bson import ObjectId
+import bson.binary
 import bcrypt
 import uuid
 from fastapi.encoders import jsonable_encoder
@@ -117,6 +118,7 @@ def update_profile(
                 update["level"] = level
             if password is not None:
                 update["password"] = password
+
             newAccount = Constants.USERS.find_one_and_update(
                 {"_id": ObjectId(id)},
                 {"$set": update},

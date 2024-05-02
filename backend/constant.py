@@ -10,16 +10,13 @@ from pymongo import MongoClient
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 from langchain_community.vectorstores.qdrant import Qdrant
 from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
-from qdrant_client import QdrantClient
 
 load_dotenv(os.path.join(os.path.dirname(__file__), ".env.example"))
 
 
 class Constants:
     MONGODB_URI = os.environ["DATABASE_URI"]
-    # OPENAI_API_KEY = os.environ["OPENAI_API_KEY"]
-    # QDRANT_URI = os.environ["QDRANT_URI"]
-    #  QDRANT_API_KEY = os.environ["QDRANT_API_KEY"]
+    OPENAI_API_KEY = os.environ["OPENAI_API_KEY"]
 
     parsed_uri = urllib.parse.urlparse(MONGODB_URI)
     encoded_uri = MONGODB_URI.replace(
@@ -54,18 +51,6 @@ class Constants:
         # openai_api_key=OPENAI_API_KEY,
         callbacks=[StreamingStdOutCallbackHandler()],
         streaming=True,
-    )
-
-    qdrant_client = QdrantClient(
-        #  url=QDRANT_URI,
-        # api_key=QDRANT_API_KEY,
-        prefer_grpc=True,
-    )
-
-    VECTOR_DB = Qdrant(
-        client=qdrant_client,
-        collection_name="ace_resume_db",
-        embeddings=EMBEDDING_FUNC,
     )
 
 
