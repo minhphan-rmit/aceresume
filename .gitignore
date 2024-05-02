@@ -5,6 +5,7 @@ build
 .vscode
 .idea
 env
+.env
 .env.local
 .env
 

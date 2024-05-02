@@ -1,0 +1,16 @@
+version: "0.1"
+
+services:
+  backend:
+    container_name: aceresume-backend
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    image: aceresume-backend
+    expose:
+      - 8080
+    environment:
+      - OPENAI_API_KEY=
+      - DATABASE_URI=
+      - FROM_EMAIL=
+      - EMAIL_PASSWORD=

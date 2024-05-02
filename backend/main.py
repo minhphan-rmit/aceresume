@@ -6,8 +6,10 @@ import logging_setup  # setup logging
 import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+
 from routers.manage_account import delete_inactive_accounts
 from routers import register, login, activate_account, resume, job, profile
+from routers import interview
 
 logger = logging.getLogger("Backend")
 
@@ -37,6 +39,7 @@ app.include_router(job.router)
 app.include_router(login.router)
 app.include_router(profile.router)
 app.include_router(activate_account.router)
+app.include_router(interview.router)
 
 delete_inactive_accounts()
 
