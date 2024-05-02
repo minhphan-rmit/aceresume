@@ -5,10 +5,11 @@ from __future__ import annotations
 import logging
 
 from jobspy import scrape_jobs
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 
 from constant import Message
 from models.job import JobInfo, JobList
+from models.resume import ResumeInfo
 
 MODULE_NAME = "Job Processing"
 
@@ -29,8 +30,8 @@ def data_to_joblist(data: dict) -> JobList:
             company_industry=data["company_industry"][index],
             job_type=data["job_type"][index],
             date_posted=data["date_posted"][index],
-            min_amount=data["min_amount"][index],
-            max_amount=data["max_amount"][index],
+            min_amount=str(data["min_amount"][index]),
+            max_amount=str(data["max_amount"][index]),
             is_remote=data["is_remote"][index],
             contact_email=data["emails"][index],
             logo_photo_url=data["logo_photo_url"][index],
@@ -43,22 +44,77 @@ def data_to_joblist(data: dict) -> JobList:
 
 
 @router.post(
-    "/{user_id}/find-jobs",
+    "/{job_title}/find-jobs",
     status_code=200,
     description="Upload resume for processing",
     response_model=JobList,
     response_description="Message to show whether the resume is uploaded successfully or not",
     responses={401: {"model": Message}, 500: {"model": Message}},
 )
-async def find_job_data(job_title: str) -> JobList:
+async def find_job_data(job_title: str, resume_info: ResumeInfo) -> JobList:
+    extracted_skills = resume_info.candidate_skill
+
+    # Scrape job postings based on the job title
     jobs = scrape_jobs(
         site_name=["indeed", "linkedin", "zip_recruiter", "glassdoor"],
         search_term=job_title,
-        location="Vietnam",
+        location="Austin, TX",
+        results_wanted=10,  # Increased to get more job postings for better matching
+        hours_old=72,  # (only Linkedin/Indeed is hour specific, others round up to days old)
+        country_indeed="USA",  # only needed for indeed / glassdoor
+    )
+
+    # Filter job postings based on CV matching
+    matched_jobs = []
+    for index, job in jobs.iterrows():
+        if job["description"] is not None:
+            job_description = str(job["description"])
+        if any(skill.lower() in job_description.lower() for skill in extracted_skills):
+            matched_jobs.append(job)
+
+    # Convert matched job postings to JobList format
+    matched_jobs_data = jobs[
+        [
+            "site",
+            "job_url",
+            "title",
+            "company",
+            "location",
+            "job_type",
+            "date_posted",
+            "min_amount",
+            "max_amount",
+            "is_remote",
+            "emails",
+            "description",
+            "company_url",
+            "logo_photo_url",
+            "banner_photo_url",
+            "company_industry",
+        ]
+    ]
+    matched_jobs_data.fillna("None", inplace=True)
+    matched_jobs_data = matched_jobs_data.to_dict("list")
+
+    return data_to_joblist(matched_jobs_data)
+
+
+@router.post(
+    "/{job_title}/find-jobs-available",
+    status_code=200,
+    description="Upload resume for processing",
+    response_model=JobList,
+    response_description="Message to show whether the resume is uploaded successfully or not",
+    responses={401: {"model": Message}, 500: {"model": Message}},
+)
+async def find_job_data() -> JobList:
+    jobs = scrape_jobs(
+        site_name=["indeed", "linkedin", "zip_recruiter", "glassdoor"],
         results_wanted=2,
         hours_old=72,  # (only Linkedin/Indeed is hour specific, others round up to days old)
-        country_indeed="Vietnam",  # only needed for indeed / glassdoor
+        country_indeed="USA",  # only needed for indeed / glassdoor
     )
+
     jobs = jobs[
         [
             "site",
@@ -79,6 +135,8 @@ async def find_job_data(job_title: str) -> JobList:
             "company_industry",
         ]
     ]
+    jobs = jobs[jobs["description"].notna()]
+
     jobs.fillna("None", inplace=True)
     jobs = jobs.to_dict("list")
 
