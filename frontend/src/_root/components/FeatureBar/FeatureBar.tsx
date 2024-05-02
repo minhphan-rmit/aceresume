@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate , useLocation} from 'react-router-dom';
 
 // Define the type for the navigation item
 type NavItemProps = {
@@ -24,15 +24,18 @@ const NavItem: React.FC<NavItemProps> = ({ label, index, isActive, onClick }) =>
 // Main navigation bar component
 const FeatureBar: React.FC = () => {
     const navigate = useNavigate();
-    const [activeIndex, setActiveIndex] = useState<number | null>(null);
+    const location = useLocation();
+
 
     const navItems = [
         { name: 'CV Analysis', path: '/cv-analysis' },
         { name: 'Roadmap Generator', path: '/roadmap' },
         { name: 'Mock Interview', path: '/mock-interview' }
     ];
+    const activeIndex = navItems.findIndex(item => location.pathname === item.path);
+
     const handleItemClick = (index: number) => {
-        setActiveIndex(index);
+
         navigate(navItems[index].path);
     };
 
