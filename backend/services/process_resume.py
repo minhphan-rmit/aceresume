@@ -155,9 +155,11 @@ async def extract_resume(resume_info: str) -> str:
 async def roadmap_generator(resume_info: str, job_description: str) -> str:
     """
     Generates a roadmap for the user based on the given resume information and job description.
+
     Args:
         resume_info (str): The resume information.
         job_description (str): The job description.
+
     Returns:
         str: The generated roadmap for the user.
     """

@@ -32,10 +32,13 @@ INTERVIEW_SYSTEM_PROMPT = SystemMessagePromptTemplate.from_template(
 INTERVIEW_HUMAN_PROMPT = HumanMessagePromptTemplate.from_template(
     """
     CHAT_HISTORY: {chat_history}
+
     Now given the following resume information: {resume_info}
     Along with the job description of this role: {job_description}
     And the role that the candidate are practice to interview: {role}
+
     Start the interview by asking the candidate the first question.
+
     Candidate answer question: {candidate_answer}
     """
 )
@@ -46,10 +49,12 @@ REVIEW_SYSTEM_PROMPT = SystemMessagePromptTemplate.from_template(
 
 REVIEW_HUMAN_PROMPT = HumanMessagePromptTemplate.from_template(
     """
+
     Now given the chat history between the Interviewer and the Candidate: {chat_history}
     And the resume information: {resume_info}
     Along with the job description of this role: {job_description}
     And the role that the candidate are practice to interview: {role}
+
     Start reviewing the candidate's interview performance: <your review here>
     """
 )

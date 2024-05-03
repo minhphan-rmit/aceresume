@@ -11,7 +11,6 @@ from fastapi.responses import JSONResponse, StreamingResponse
 from datetime import datetime
 from bson import ObjectId
 from helpers.utility import Utility
-from constant import Message, Constants
 from services.process_resume import (
     process_resume,
     analyse_resume,
@@ -25,6 +24,7 @@ from models.resume import (
     RoadmapModel,
     Target,
 )
+from constant import Message, Constants
 import json
 
 MODULE_NAME = "Resume Processing"
