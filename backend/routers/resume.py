@@ -12,8 +12,19 @@ from datetime import datetime
 from bson import ObjectId
 from helpers.utility import Utility
 from constant import Message, Constants
-from services.process_resume import process_resume, analyse_resume, extract_resume
-from models.resume import ResumeAnalysis, ResumeInfo, CandidateExperience
+from services.process_resume import (
+    process_resume,
+    analyse_resume,
+    extract_resume,
+    roadmap_generator,
+)
+from models.resume import (
+    ResumeAnalysis,
+    ResumeInfo,
+    CandidateExperience,
+    RoadmapModel,
+    Target,
+)
 import json
 
 MODULE_NAME = "Resume Processing"
@@ -86,6 +97,7 @@ async def get_all_cv(user_id: str):
 
     for resume in resumes_list:
         cv_binary_data = resume["resume"]
+
         if cv_binary_data:
             all_resumes.append(
                 {
@@ -188,3 +200,48 @@ async def feedback_resume(
         cons=json_result["cons"],
         add_ons=json_result["add-ons"],
     )
+
+
+@router.post(
+    "/{user_id}/roadmap-generate",
+    status_code=200,
+    description="Generate Roadmap for the user based on the resume info and job description",
+    response_model=RoadmapModel,
+    response_description="Roadmap in the format of JSON",
+    responses={401: {"model": Message}, 500: {"model": Message}},
+)
+async def generate_roadmap(
+    user_id: str,
+    resume_info: str,
+    resume_id: str,
+    job_description: str,
+    roadmap_name: str,
+) -> RoadmapModel:
+    roadmap_result = await roadmap_generator(resume_info, job_description)
+    json_result = json.loads(roadmap_result[8:].strip().replace("`", ""))
+
+    roadmap = RoadmapModel(
+        level=json_result["roadmap"]["client_level"],
+        list_of_roadmap=[
+            Target(
+                topic_name=str(value["topic_name"]),
+                topic_description=str(value["topic_description"]),
+                resources=value["resource_list"],
+                knowledge_list=value["knowledge_list"],
+            )
+            for value in json_result["roadmap"]["target"]
+        ],
+        summary=json_result["roadmap"]["summary"],
+    )
+
+    roadmap_data = {
+        "roadmap_name": roadmap_name,
+        "user_id": user_id,
+        "resume_id": resume_id,
+        "roadmap_name": roadmap_name,
+        "generate_at": datetime.utcnow(),
+        "roadmap": roadmap,
+    }
+    Constants.ROLE_ROADMAP.insert_one(roadmap_data)
+
+    return roadmap
