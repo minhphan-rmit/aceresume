@@ -1,28 +1,36 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, Button, Container, Typography, Grid, Paper, IconButton } from '@mui/material';
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import getLPTheme from "../../styles/getLPTheme";
 import AppNavBar from "../components/NavBar/AppAppBar";
-import { Delete as DeleteIcon } from '@mui/icons-material';
+import { Document, Page } from 'react-pdf';
+import pdf from "../../../../backend/services/Huy_VO_s_CV_FPT.pdf"
+
 
 const LPtheme = createTheme(getLPTheme());
 
 const Home = () => {
   // State to store uploaded CVs
   const [uploadedCVs, setUploadedCVs] = useState([]);
+  const [pdfBuffer, setPdfBuffer] = useState(null);
 
-  // Function to handle uploading a new CV
-  const handleUploadCV = (event) => {
-    const newCV = event.target.files[0];
-    setUploadedCVs([...uploadedCVs, newCV]);
+  const fetchAllCVs = async () => {
+    try {
+      const response = await fetch(`http://localhost:8000/api/aceresume/resume/661cd5605bab1b3e43385984/get_all_resume`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch CVs');
+      }
+      const data = await response.json();
+      setUploadedCVs(data);
+    } catch (error) {
+      console.error('Error fetching CVs:', error);
+    }
   };
 
-  // Function to handle deleting a CV
-  const handleDeleteCV = (index) => {
-    const updatedCVs = [...uploadedCVs];
-    updatedCVs.splice(index, 1);
-    setUploadedCVs(updatedCVs);
-  };
+  // Fetch all CVs when the component mounts
+  useEffect(() => {
+    fetchAllCVs();
+  }, []); // Empty dependency array ensures the effect runs only once when the component mounts
 
   return (
     <ThemeProvider theme={LPtheme}>
@@ -43,32 +51,13 @@ const Home = () => {
               <Grid item xs={12} sm={6} md={4} key={index}>
                 <Paper elevation={3} style={{ padding: 10 }}>
                   <Typography variant="subtitle1" gutterBottom style={{ fontWeight: 'bold' }}>
-                    {cv.name}
+                    {cv.filename}
                   </Typography>
-                  <IconButton
-                    aria-label="delete"
-                    onClick={() => handleDeleteCV(index)}
-                    style={{ position: 'absolute', top: 5, right: 5 }}
-                  >
-                    <DeleteIcon />
-                  </IconButton>
                 </Paper>
               </Grid>
             ))}
+              <iframe src={pdf} width="100%" height="500px" frameBorder="0"></iframe>
           </Grid>
-          {/* Component for uploading new CV */}
-          <input
-            type="file"
-            accept=".pdf,.doc,.docx"
-            onChange={handleUploadCV}
-            style={{ display: 'none' }}
-            id="upload-button"
-          />
-          <label htmlFor="upload-button">
-            <Button variant="contained" color="primary" component="span">
-              Upload CV
-            </Button>
-          </label>
         </Box>
       </Container>
     </ThemeProvider>

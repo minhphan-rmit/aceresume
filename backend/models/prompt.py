@@ -17,6 +17,7 @@ In each topic, you will need to provide a description of the topic, a list of re
 In the summary, you will need to provide what skills and knowledge the client is missing in the required job desscription, and list out things that the usser need to learn to improve base on the generated roadmap, write in direct speech like talking to the client.
 Your roadmap should be formatted in a structured manner given the following JSON Format with the key is "roadmap" and inside will be the "client_level", "target" and "summary" key.
 Your roadmap should be tailored to the client's resume and the job description.
+Given the example of the output should be like this:
 Field	Subfield	Description	Key name	Format
 Client_Level	N/A	Current level of the candidate based on the job description compare with the resume client_level	string
 Target			work_exp	list of dict

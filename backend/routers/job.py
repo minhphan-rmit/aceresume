@@ -6,6 +6,8 @@ import logging
 
 from jobspy import scrape_jobs
 from fastapi import APIRouter, HTTPException
+from typing import Optional
+from pydantic import BaseModel
 
 from constant import Message
 from models.job import JobInfo, JobList
@@ -51,52 +53,94 @@ def data_to_joblist(data: dict) -> JobList:
     response_description="Message to show whether the resume is uploaded successfully or not",
     responses={401: {"model": Message}, 500: {"model": Message}},
 )
-async def find_job_data(job_title: str, resume_info: ResumeInfo) -> JobList:
-    extracted_skills = resume_info.candidate_skill
+async def find_job_data(
+    job_title: str, resume_info: Optional[ResumeInfo] = None
+) -> JobList:
+    if resume_info:
+        extracted_skills = resume_info.candidate_skill
 
-    # Scrape job postings based on the job title
-    jobs = scrape_jobs(
-        site_name=["indeed", "linkedin", "zip_recruiter", "glassdoor"],
-        search_term=job_title,
-        location="Austin, TX",
-        results_wanted=10,  # Increased to get more job postings for better matching
-        hours_old=72,  # (only Linkedin/Indeed is hour specific, others round up to days old)
-        country_indeed="USA",  # only needed for indeed / glassdoor
-    )
+        # Scrape job postings based on the job title
+        jobs = scrape_jobs(
+            site_name=["indeed", "linkedin", "zip_recruiter", "glassdoor"],
+            search_term=job_title,
+            location="Austin, TX",
+            results_wanted=10,  # Increased to get more job postings for better matching
+            hours_old=72,  # (only Linkedin/Indeed is hour specific, others round up to days old)
+            country_indeed="USA",  # only needed for indeed / glassdoor
+        )
 
-    # Filter job postings based on CV matching
-    matched_jobs = []
-    for index, job in jobs.iterrows():
-        if job["description"] is not None:
-            job_description = str(job["description"])
-        if any(skill.lower() in job_description.lower() for skill in extracted_skills):
-            matched_jobs.append(job)
+        # Filter job postings based on CV matching
+        matched_jobs = []
+        for index, job in jobs.iterrows():
+            if job["description"] is not None:
+                job_description = str(job["description"])
+                num_matching_skills = sum(
+                    1
+                    for skill in extracted_skills
+                    if skill.lower() in job_description.lower()
+                )
+            if num_matching_skills >= 5:
+                matched_jobs.append(job)
 
-    # Convert matched job postings to JobList format
-    matched_jobs_data = jobs[
-        [
-            "site",
-            "job_url",
-            "title",
-            "company",
-            "location",
-            "job_type",
-            "date_posted",
-            "min_amount",
-            "max_amount",
-            "is_remote",
-            "emails",
-            "description",
-            "company_url",
-            "logo_photo_url",
-            "banner_photo_url",
-            "company_industry",
+        # Convert matched job postings to JobList format
+        matched_jobs_data = jobs[
+            [
+                "site",
+                "job_url",
+                "title",
+                "company",
+                "location",
+                "job_type",
+                "date_posted",
+                "min_amount",
+                "max_amount",
+                "is_remote",
+                "emails",
+                "description",
+                "company_url",
+                "logo_photo_url",
+                "banner_photo_url",
+                "company_industry",
+            ]
         ]
-    ]
-    matched_jobs_data.fillna("None", inplace=True)
-    matched_jobs_data = matched_jobs_data.to_dict("list")
+        matched_jobs_data.fillna("None", inplace=True)
+        matched_jobs_data = matched_jobs_data.to_dict("list")
 
-    return data_to_joblist(matched_jobs_data)
+        return data_to_joblist(matched_jobs_data)
+    else:
+        # Scrape job postings based on the job title
+        jobs = scrape_jobs(
+            site_name=["indeed", "linkedin", "zip_recruiter", "glassdoor"],
+            search_term=job_title,
+            location="Austin, TX",
+            results_wanted=10,  # Increased to get more job postings for better matching
+            hours_old=72,  # (only Linkedin/Indeed is hour specific, others round up to days old)
+            country_indeed="USA",  # only needed for indeed / glassdoor
+        )
+        jobs = jobs[
+            [
+                "site",
+                "job_url",
+                "title",
+                "company",
+                "location",
+                "job_type",
+                "date_posted",
+                "min_amount",
+                "max_amount",
+                "is_remote",
+                "emails",
+                "description",
+                "company_url",
+                "logo_photo_url",
+                "banner_photo_url",
+                "company_industry",
+            ]
+        ]
+    jobs.fillna("None", inplace=True)
+    jobs = jobs.to_dict("list")
+
+    return data_to_joblist(jobs)
 
 
 @router.post(
@@ -115,7 +159,7 @@ async def find_job_data() -> JobList:
         country_indeed="USA",  # only needed for indeed / glassdoor
     )
 
-    jobs = jobs[
+    any_jobs = jobs[
         [
             "site",
             "job_url",
@@ -135,9 +179,9 @@ async def find_job_data() -> JobList:
             "company_industry",
         ]
     ]
-    jobs = jobs[jobs["description"].notna()]
+    any_jobs = any_jobs[jobs["description"].notna()]
 
-    jobs.fillna("None", inplace=True)
-    jobs = jobs.to_dict("list")
+    any_jobs.fillna("None", inplace=True)
+    any_jobs = any_jobs.to_dict("list")
 
-    return data_to_joblist(jobs)
+    return data_to_joblist(any_jobs)

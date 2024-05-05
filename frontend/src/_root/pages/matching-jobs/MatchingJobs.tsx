@@ -34,7 +34,7 @@ function MatchedJobs() {
   const [selectedLocation, setSelectedLocation] = useState("");
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [favoritedJobs, setFavoritedJobs] = useState([]);
+  // const [selectedResume, setSelectedResume] = useState("");
 
   useEffect(() => {
     // Set the first job when jobs array updates
@@ -51,27 +51,69 @@ function MatchedJobs() {
     setSelectedLocation(event.target.value);
   };
 
+  // const handleResumeSelect = (event) => {
+  //   const selectedResume = event.target.value;
+  //   // Update the state with the selected resume
+  //   setSelectedResume(selectedResume);
+  // };
+
   const handleJobCardClick = (job) => {
     setSelectedJob(job);
   };
 
-  const toggleFavorite = (job) => {
-    if (favoritedJobs.includes(job)) {
-      setFavoritedJobs(favoritedJobs.filter((favJob) => favJob !== job));
-    } else {
-      setFavoritedJobs([...favoritedJobs, job]);
-    }
-  };
-
   const handleSearch = async () => {
     try {
-      setLoading(true); // Set loading to true when search button is clicked
-      const response = await fetch(`http://localhost:8000/api/aceresume/job/${searchQuery}/find-jobs`, {
+      setLoading(true);
+      const resumeInfo = {
+        candidate_name: "HUY VO",
+        candidate_email: "huyvo6812@gmail.com",
+        candidate_skill: [
+          "NLP",
+          "Document AI",
+          "Causal Inferences",
+          "Python",
+          "R Script",
+          "Java",
+          "HuggingFace Transformers",
+          "PyTorch",
+          "Keras",
+          "Scikit-learn",
+          "Microsoft Azure",
+          "Google Cloud Platform",
+          "MySQL",
+          "Snowflake",
+          "MongoDB",
+          "Hadoop",
+          "PowerBI",
+          "Tableau",
+          "Streamlit",
+          "Git",
+          "Data Version Control",
+          "Bitbucket",
+          "Azure",
+          "Slack"
+        ],
+        candidate_experience: [
+          {
+            company_name: "Otrafy Technologies Inc",
+            job_title: "Machine Learning Engineer",
+            start_date: "2022",
+            end_date: "2023",
+            job_description: "Built and integrated Large Language Model on Microsoft Azure Machine Learning Studio for Otrafy's platform and maintaining the response time lower than 3 seconds with high relevancy for hundred of users.\nApplied LLM libraries like LlamaIndex and Langchain to develop Retrieval Augmented Generation tasks for Otrafy's platform.\nDesigned a robust infrastructure to support a scalable end-to-end Machine Learning System, ensuring a 90% uptime for Natural Language Processing tasks focused on Agriculture and Quality Assurance.\nLed a dynamic team that works with cross-functional department to build, deploy and maintain an end-to-end Machine Learning System that can serve million users."
+          },
+        ]
+      };
+      // const requestBody = {
+      //   job_title: searchQuery,
+      //   resume_info: null,
+      // };
+      const response = await fetch(`http://localhost:8000/api/aceresume/job/${encodeURIComponent(searchQuery)}/find-jobs`, {
         method: 'POST',
         headers: {
+          'Accept': 'application/json',
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ job_title: searchQuery }),
+        body: JSON.stringify(resumeInfo),
       });
       const data = await response.json();
       setJobs(data.list_of_jobs);
@@ -140,7 +182,6 @@ function MatchedJobs() {
               {jobs.map((job, index) => (
                 <Card key={index} onClick={() => handleJobCardClick(job)} sx={{ cursor: 'pointer', backgroundImage: 'linear-gradient(to bottom, #E8EAFF, #FFFFFF, #FFFFFF)', border: selectedJob === job ? '2px solid #7682FB' : '2px solid transparent', mb: 2}}>
                   <CardContent>
-                    <Box sx={{display: 'flex', justifyContent: 'space-between'}}>
                       <Box sx={{display: 'flex'}}>
                         {job.logo_photo_url !== "None" ? (
                           <Box sx={{ width: 50, height: 50, flexShrink: 0, mr: 1 }}>
@@ -163,12 +204,6 @@ function MatchedJobs() {
                           </Typography>
                         </Box>
                       </Box>
-                      {favoritedJobs.includes(job) ? (
-                          <FavoriteIcon color="error" onClick={(e) => { e.stopPropagation(); toggleFavorite(job); }} />
-                        ) : (
-                          <FavoriteBorderIcon onClick={(e) => { e.stopPropagation(); toggleFavorite(job); }} />
-                      )}
-                    </Box>
                     <Box
                       sx={{
                         display: "flex",
@@ -187,7 +222,14 @@ function MatchedJobs() {
                         <Chip
                           label={job.job_type}
                           color="secondary"
-                          sx={{ borderRadius: "4px" }}
+                          sx={{ borderRadius: "4px", bgcolor: "#D0D7FF"}}
+                        />
+                      )}
+                      {job.is_remote === true && (
+                        <Chip
+                          label="Remote"
+                          color="secondary"
+                          sx={{ borderRadius: "4px", bgcolor: "#D0D7FF"}}
                         />
                       )}
                     </Box>
