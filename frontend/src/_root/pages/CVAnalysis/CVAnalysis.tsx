@@ -3,7 +3,7 @@ import AppNavBar from '../../components/NavBar/AppAppBar';
 import FeatureBar from '../../components/FeatureBar/FeatureBar';
 import CVAnalysisSideBar from './components/CVAnalysisSideBar';
 import NewAnalysis from './components/new-analysis/NewAnalysis';
-import CVPreview from './components/CVPreview';
+import CVPreview from './components/cv-preview/CVPreview';
 import Examples from './components/examples/Examples';
 import Guide from './components/guide/Guide';
 import HistoryAnalysis from './components/history-analysis/HistoryAnalysis';
