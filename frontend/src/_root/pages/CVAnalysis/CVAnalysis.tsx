@@ -72,8 +72,12 @@ const CVAnalysis = () => {
 
     <>
         <ThemeProvider theme={LPtheme}>
+           {/* NavBar Component */}
       <AppNavBar/>
+       {/* End NavBar Component */}
+         {/* FeatureBar Component */}
       <div><FeatureBar/></div>
+        {/* End FeatureBar Component */}
       <div className="flex items-start justify-center w-screen h-screen p-10 space-x-6 bg-gray-100">
         {/* Sidebar Component */}
         <CVAnalysisSideBar onChange={handleComponentChange} />

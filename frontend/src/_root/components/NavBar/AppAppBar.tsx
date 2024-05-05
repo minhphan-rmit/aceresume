@@ -8,13 +8,19 @@ import MenuItem from "@mui/material/MenuItem";
 import Drawer from "@mui/material/Drawer";
 import MenuIcon from "@mui/icons-material/Menu";
 import Box from "@mui/material/Box";
-import { useTheme } from "@mui/material/styles";
+import { Link } from 'react-router-dom'
+import { createTheme, ThemeProvider, useTheme } from "@mui/material/styles";
+import getLPTheme from "../../../styles/getLPTheme";
 
 const logoStyle = {
   width: "auto",
   height: "32px",
   cursor: "pointer",
 };
+
+const LPtheme = createTheme(getLPTheme());
+
+
 
 const AppAppBar = () => {
   const [open, setOpen] = React.useState(false);
@@ -33,10 +39,12 @@ const AppAppBar = () => {
   };
 
   return (
+    <ThemeProvider theme={LPtheme}>
     <AppBar position="sticky" sx={{ bgcolor: theme.palette.background.paper }}>
       <Container maxWidth="lg">
         <Toolbar variant="regular" sx={{ justifyContent: "space-between" }}>
-          <Box sx={{ display: "flex", alignItems: "center" }}>
+            <Link to="/landing-page">
+          <Box  sx={{ display: "flex", alignItems: "center" }} >
             <img
               src={"./static/aceresume_logo.svg"}
               style={logoStyle}
@@ -48,6 +56,7 @@ const AppAppBar = () => {
           </div>
 
           </Box>
+          </Link>
           <Box sx={{ flexGrow: 1, display: "flex", justifyContent: "center" }}>
             <MenuItem
               onClick={() => scrollToSection("features")}
@@ -153,6 +162,7 @@ const AppAppBar = () => {
         </Box>
       </Drawer>
     </AppBar>
+    </ThemeProvider>
   );
 };
 

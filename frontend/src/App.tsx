@@ -13,7 +13,7 @@ import ActivateAccount from './_root/pages/authentication/ActivateAccount';
 import AddPassword from './_root/pages/authentication/AddPassword';
 import MatchingJobs from './_root/pages/matching-jobs/MatchingJobs';
 import Roadmap from './_root/pages/roadmap/Roadmap';
-
+import Profile from './_root/pages/profile/Profile';
 import ActivatingAccount from './_root/pages/authentication/ActivatingAccount';
 const App = () => {
   return (
@@ -26,6 +26,7 @@ const App = () => {
         </Route>
 
         {/* private routes */}
+        <Route path="/profile" element={<Profile />} />
         <Route path="/auth/add-password" element={<AddPassword />} />
         <Route path="/auth/account-verify" element={<ActivatingAccount />} />
         <Route path="/auth/activation-success" element={<ActivateAccount />} />
