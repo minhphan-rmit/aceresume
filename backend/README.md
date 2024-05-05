@@ -1,10 +1,10 @@
 # AceResume Backend
 
-## __Setup__
+## **Setup**
 
-### __Local Setup__
+### **Local Setup**
 
-``` python
+```python
 git clone https://github.com/minhphan-rmit/rmit2024a-isys2101-aceresume.git
 
 # either using conda, venv or env
@@ -26,8 +26,8 @@ uvicorn main:app --reload
 # open http://0.0.0.0:8080/api/aceresume/docs
 ```
 
-### __Docker Setup__
+### **Docker Setup**
 
-``` python
+```python
 TBA
 ```
