@@ -15,5 +15,5 @@ ENV DATABASE_URI=${DATABASE_URI}
 ENV FROM_EMAIL=${FROM_EMAIL}
 ENV EMAIL_PASSWORD=${EMAIL_PASSWORD}
 
-EXPOSE 8080
-CMD ["uvicorn", "main:app", "--workers=-1", "--host=0.0.0.0", "--port=8080"]
+EXPOSE 8000
+CMD ["uvicorn", "main:app", "--workers=-1", "--host=0.0.0.0", "--port=8000"]
