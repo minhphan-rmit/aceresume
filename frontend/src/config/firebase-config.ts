@@ -13,7 +13,7 @@ const firebaseConfig = {
   storageBucket: "aceresume-d9997.appspot.com",
   messagingSenderId: "24238477201",
   appId: "1:24238477201:web:ca320db4136e58483fd430",
-  measurementId: "G-2VGRWZ0NKW"
+  measurementId: "G-2VGRWZ0NKW",
 
 
 };

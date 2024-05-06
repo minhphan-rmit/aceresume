@@ -1,67 +1,87 @@
-import React, { useState, useEffect } from 'react';
-import { Box, Button, Container, Typography, Grid, Paper, IconButton } from '@mui/material';
-import { ThemeProvider, createTheme } from "@mui/material/styles";
-import getLPTheme from "../../styles/getLPTheme";
-import AppNavBar from "../components/NavBar/AppAppBar";
-import { Document, Page } from 'react-pdf';
-import pdf from "../../../../backend/services/Huy_VO_s_CV_FPT.pdf"
+import React from "react";
+import { ref, uploadBytesResumable, deleteObject } from "firebase/storage";
+import { getStorage, getDownloadURL } from "firebase/storage";
 
+interface FileUploadProps {
+  initialDownloadURL?: string;
+}
 
-const LPtheme = createTheme(getLPTheme());
+const FileUpload: React.FC<FileUploadProps> = ({ initialDownloadURL }) => {
+  const storage = getStorage();
+  const [downloadURL, setDownloadURL] = React.useState<string | undefined>(initialDownloadURL);
+  const [progress, setProgress] = React.useState<number>(0);
+  const [selectedFile, setSelectedFile] = React.useState<File | null>(null);
 
-const Home = () => {
-  // State to store uploaded CVs
-  const [uploadedCVs, setUploadedCVs] = useState([]);
-  const [pdfBuffer, setPdfBuffer] = useState(null);
+  const handleUpload = () => {
+    alert("Upload button clicked");
+    if (selectedFile) {
+      const storageRef = ref(storage, `resume/${selectedFile.name}`);
+      const uploadTask = uploadBytesResumable(storageRef, selectedFile);
 
-  const fetchAllCVs = async () => {
-    try {
-      const response = await fetch(`http://localhost:8000/api/aceresume/resume/661cd5605bab1b3e43385984/get_all_resume`);
-      if (!response.ok) {
-        throw new Error('Failed to fetch CVs');
-      }
-      const data = await response.json();
-      setUploadedCVs(data);
-    } catch (error) {
-      console.error('Error fetching CVs:', error);
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          setProgress(progress);
+        },
+        (error) => {
+          console.error("Error uploading file:", error);
+        },
+        () => {
+          getDownloadURL(uploadTask.snapshot.ref)
+            .then((downloadURL) => {
+              setDownloadURL(downloadURL);
+              console.log("File available at", downloadURL);
+            })
+            .catch((error) => {
+              console.error("Error getting download URL:", error);
+            });
+        }
+      );
     }
   };
 
-  // Fetch all CVs when the component mounts
-  useEffect(() => {
-    fetchAllCVs();
-  }, []); // Empty dependency array ensures the effect runs only once when the component mounts
+  const handleDelete = (url: string) => {
+    alert("Delete button clicked");
+    const desertRef = ref(storage, url);
+    deleteObject(desertRef)
+      .then(() => {
+        console.log("File deleted successfully");
+        setDownloadURL(undefined); // Clear the download URL to hide the preview after deletion
+      })
+      .catch((error) => {
+        console.error("Error deleting file:", error);
+      });
+  };
+
+  const renderFilePreview = (url?: string) => {
+    if (url) {
+      if (url.endsWith(".pdf")) {
+        return <iframe src={url} width="100%" height="500px" title="PDF Preview"></iframe>;
+      } else if (url.endsWith(".docx")) {
+        return <iframe src={url} width="100%" height="500px" title="Doc Preview"></iframe>;
+      }
+    }
+    return null;
+  };
 
   return (
-    <ThemeProvider theme={LPtheme}>
-      <AppNavBar />
-      <Container>
-        <Box my={4}>
-          <Typography variant="h4" component="h1" gutterBottom sx={{mb: 2}}>
-            Nice to see you, Danni!
-          </Typography>
-          <Box sx={{ display: "flex", mb: 2 }}>
-            <Box sx={{ height: "150px", width: "150px", backgroundColor: "#94C9FF", mr: 1, mb: 2, alignItems: "center", justifyContent: 'center', color: "white", borderRadius: "10px" }}>LinkedIn</Box>
-            <Box sx={{ height: "150px", width: "150px", backgroundColor: "#B494FF", mr: 1, mb: 2, alignItems: "center", justifyContent: 'center', color: "white", borderRadius: "10px" }}>Resume Analysis</Box>
-            <Box sx={{ height: "150px", width: "150px", backgroundColor: "#B4F7C9", mr: 1, mb: 2, alignItems: "center", justifyContent: 'center', color: "white", borderRadius: "10px" }}>Jobs Finding</Box>
-          </Box>
-          <Grid container spacing={2}>
-            {/* Render each uploaded CV */}
-            {uploadedCVs.map((cv, index) => (
-              <Grid item xs={12} sm={6} md={4} key={index}>
-                <Paper elevation={3} style={{ padding: 10 }}>
-                  <Typography variant="subtitle1" gutterBottom style={{ fontWeight: 'bold' }}>
-                    {cv.filename}
-                  </Typography>
-                </Paper>
-              </Grid>
-            ))}
-              <iframe src={pdf} width="100%" height="500px" frameBorder="0"></iframe>
-          </Grid>
-        </Box>
-      </Container>
-    </ThemeProvider>
+    <div>
+      <input type="file" onChange={(e) => setSelectedFile(e.target.files![0])} />
+      <button className="bg-indigo-500 text-white p-5 rounded-lg" onClick={()=>handleUpload()}>
+        Upload
+      </button>
+      <button
+        className="bg-red-500 text-white p-5 rounded-lg"
+        onClick={() => handleDelete(downloadURL!)}
+        disabled={!downloadURL}
+      >
+        Delete
+      </button>
+      <div>Progress: {progress}%</div>
+      {renderFilePreview(downloadURL)}
+    </div>
   );
-}
+};
 
-export default Home;
+export default FileUpload;

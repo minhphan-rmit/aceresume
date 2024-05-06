@@ -3,8 +3,10 @@ import Strength from "./Strength";
 import Suggestion from "./Suggestion";
 import Weakness from "./Weakness";
 
-const YourAnalysis = () => {
+const YourAnalysis = ({resumeAnalysis}) => {
     const resumeId = localStorage.getItem('resumeId');
+console.log('Resume ID:', resumeId);
+console.log('Resume Analysis:', resumeAnalysis);
 
     return (
         <>

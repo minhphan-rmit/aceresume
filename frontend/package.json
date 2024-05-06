@@ -12,15 +12,17 @@
   "dependencies": {
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
+    "@firebase/storage": "^0.12.4",
     "@fontsource/roboto": "^5.0.12",
     "@mui/base": "^5.0.0-beta.43",
     "@mui/icons-material": "^5.15.14",
     "@mui/material": "^5.15.14",
     "@mui/styled-engine-sc": "^6.0.0-alpha.18",
     "axios": "^1.6.8",
-    "firebase": "^10.11.0",
+    "firebase": "^10.11.1",
     "module-alias": "^2.2.3",
     "react": "^18.2.0",
+    "react-doc-viewer": "^0.1.5",
     "react-dom": "^18.2.0",
     "react-pdf": "^8.0.0",
     "react-router-dom": "^6.22.3",
@@ -28,7 +30,8 @@
     "react-slick": "^0.30.2",
     "slick-carousel": "^1.8.1",
     "styled-components": "^6.1.8",
-    "web-vitals": "^3.5.2"
+    "web-vitals": "^3.5.2",
+
   },
   "devDependencies": {
     "@types/react": "^18.2.66",

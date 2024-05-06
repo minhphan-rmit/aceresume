@@ -1,13 +1,11 @@
 # -*- coding: utf-8 -*-
-# Resume Related API Endpoints
 from __future__ import annotations
 
 import logging
-import os
+from typing import Dict
 
-from fastapi import APIRouter, File, HTTPException, UploadFile, File
+from fastapi import APIRouter, File, HTTPException, UploadFile, File, Body
 from fastapi.responses import JSONResponse
-import uuid
 from datetime import datetime
 from bson import ObjectId
 from helpers.utility import Utility
@@ -33,8 +31,6 @@ router = APIRouter(prefix="/api/aceresume/resume", tags=[MODULE_NAME])
 
 logger = logging.getLogger(MODULE_NAME)
 
-UPLOAD_DIR = "uploaded_resumes"
-
 
 @router.post(
     "/{user_id}/upload",
@@ -46,18 +42,14 @@ UPLOAD_DIR = "uploaded_resumes"
 async def upload_resume(
     user_id: str,
     resume: UploadFile = File(..., description="Resume file to upload"),
+    resume_url: str = Body(...),
 ):
     if resume.content_type != "application/pdf":
         raise HTTPException(status_code=400, detail="Only PDF files are allowed.")
 
-    os.makedirs(UPLOAD_DIR, exist_ok=True)
-    unique_filename = str(uuid.uuid4()) + ".pdf"
-    file_path = os.path.join(UPLOAD_DIR, unique_filename)
-
-    with open(file_path, "wb") as f:
-        f.write(resume.file.read())
-    with open(file_path, "rb") as f:
-        resume_data = await process_resume(f.read(), resume.filename.split(".")[-1])
+    resume_data = await process_resume(
+        resume.file.read(), resume.filename.split(".")[-1]
+    )
 
     if not resume_data:
         raise HTTPException(status_code=400, detail="Uploaded PDF is empty.")
@@ -68,14 +60,14 @@ async def upload_resume(
             "user_id": user_id,
             "resume": resume_data.encode("utf-8"),
             "filename": resume.filename,
-            "resume_url": file_path,
+            "resume_url": resume_url,
         }
     )
 
     return {
         "message": "Resume uploaded successfully.",
         "object_id": str(add_resume.inserted_id),
-        "resume_url": file_path,
+        "resume_url": resume_url,
     }
 
 
@@ -102,6 +94,7 @@ async def get_all_cv(user_id: str):
                     "filename": resume["filename"],
                     "resume_id": str(resume["_id"]),
                     "resume_url": resume["resume_url"],
+                    "created_at": resume["created_at"],
                 }
             )
 
@@ -160,8 +153,11 @@ async def extract_resume_data(
     responses={401: {"model": Message}, 500: {"model": Message}},
 )
 async def feedback_resume(
-    user_id: str, resume_id: str, filename: str, resume_info: str
-) -> ResumeAnalysis:
+    user_id: str,
+    resume_id: str,
+    filename: str = Body(..., embed=True),
+    resume_info: str = Body(..., embed=True),
+) -> Dict:
     analysis_result = await analyse_resume(resume_info)
     json_result = json.loads(analysis_result[8:].strip().replace("`", ""))
 

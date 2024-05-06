@@ -1,5 +1,5 @@
-import { Routes, Route , BrowserRouter} from 'react-router-dom';
-import { pdfjs } from 'react-pdf';
+import { Routes, Route } from 'react-router-dom';
+
 
 import './styles/globals.css';
 import AuthLayout from './_auth/AuthLayout';
@@ -17,10 +17,7 @@ import Roadmap from './_root/pages/roadmap/Roadmap';
 import Profile from './_root/pages/profile/Profile';
 import ActivatingAccount from './_root/pages/authentication/ActivatingAccount';
 
-pdfjs.GlobalWorkerOptions.workerSrc = new URL(
-  'pdfjs-dist/build/pdf.worker.min.js',
-  import.meta.url,
-).toString();
+
 
 const App = () => {
   return (
