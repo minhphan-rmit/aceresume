@@ -30,9 +30,10 @@ const ExpandMore = styled((props: ExpandMoreProps) => {
   }),
 }));
 
-export default function RecipeReviewCard() {
+export default function HistoryCard({ filename, resume_id, resume_url }) {
   const [expanded, setExpanded] = React.useState(false);
-
+console.log(resume_url)
+console.log(filename)
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
@@ -46,14 +47,15 @@ export default function RecipeReviewCard() {
             <MoreVertIcon />
           </IconButton>
         }
-        title="Lettings Administrator Resume"
+        title={<Typography  noWrap={false} className="text-wrap">{filename}</Typography>}
         subheader="September 14, 2016"
+
       />
       <CardMedia
         component="img"
         height="194"
-        image="https://standout-cv.com/wp-content/uploads/2023/10/Lettings-Administrator-CV-1.png"
-        alt="Paella dish"
+        image={resume_url}
+        alt={filename}
       />
       <CardContent>
         <Typography variant="body2" color="text.secondary">

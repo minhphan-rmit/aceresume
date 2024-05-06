@@ -1,5 +1,49 @@
-import React from 'react';
+import React, {useState} from 'react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 const NewAnalysis = () => {
+    const navigate = useNavigate();
+    const [file, setFile] = useState(null);
+    const [fileName, setFileName] = useState(''); // Add this line
+    const userId = '1234'; // Replace with the actual user ID
+
+    const handleFileChange = (event) => {
+        setFile(event.target.files[0]); // Update the state with the selected file
+        setFileName(event.target.files[0].name);
+    };
+
+    const handleSubmit = async (event) => {
+        event.preventDefault(); // Prevent the default form submit behavior
+        if (!file) {
+            alert('Please select a file to upload.');
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('resume', file);
+
+
+        alert(fileName)
+        alert(file)
+        try {
+            const response = await axios.post(`http://localhost:8000/api/aceresume/resume/${userId}/upload`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+            alert('Upload successful');
+            console.log(response.data);
+            localStorage.setItem('resumeId', response.data.object_id);
+            navigate('/cv-analysis?component=yourAnalysis&toggle=preview');
+            // reload
+            window.location.reload();
+        } catch (error) {
+            console.error('Error uploading file:', error);
+            alert('Error uploading file');
+        }
+    };
+
+
     return (
     <>
 
@@ -11,11 +55,8 @@ const NewAnalysis = () => {
 			</h2>
 			<p className="mt-2 text-sm text-gray-400">Upload your resume here!</p>
 		</div>
-        <form className="mt-8 space-y-3" action="#" method="POST">
-                    <div className="grid grid-cols-1 space-y-2">
-                        <label className="text-sm font-bold text-gray-500 tracking-wide">Title</label>
-                            <input className="text-base p-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500" type="" placeholder="New Resume"/>
-                    </div>
+        <form className="mt-8 space-y-3" onSubmit={handleSubmit}>
+
                     <div className="grid grid-cols-1 space-y-2">
                                     <label className="text-sm font-bold text-gray-500 tracking-wide">Attach Document</label>
                         <div className="flex items-center justify-center w-full">
@@ -29,7 +70,7 @@ const NewAnalysis = () => {
                                     </div>
                                     <p className="pointer-none text-gray-500 "><span className="text-sm">Drag and drop</span> files here <br /> or <a href="" id="" className="text-blue-600 hover:underline">select a file</a> from your computer</p>
                                 </div>
-                                <input type="file" className="hidden"/>
+                                <input type="file" className="hidden" name='file' onChange={handleFileChange}/>
                             </label>
                         </div>
                     </div>

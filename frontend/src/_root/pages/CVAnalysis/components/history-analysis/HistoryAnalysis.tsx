@@ -1,8 +1,33 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import HistoryCard from "./HistoryCard";
 import { Button } from "@mui/material";
+import axios from 'axios';
+import {useNavigate} from "react-router-dom";
 
 const HistoryAnalysis = () => {
+const navigate = useNavigate();
+    const [resumes, setResumes] = useState([]);
+    const userId = '1234'; // Adjust the userId as necessary
+
+    useEffect(() => {
+        const fetchResumes = async () => {
+            try {
+                const response = await axios.get(`http://localhost:8000/api/aceresume/resume/${userId}/get_all_resume`); // Replace `{user_id}` with actual user ID
+                setResumes(response.data); // Assuming the data is returned directly
+            } catch (error) {
+                console.error('Error fetching data:', error);
+                // Handle errors here if needed
+            }
+        };
+
+        fetchResumes();
+    }, []);
+
+
+    const addNewAnalysis = () => {
+        navigate('/cv-analysis?component=newAnalysis&toggle=guides');
+        window.location.reload();
+    };
     return (
         <>
         <div className="w-full bg-white h-full rounded-lg  flex flex-col items-center p-10 overflow-y-auto">
@@ -16,7 +41,7 @@ const HistoryAnalysis = () => {
                         Review your previous analysis here
                     </p>
                 </div>
-                <Button  className="hover:bg-none w-min h-min" style={{ minWidth: 'auto' }}>
+                <Button onClick={addNewAnalysis} className="hover:bg-none w-min h-min" style={{ minWidth: 'auto' }}>
                         <svg width="80px" height="80px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#6366f1">
                             <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
                             <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
@@ -29,10 +54,9 @@ const HistoryAnalysis = () => {
                 </div>
 
                 <div className="mt-10 flex gap-3 flex-wrap items-center justify-between">
-                    <HistoryCard />
-                    <HistoryCard />
-                    <HistoryCard />
-                    <HistoryCard />
+                {resumes.map(resume => (
+                        <HistoryCard key={resume.resume_id} {...resume} />
+                    ))}
 
                 </div>
             </div></div>

@@ -4,6 +4,7 @@ import Suggestion from "./Suggestion";
 import Weakness from "./Weakness";
 
 const YourAnalysis = () => {
+    const resumeId = localStorage.getItem('resumeId');
 
     return (
         <>

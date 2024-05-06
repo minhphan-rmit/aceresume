@@ -101,6 +101,7 @@ async def get_all_cv(user_id: str):
                 {
                     "filename": resume["filename"],
                     "resume_id": str(resume["_id"]),
+                    "resume_url": resume["resume_url"],
                 }
             )
 
@@ -108,7 +109,7 @@ async def get_all_cv(user_id: str):
 
 
 @router.post(
-    "{user_id}/{resume_id}/summarize",
+    "/{user_id}/{resume_id}/summarize",
     status_code=200,
     description="Extract and categorize the Resume Info",
     response_model=ResumeInfo,  # Assuming this model exists

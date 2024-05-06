@@ -11,6 +11,7 @@ import Box from "@mui/material/Box";
 import { Link } from 'react-router-dom'
 import { createTheme, ThemeProvider, useTheme } from "@mui/material/styles";
 import getLPTheme from "../../../styles/getLPTheme";
+import UserOption from "./UserOption";
 
 const logoStyle = {
   width: "auto",
@@ -25,6 +26,8 @@ const LPtheme = createTheme(getLPTheme());
 const AppAppBar = () => {
   const [open, setOpen] = React.useState(false);
   const theme = useTheme();
+  const userId = localStorage.getItem('userId') || null;
+
 
   const toggleDrawer = (newOpen: boolean) => () => {
     setOpen(newOpen);
@@ -123,6 +126,7 @@ const AppAppBar = () => {
             >
               Sign up
             </Button>
+            <UserOption userId={userId} />
           </Box>
           <Box
             sx={{ display: { xs: "flex", md: "none" }, alignItems: "center" }}
