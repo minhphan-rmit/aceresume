@@ -30,10 +30,13 @@ const ExpandMore = styled((props: ExpandMoreProps) => {
   }),
 }));
 
-export default function HistoryCard({ filename, resume_id, resume_url }) {
+export default function HistoryCard({ filename, resume_id, resume_url, created_at }) {
   const [expanded, setExpanded] = React.useState(false);
-console.log(resume_url)
-console.log(filename)
+  const dateString = created_at;
+  const formattedDate = dateString.split('T')[0];
+
+
+
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
@@ -47,8 +50,8 @@ console.log(filename)
             <MoreVertIcon />
           </IconButton>
         }
-        title={<Typography  noWrap={false} className="text-wrap">{filename}</Typography>}
-        subheader="September 14, 2016"
+        title={<Typography   className="text-wrap">{filename}</Typography>}
+        subheader={formattedDate}
 
       />
       <CardMedia

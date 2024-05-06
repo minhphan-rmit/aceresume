@@ -7,7 +7,7 @@ import {useNavigate} from "react-router-dom";
 const HistoryAnalysis = () => {
 const navigate = useNavigate();
     const [resumes, setResumes] = useState([]);
-    const userId = '1234'; // Adjust the userId as necessary
+    const userId = '663852ecd568222769540792'; // Adjust the userId as necessary
 
     useEffect(() => {
         const fetchResumes = async () => {

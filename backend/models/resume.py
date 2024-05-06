@@ -2,6 +2,7 @@
 
 from typing import Optional, List
 from pydantic import BaseModel, Field
+from datetime import datetime
 
 
 class CandidateExperience(BaseModel):
@@ -27,6 +28,7 @@ class ResumeAnalysis(BaseModel):
     pros: List[str] = Field(..., description="List of pros")
     cons: List[str] = Field(..., description="List of cons")
     add_ons: List[str] = Field(..., description="List of add-ons")
+    created_at: Optional[datetime] = None
 
 
 class Target(BaseModel):
@@ -40,3 +42,4 @@ class RoadmapModel(BaseModel):
     level: str = Field(..., description="The level of knowledge of the client")
     list_of_roadmap: List[Target] = Field(..., description="A Roadmap for user")
     summary: str = Field(..., description="A brief description of the whole roadmap")
+    created_at: Optional[datetime] = None

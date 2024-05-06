@@ -27,7 +27,7 @@ const NewAnalysis: React.FC<NewAnalysisProps> = ({ onUploadSuccess, onAnalysisSu
     const navigate = useNavigate();
       const [isExtractingData, setIsExtractingData] = useState(false);
       const [isAnalyzingData, setIsAnalyzingData] = useState(false);
-    const userId = '1234'; // Assume this is the user ID
+    const userId = '663852ecd568222769540792'; // Assume this is the user ID
 
 
 
@@ -88,7 +88,7 @@ const NewAnalysis: React.FC<NewAnalysisProps> = ({ onUploadSuccess, onAnalysisSu
                 `http://localhost:8000/api/aceresume/resume/${userId}/${resumeId}/analyse`,
                 {
                     filename: selectedFile.name,
-                    resume_info: resumeInfo,
+                    resume_info: JSON.stringify(resumeInfo),
                 },
                 {
                     headers: {

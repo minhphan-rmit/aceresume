@@ -61,6 +61,7 @@ async def upload_resume(
             "resume": resume_data.encode("utf-8"),
             "filename": resume.filename,
             "resume_url": resume_url,
+            "created_at": datetime.utcnow(),
         }
     )
 
@@ -94,7 +95,9 @@ async def get_all_cv(user_id: str):
                     "filename": resume["filename"],
                     "resume_id": str(resume["_id"]),
                     "resume_url": resume["resume_url"],
-                    "created_at": resume["created_at"],
+                    "created_at": resume["created_at"].isoformat()
+                    if resume["created_at"]
+                    else None,
                 }
             )
 
