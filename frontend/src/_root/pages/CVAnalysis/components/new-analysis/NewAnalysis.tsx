@@ -11,10 +11,10 @@ import { ContactlessOutlined } from '@mui/icons-material';
 
 interface NewAnalysisProps {
     onUploadSuccess: (url: string) => void;
-    onAnalysisSuccess: (resumeAnalysis: JSON) => void;
+
 }
 
-const NewAnalysis: React.FC<NewAnalysisProps> = ({ onUploadSuccess, onAnalysisSuccess }) =>{
+const NewAnalysis: React.FC<NewAnalysisProps> = ({ onUploadSuccess }) =>{
     const {
         uploadFile,
         handleDelete,
@@ -96,7 +96,6 @@ const NewAnalysis: React.FC<NewAnalysisProps> = ({ onUploadSuccess, onAnalysisSu
                 }}
 
             );
-            onAnalysisSuccess(response.data);
         }catch (error) {
             console.error('Error analyzing data from file:', error);
            alert('Error analyzing data from file');

@@ -225,3 +225,35 @@ async def generate_roadmap(
     Constants.ROLE_ROADMAP.insert_one(roadmap_data)
 
     return roadmap
+
+
+@router.get(
+    "/{user_id}/{resume_id}/get_analysis",
+    status_code=200,
+    description="Retrieve analysis of a specific resume",
+    response_model=ResumeAnalysis,  # Ensure this model accurately reflects the structure of the stored analysis data
+    response_description="Details of the resume analysis",
+    responses={
+        404: {"model": Message, "description": "Analysis not found"},
+        500: {"model": Message, "description": "Internal Server Error"},
+    },
+)
+async def get_resume_analysis(user_id: str, resume_id: str) -> ResumeAnalysis:
+    try:
+        analysis_data = Constants.RESUME_ANALYSIS.find_one(
+            {"user_id": user_id, "resume_id": resume_id}
+        )
+        if not analysis_data:
+            raise HTTPException(status_code=404, detail="Analysis not found")
+
+        return ResumeAnalysis(
+            pros=analysis_data.get("pros", []),
+            cons=analysis_data.get("cons", []),
+            add_ons=analysis_data.get("add-ons", []),
+            created_at=analysis_data.get("analyse_at", None),
+        )
+    except Exception as e:
+        logger.error(f"Error retrieving resume analysis: {str(e)}")
+        raise HTTPException(
+            status_code=500, detail="Failed to retrieve resume analysis"
+        )

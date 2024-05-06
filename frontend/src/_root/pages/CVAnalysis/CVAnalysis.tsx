@@ -55,13 +55,13 @@ const CVAnalysis = () => {
   const renderComponent = () => {
     switch (selectedComponent) {
       case 'newAnalysis':
-       return <NewAnalysis onUploadSuccess={handleUploadSuccess} onAnalysisSuccess={handleAnalysisSuccess}/>;
+       return <NewAnalysis onUploadSuccess={handleUploadSuccess}/>;
       case 'yourAnalysis':
-        return <YourAnalysis resumeAnalysis={resumeAnalysis}/>;
+        return <YourAnalysis />;
       case 'historyAnalysis':
         return <HistoryAnalysis />;
       default:
-       return  <NewAnalysis onUploadSuccess={handleUploadSuccess} onAnalysisSuccess={handleAnalysisSuccess} />;
+       return  <NewAnalysis onUploadSuccess={handleUploadSuccess}/>;
     }
   };
 
