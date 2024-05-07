@@ -169,6 +169,7 @@ async def feedback_resume(
         "resume_id": resume_id,
         "filename": filename,
         "analyse_at": datetime.utcnow(),
+        "score": json_result["score"],
         "pros": json_result["pros"],
         "cons": json_result["cons"],
         "add_ons": json_result["add-ons"],
@@ -176,6 +177,7 @@ async def feedback_resume(
     Constants.RESUME_ANALYSIS.insert_one(analysis_data)
 
     return ResumeAnalysis(
+        score=json_result["score"],
         pros=json_result["pros"],
         cons=json_result["cons"],
         add_ons=json_result["add-ons"],
