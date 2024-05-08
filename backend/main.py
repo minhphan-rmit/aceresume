@@ -32,6 +32,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.get("/")(lambda: {"message": "Welcome to AceResume!!!!!!!!!!"})
+
 app.include_router(register.router)
 app.include_router(resume.router)
 app.include_router(job.router)
