@@ -28,6 +28,7 @@ class ResumeAnalysis(BaseModel):
     pros: List[str] = Field(..., description="List of pros")
     cons: List[str] = Field(..., description="List of cons")
     add_ons: List[str] = Field(..., description="List of add-ons")
+    score: Optional[float] = None
     created_at: Optional[datetime] = None
 
 

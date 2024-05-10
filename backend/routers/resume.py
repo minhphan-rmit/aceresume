@@ -8,6 +8,7 @@ from fastapi import APIRouter, File, HTTPException, UploadFile, File, Body
 from fastapi.responses import JSONResponse
 from datetime import datetime
 from bson import ObjectId
+from bson import json_util
 from helpers.utility import Utility
 from services.process_resume import (
     process_resume,
@@ -190,14 +191,23 @@ async def feedback_resume(
     response_description="Roadmap in the format of JSON",
     responses={401: {"model": Message}, 500: {"model": Message}},
 )
+@router.post(
+    "/{user_id}/roadmap-generate",
+    status_code=200,
+    description="Generate Roadmap for the user based on the resume info and job description",
+    response_model=RoadmapModel,
+    response_description="Roadmap in the format of JSON",
+    responses={401: {"model": Message}, 500: {"model": Message}},
+)
 async def generate_roadmap(
     user_id: str,
-    resume_info: str,
     resume_id: str,
     job_description: str,
     roadmap_name: str,
 ) -> RoadmapModel:
-    roadmap_result = await roadmap_generator(resume_info, job_description)
+    resume_info = await extract_resume_data(user_id, resume_id)
+    resume_info_str = resume_info.json()
+    roadmap_result = await roadmap_generator(resume_info_str, job_description)
     json_result = json.loads(roadmap_result[8:].strip().replace("`", ""))
 
     roadmap = RoadmapModel(
@@ -218,11 +228,13 @@ async def generate_roadmap(
         "roadmap_name": roadmap_name,
         "user_id": user_id,
         "resume_id": resume_id,
-        "roadmap_name": roadmap_name,
         "generate_at": datetime.utcnow(),
         "roadmap": roadmap,
     }
-    Constants.ROLE_ROADMAP.insert_one(roadmap_data)
+
+    roadmap_json = json.loads(json_util.dumps(roadmap_data))
+
+    Constants.ROLE_ROADMAP.insert_one(roadmap_json)
 
     return roadmap
 
@@ -250,6 +262,7 @@ async def get_resume_analysis(user_id: str, resume_id: str) -> ResumeAnalysis:
             pros=analysis_data.get("pros", []),
             cons=analysis_data.get("cons", []),
             add_ons=analysis_data.get("add-ons", []),
+            score=analysis_data.get("score", None),
             created_at=analysis_data.get("analyse_at", None),
         )
     except Exception as e:

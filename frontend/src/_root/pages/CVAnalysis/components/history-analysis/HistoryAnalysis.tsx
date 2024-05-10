@@ -4,7 +4,13 @@ import { Button } from "@mui/material";
 import axios from 'axios';
 import {useNavigate} from "react-router-dom";
 
-const HistoryAnalysis = () => {
+interface HistoryAnalysisProps {
+    onChangeSuccess: (resumeId: string, resumeUrl: string) => void;
+
+
+  }
+
+const HistoryAnalysis : React.FC<HistoryAnalysisProps> = ({ onChangeSuccess})  => {
 const navigate = useNavigate();
     const [resumes, setResumes] = useState([]);
     const userId = '663852ecd568222769540792'; // Adjust the userId as necessary
@@ -28,6 +34,13 @@ const navigate = useNavigate();
         navigate('/cv-analysis?component=newAnalysis&toggle=guides');
         window.location.reload();
     };
+
+    const handleCardClick = (resumeId: string, url:string) => {
+
+        onChangeSuccess(resumeId, url);
+
+    };
+
     return (
         <>
         <div className="w-full bg-white h-full rounded-lg  flex flex-col items-center p-10 overflow-y-auto">
@@ -55,7 +68,7 @@ const navigate = useNavigate();
 
                 <div className="mt-10 flex gap-3 flex-wrap items-center justify-between">
                 {resumes.map(resume => (
-                        <HistoryCard key={resume.resume_id} {...resume} />
+                        <HistoryCard onClick={() => handleCardClick(resume.resume_id, resume.resume_url)}  key={resume.resume_id} {...resume} />
                     ))}
 
                 </div>

@@ -4,6 +4,7 @@ const NewRoadmap = () => {
 
      // State to manage dropdown visibility
      const [isOpen, setIsOpen] = useState(false);
+     const
 
      // Toggle dropdown visibility
      const toggleDropdown = () => setIsOpen(!isOpen);
