@@ -17,8 +17,8 @@ class EmailSchema(BaseModel):
 
 
 def send_email(to_addresses, subject, body):
-    from_email = os.getenv("FROM_EMAIL")
-    email_password = os.getenv("EMAIL_PASSWORD")
+    from_email ="hello.aceresume@gmail.com"
+    email_password = "jndwyqdpgllcpzpx"
 
     message = MIMEMultipart()
     message["From"] = from_email

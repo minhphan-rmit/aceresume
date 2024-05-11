@@ -15,8 +15,8 @@ load_dotenv(os.path.join(os.path.dirname(__file__), ".env.example"))
 
 
 class Constants:
-    MONGODB_URI = os.environ["DATABASE_URI"]
-    OPENAI_API_KEY = os.environ["OPENAI_API_KEY"]
+    MONGODB_URI = "mongodb+srv://mylittlehusky2004:PDanii@279197.@cluster0.cbgkxvv.mongodb.net/"
+    OPENAI_API_KEY = "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"
 
     parsed_uri = urllib.parse.urlparse(MONGODB_URI)
     encoded_uri = MONGODB_URI.replace(
@@ -43,7 +43,7 @@ class Constants:
     MOCK_INTERVIEW = db.get_collection("MOCK_INTERVIEW")
 
     # Initialize OpenAI model
-    EMBEDDING_FUNC = OpenAIEmbeddings(model="text-embedding-3-large")
+    EMBEDDING_FUNC = OpenAIEmbeddings(model="text-embedding-3-large", openai_api_key="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")
 
     CHAT_MODEL = ChatOpenAI(
         model_name="gpt-4-0125-preview",
