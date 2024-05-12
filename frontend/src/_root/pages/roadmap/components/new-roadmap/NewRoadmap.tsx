@@ -1,12 +1,59 @@
-import { useState } from "react";
+import { useState,FormEvent } from "react";
 
-const NewRoadmap = () => {
+import axios from 'axios';
+interface NewRoadmapProps {
+    onGeneratedSuccess: (roadmapId: string) => void;
+
+}
+const NewRoadmap: React.FC<NewRoadmapProps> = ({ onGeneratedSuccess })  => {
 
      // State to manage dropdown visibility
-     const [isOpen, setIsOpen] = useState(false);
+     const userId = '663852ecd568222769540792'; // Assume this is the user ID
+     const resumeId = localStorage.getItem('resumeId');
 
+     const [roadmapName, setRoadmapName] = useState('');
+        const [jobDescription, setJobDescription] = useState('');
+
+        const handleRoadmapNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+            setRoadmapName(e.target.value);
+        }
+
+        // Event handler for updating the job description
+        const handleJobDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+            setJobDescription(e.target.value);
+        }
+
+
+
+        const  handleFormSubmit = async (e: FormEvent<HTMLFormElement>) => {
+            e.preventDefault();
+            if (!roadmapName || !jobDescription) {
+                alert('Please fill in all fields');
+                return;
+            }
+            console.log('Roadmap Name:',roadmapName, 'Job Description:',jobDescription)
+
+
+            try {
+                const response = await axios.post(`http://localhost:8000/api/aceresume/resume/${userId}/roadmap-generate`, null,
+                {
+                    params:{
+                    resume_id: resumeId,
+                    job_description: jobDescription,
+                    roadmap_name: roadmapName
+                    }
+                });
+
+
+
+
+            } catch (error) {
+                console.error('Error generating roadmap:', error);
+                alert('Error generating roadmap');
+            }
+        }
      // Toggle dropdown visibility
-     const toggleDropdown = () => setIsOpen(!isOpen);
+
     return (
         <div className="w-full bg-white h-full rounded-lg  flex flex-col items-center p-10">
             <div className=" w-full  bg-white rounded-xl z-10 flex flex-row items-center justify-between gap-10">
@@ -18,12 +65,13 @@ const NewRoadmap = () => {
 
 <p className="mt-2 text-sm text-gray-400 text-left">Enter the name of your desired job description and the AI will recommend books and resources that will help you grow into the professional you dream to be. <span className="italic">(Only works in English.)</span></p>
 		</div>
-        <form className="mt-8 space-y-3 w-full" action="#" method="POST">
+        <form className="mt-8 space-y-3 w-full" onSubmit={handleFormSubmit}>
                     <div className="grid grid-cols-1 space-y-2 ">
                         <label className="text-sm font-bold text-gray-500 tracking-wide">Title</label>
 
 
-        <input className=" w-full text-base p-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500" type="text" placeholder="Name your Roadmap"/>
+        <input required   name="roadmapName" className=" w-full text-base p-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500" type="text" placeholder="Name your Roadmap" value={roadmapName}
+                            onChange={handleRoadmapNameChange} />
 
 
            </div>
@@ -31,14 +79,15 @@ const NewRoadmap = () => {
                                     <label className="text-sm font-bold text-gray-500 tracking-wide">Job Description</label>
                         <div className="flex items-center justify-center w-full">
 
-                            <textarea className="resize-y rounded-md flex flex-col  border-4 border-dashed w-full h-60 p-10 group text-left"></textarea>
+                            <textarea required name="jobDescription" className="resize-y rounded-md flex flex-col  border-4 border-dashed w-full h-60 p-10 group text-left" value={jobDescription}
+                                onChange={handleJobDescriptionChange}></textarea>
 
 
                         </div>
                     </div>
 
                     <div>
-                        <button type="submit" className="my-5 w-full flex justify-center bg-indigo-500 text-gray-100 p-4  rounded-full tracking-wide
+                        <button  className="my-5 w-full flex justify-center bg-indigo-500 text-gray-100 p-4  rounded-full tracking-wide
                                     font-semibold  focus:outline-none focus:shadow-outline hover:bg-indigo-600 shadow-lg cursor-pointer transition ease-in duration-300">
                         Generate
                     </button>

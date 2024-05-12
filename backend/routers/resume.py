@@ -5,10 +5,14 @@ import logging
 from typing import Dict
 
 from fastapi import APIRouter, File, HTTPException, UploadFile, File, Body
+from pymongo.cursor import Cursor
 from fastapi.responses import JSONResponse
 from datetime import datetime
 from bson import ObjectId
 from bson import json_util
+from typing import List
+
+
 from helpers.utility import Utility
 from services.process_resume import (
     process_resume,
@@ -191,20 +195,17 @@ async def feedback_resume(
     response_description="Roadmap in the format of JSON",
     responses={401: {"model": Message}, 500: {"model": Message}},
 )
-@router.post(
-    "/{user_id}/roadmap-generate",
-    status_code=200,
-    description="Generate Roadmap for the user based on the resume info and job description",
-    response_model=RoadmapModel,
-    response_description="Roadmap in the format of JSON",
-    responses={401: {"model": Message}, 500: {"model": Message}},
-)
 async def generate_roadmap(
     user_id: str,
     resume_id: str,
     job_description: str,
     roadmap_name: str,
 ) -> RoadmapModel:
+    # Check if the roadmap name already exists
+    existing_roadmap = Constants.ROLE_ROADMAP.find_one({"roadmap_name": roadmap_name})
+    if existing_roadmap:
+        raise HTTPException(status_code=409, detail="Roadmap name already exists")
+
     resume_info = await extract_resume_data(user_id, resume_id)
     resume_info_str = resume_info.json()
     roadmap_result = await roadmap_generator(resume_info_str, job_description)
@@ -218,18 +219,27 @@ async def generate_roadmap(
                 topic_description=str(value["topic_description"]),
                 resources=value["resource_list"],
                 knowledge_list=value["knowledge_list"],
+                is_done=False,  # Adding the is_done field with a default value of False
             )
             for value in json_result["roadmap"]["target"]
         ],
         summary=json_result["roadmap"]["summary"],
     )
 
+    # Calculating initial progress, which should be 0 as all topics are initially marked as not done
+    total_topics = len(roadmap.list_of_roadmap)
+    completed_topics = sum(topic.is_done for topic in roadmap.list_of_roadmap)
+    roadmap.progress = (
+        (completed_topics / total_topics) * 100 if total_topics > 0 else 0
+    )
+
     roadmap_data = {
-        "roadmap_name": roadmap_name,
         "user_id": user_id,
         "resume_id": resume_id,
-        "generate_at": datetime.utcnow(),
+        "roadmap_name": roadmap_name,
+        "job_description": job_description,
         "roadmap": roadmap,
+        "created_at": datetime.utcnow(),
     }
 
     roadmap_json = json.loads(json_util.dumps(roadmap_data))
@@ -237,6 +247,106 @@ async def generate_roadmap(
     Constants.ROLE_ROADMAP.insert_one(roadmap_json)
 
     return roadmap
+
+
+@router.get("/{user_id}/{resume_id}/get_roadmap")
+async def get_roadmap(
+    user_id: str, resume_id: str, roadmap_name: str
+) -> Dict[str, Any]:
+    query = {"user_id": user_id, "resume_id": resume_id, "roadmap_name": roadmap_name}
+    roadmap_data = Constants.ROLE_ROADMAP.find_one(query)
+
+    if not roadmap_data:
+        raise HTTPException(status_code=404, detail="Roadmap not found")
+
+    # Convert created_at from ISO string to datetime if necessary
+    created_at = (
+        datetime.fromisoformat(roadmap_data.get("created_at", {}).get("$date"))
+        if "created_at" in roadmap_data
+        else None
+    )
+
+    roadmap = RoadmapModel(
+        level=roadmap_data["roadmap"][0][1],
+        list_of_roadmap=[
+            {
+                "topic_name": topic[0][1],
+                "topic_description": topic[1][1],
+                "resources": topic[2][1],
+                "knowledge_list": topic[3][1],
+                "is_done": topic[4][1],
+            }
+            for topic in roadmap_data["roadmap"][1][1]
+        ],
+        summary=roadmap_data["roadmap"][2][1],
+        progress=roadmap_data["roadmap"][3][1],
+    )
+
+    # Build a custom response that includes the model and the additional fields
+    response_data = {
+        "roadmap": roadmap.dict(),  # Convert the Pydantic model to a dictionary
+        "job_description": roadmap_data.get(
+            "job_description", "No description provided"
+        ),
+        "roadmap_name": roadmap_data.get("roadmap_name", "Unnamed Roadmap"),
+        "created_at": created_at.isoformat()
+        if created_at
+        else None,  # Ensure datetime is JSON serializable
+    }
+
+    return JSONResponse(content=response_data)
+
+
+@router.get("/{user_id}/get_all_roadmaps")
+async def get_all_roadmaps(user_id: str) -> List[Dict[str, Any]]:
+    roadmaps_data = Constants.ROLE_ROADMAP.find({"user_id": user_id})
+
+    # Check if the user has any roadmaps
+    if Constants.ROLE_ROADMAP.count_documents({"user_id": user_id}) == 0:
+        raise HTTPException(status_code=404, detail="No roadmaps found for the user")
+
+    roadmaps = []
+    for roadmap_data in roadmaps_data:
+        if "roadmap" in roadmap_data and isinstance(roadmap_data["roadmap"], list):
+            # Parse the created_at field from ISO string to datetime if necessary
+            created_at = (
+                datetime.fromisoformat(roadmap_data.get("created_at", {}).get("$date"))
+                if "created_at" in roadmap_data
+                else None
+            )
+
+            parsed_roadmap = {
+                "level": roadmap_data["roadmap"][0][1],
+                "list_of_roadmap": [
+                    {
+                        "topic_name": item[0][1],
+                        "topic_description": item[1][1],
+                        "resources": item[2][1],
+                        "knowledge_list": item[3][1],
+                        "is_done": item[4][1],
+                    }
+                    for item in roadmap_data["roadmap"][1][1]
+                ],
+                "summary": roadmap_data["roadmap"][2][1],
+                "progress": roadmap_data["roadmap"][3][1],
+                "job_description": roadmap_data.get("job_description", ""),
+                "roadmap_name": roadmap_data.get("roadmap_name", ""),
+                "created_at": created_at.isoformat() if created_at else None,
+            }
+            roadmap_model = RoadmapModel(**parsed_roadmap)
+            # Create a custom dictionary including the RoadmapModel data and additional fields
+            roadmap_response = {
+                "roadmap_details": roadmap_model.dict(),
+                "job_description": parsed_roadmap["job_description"],
+                "roadmap_name": parsed_roadmap["roadmap_name"],
+                "created_at": parsed_roadmap["created_at"],
+            }
+            roadmaps.append(roadmap_response)
+
+    if not roadmaps:
+        raise HTTPException(status_code=404, detail="No roadmaps found for the user")
+
+    return JSONResponse(content=roadmaps)
 
 
 @router.get(

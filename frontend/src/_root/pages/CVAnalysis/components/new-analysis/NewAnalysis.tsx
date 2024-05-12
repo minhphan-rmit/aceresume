@@ -27,7 +27,7 @@ const NewAnalysis: React.FC<NewAnalysisProps> = ({ onUploadSuccess }) =>{
     const navigate = useNavigate();
       const [isExtractingData, setIsExtractingData] = useState(false);
       const [isAnalyzingData, setIsAnalyzingData] = useState(false);
-    const userId = '663852ecd568222769540792'; // Assume this is the user ID
+    const userId = localStorage.getItem('userId') || '663852ecd568222769540792';
 
 
 
