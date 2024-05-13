@@ -1,10 +1,16 @@
 import { useState, useEffect } from 'react';
 import { startNewChat, reviewInterview, sendMessage } from './handleInterviewAPI';
+import { set } from 'firebase/database';
 
 const useInterview = () => {
 const [welcomeMessage, setWelcomeMessage] = useState('');
-const [pendingSettings, setPendingSettings] = useState({ duration: '', role: '' });
-const [showMessage, setShowMessage] = useState(false);
+const [jobDescription, setJobDescription] = useState('');
+const [role, setRole] = useState('');
+const [feedback, setFeedback] = useState('');
+
+const userId = localStorage.getItem('userId') ?? '663852ecd568222769540792';
+const username = localStorage.getItem('username') ?? 'Ha Phuong Tran';
+const API_BASE_URL = 'http://localhost:8000/api/aceresume/chat-interview'; // Adjust according to your server address
 
 
   const [messages, setMessages] = useState([]);
@@ -19,15 +25,23 @@ const [showMessage, setShowMessage] = useState(false);
   });
   const [isPaused, setIsPaused] = useState(false);
   const [interviewStarted, setInterviewStarted] = useState(false);
+  const [isEnd, setIsEnd] = useState(false);
 
   useEffect(() => {
     let interval = null;
     if (interviewStarted && !isPaused && interviewDetails.remainingTime > 0) {
       interval = setInterval(() => {
-        setInterviewDetails(prevDetails => ({
-          ...prevDetails,
-          remainingTime: prevDetails.remainingTime - 1
-        }));
+        setInterviewDetails(prevDetails => {
+          // Check if remaining time after decrement will be zero
+          const updatedTime = prevDetails.remainingTime - 1;
+          if (updatedTime === 0) {
+            handleEnd(true);  // Automatically end the interview when time expires
+          }
+          return {
+            ...prevDetails,
+            remainingTime: updatedTime
+          };
+        });
       }, 1000);
     } else {
       clearInterval(interval);
@@ -36,29 +50,86 @@ const [showMessage, setShowMessage] = useState(false);
     return () => clearInterval(interval);
   }, [interviewStarted, isPaused, interviewDetails.remainingTime]);
 
+
   const handleInputChange = (event) => {
     setInputText(event.target.value);
   };
 
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     if (inputText.trim()) {
-      const newMessage = { text: inputText, sender: 'user', name: "John Doe", timestamp: new Date().toLocaleTimeString() };
+      const newMessage = { text: inputText, sender: 'user', name: username, timestamp: new Date().toLocaleTimeString() };
       setMessages([...messages, newMessage]);
-      setInputText('');
+
+        // call api to send message
+
+        const response = await sendMessage(userId, inputText, role, jobDescription);
+        if (response) {
+
+            // Assuming response indicates success and now you want to start listening
+            console.log(response);
+            const responseMsg={
+                            text: response,
+                            sender: 'ai',
+                            name: "AI Interviewer",
+                            timestamp: new Date().toLocaleTimeString()
+                        }
+            setMessages(prevMessages => [...prevMessages, responseMsg]);
+        }
     }
+    setInputText('');
   };
 
-  const startInterview = async (duration, role, isStart) => {
-    const userId = localStorage.getItem('userId') ?? '663852ecd568222769540792';
-    const username = localStorage.getItem('username') ?? 'Ha Phuong Tran';
 
+
+    const handleEnd = async (isTime: boolean) => {
+
+        const confirm = window.confirm('Are you sure you want to end the interview?');
+        if (!confirm ) {
+            return;
+        }
+
+
+        if (confirm || isTime) {
+        setIsEnd(true);
+            const response = await reviewInterview(userId, role, jobDescription);
+            if (response) {
+                console.log(response);
+
+                setFeedback(response);
+                setInterviewStarted(false);
+                setMessages([]);
+                return;
+            }
+        }
+        if (!isTime) {
+           return
+        }
+    }
+
+    const handleRestart = () => {
+        setIsEnd(false);
+        setFeedback('');
+        setInterviewStarted(false);
+        setMessages([]);
+    }
+  const startInterview = async (duration, role, jobDescription) => {
+
+    setJobDescription(jobDescription);
+    setRole(role);
     const response = await startNewChat(userId, role);
     if (response){
     setWelcomeMessage(response);
     setInterviewStarted(true);
-    setShowMessage(true);
-    if (isStart) {
-        const { duration, role } = pendingSettings;
+
+    const welcomeMsg = {
+        text: response,  // Use the welcome message as the text for the message
+        sender: 'ai',    // Assuming 'ai' is the identifier for system messages
+        name: "AI Interviewer",
+        timestamp: new Date().toLocaleTimeString()
+    };
+
+    // Update the messages state to include the welcome message
+    setMessages(prevMessages => [...prevMessages, welcomeMsg]);
 
         setInterviewDetails({
           interviewer: "AI Interviewer",
@@ -68,11 +139,8 @@ const [showMessage, setShowMessage] = useState(false);
           role,
           remainingTime: parseInt(duration) * 60
         })
-        setShowMessage(false);
-    }
-    else {
-        setPendingSettings({ duration, role });
-    }
+
+
     }
 
 
@@ -98,8 +166,12 @@ const [showMessage, setShowMessage] = useState(false);
     handleResume,
     interviewStarted,
     startInterview,
-    pendingSettings,
-    showMessage
+    role,
+    jobDescription,
+    handleEnd,
+    feedback,
+    handleRestart,
+    isEnd,
 
 
   };

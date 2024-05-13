@@ -36,17 +36,22 @@ const getCurrentRoadmap = async (roadmapId: string) => {
 
 
     return (<>
+    {roadmap &&
+    <div>
          <div className="flex flex-col p-10 items-start  w-full text-gray-700 bg-white rounded-lg shadow-lg">
          {roadmap &&   <Progress score={roadmap.roadmap.progress}/>}
          </div>
-         <div className="flex flex-col p-10 items-start  w-full text-gray-700 bg-white rounded-lg shadow-lg">
+         <div className="flex flex-col p-10 items-start  w-full text-gray-700 bg-white rounded-lg shadow-lg mt-4">
 
          {roadmap && <RoadmapOverview roadmap={roadmap} />}
          </div>
-         <div className="flex flex-col p-10 items-start  w-full text-gray-700 bg-white rounded-lg shadow-lg">
+         <div className="flex flex-col p-10 items-start  w-full text-gray-700 bg-white rounded-lg shadow-lg mt-4">
            {roadmap && <TaskList roadmapDetails={roadmap.roadmap}/>}
          </div>
-
+         </div>
+}
+{!roadmap &&
+    <div className="flex flex-col p-10 items-center justify-center  w-full text-gray-700 bg-white rounded-lg shadow-lg h-full "> <h1 className="text-3xl font-bold text-gray-700 text-center w-full ">No roadmap selected</h1></div>}
 </>)
 }
 export default CurrentRoadmap;

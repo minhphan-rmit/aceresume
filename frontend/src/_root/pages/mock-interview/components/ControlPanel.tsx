@@ -3,7 +3,7 @@ import { Box, TextField, Button } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import Options from './Options';
 
-const ControlPanel = ({ inputText, onInputChange, onSendMessage, onPause, onResume, isPaused }) => (
+const ControlPanel = ({ inputText, onInputChange, onSendMessage, onPause, onResume, isPaused , onEnd}) => (
   <Box sx={{ py: 2, borderTop: '1px solid gray', display: 'flex', alignItems: 'center' }}>
     <TextField
       fullWidth
@@ -16,7 +16,7 @@ const ControlPanel = ({ inputText, onInputChange, onSendMessage, onPause, onResu
     <Button variant="contained" onClick={onSendMessage} endIcon={<SendIcon />} disabled={!inputText.trim()}>
       Send
     </Button>
-    <Options onPause={onPause} onResume={onResume} isPaused={isPaused} />
+    <Options onPause={onPause} onResume={onResume} isPaused={isPaused} onEnd={onEnd}/>
   </Box>
 );
 

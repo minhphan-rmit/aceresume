@@ -4,9 +4,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { Box, Typography } from '@mui/material';
 import FileUploadUtils from '../../../../../config/FileUploadUtils'
-import { set } from 'firebase/database';
-import { StringFormat } from 'firebase/storage';
-import { ContactlessOutlined } from '@mui/icons-material';
+
 
 
 interface NewAnalysisProps {
@@ -96,6 +94,9 @@ const NewAnalysis: React.FC<NewAnalysisProps> = ({ onUploadSuccess }) =>{
                 }}
 
             );
+            setIsAnalyzingData(false);
+            navigate('?component=yourAnalysis');
+
         }catch (error) {
             console.error('Error analyzing data from file:', error);
            alert('Error analyzing data from file');
@@ -126,7 +127,7 @@ const NewAnalysis: React.FC<NewAnalysisProps> = ({ onUploadSuccess }) =>{
 
             // Extract data from resume
 
-const resumeId = localStorage.getItem('resumeId');
+            const resumeId = localStorage.getItem('resumeId');
            extractData(resumeId);
 
         } catch (error) {

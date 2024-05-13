@@ -2,7 +2,7 @@
 import React from 'react';
 import { Button, Menu, MenuItem } from '@mui/material';
 
-const Options = ({ onPause, onResume, isPaused }) => {
+const Options = ({ onPause, onResume, isPaused, onEnd}) => {
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
     const handleClick = (event) => {
@@ -29,7 +29,7 @@ const Options = ({ onPause, onResume, isPaused }) => {
                 ) : (
                     <MenuItem sx={{color:'red'}} onClick={() => { onPause(); handleClose(); }}>Pause</MenuItem>
                 )}
-                <MenuItem sx={{color:' black'}} onClick={() => {  handleClose(); }}>End Interview</MenuItem>
+                <MenuItem sx={{color:' black'}} onClick={() => { onEnd(); handleClose(); }}>End Interview</MenuItem>
             </Menu>
         </>
     );

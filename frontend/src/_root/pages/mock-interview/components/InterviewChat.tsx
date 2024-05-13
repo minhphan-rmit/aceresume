@@ -24,13 +24,16 @@ const InterviewChat = () => {
     handleResume,
     interviewStarted,
     startInterview,
-    pendingSettings,
-    showMessage
+    role,
+   handleEnd,
+   handleRestart,
+   feedback,
+    jobDescription,
+    isEnd
   } = useInterview();
   useEffect(() => {
-    console.log('Welcome message updated:', welcomeMessage);
-    console.log('Pending settings:', pendingSettings);
-}, [welcomeMessage, pendingSettings, showMessage]);
+
+}, [welcomeMessage, role, jobDescription, feedback]);
 
 
   const LPtheme = createTheme(getLPTheme());
@@ -39,21 +42,30 @@ const InterviewChat = () => {
   return (
     <ThemeProvider theme={LPtheme}>
     <Container sx={{ height: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-      {!interviewStarted && (
+      {!interviewStarted && !isEnd &&(
         <InterviewSettings onStartInterview={startInterview} />
       )}
       {isPaused && (
         <PauseOverlay />
       )}
-     {interviewStarted && welcomeMessage && (
+     { isEnd && (
     <OnScreenMessage
-        message={welcomeMessage}
-        buttonMessage="Start Interview"
-        onEventClick={() => startInterview(pendingSettings.duration, pendingSettings.role, true)}
-        showMessage={true}
+        message='Reviewing and Generating Feedback...'
+        buttonMessage="Restart the Intervew"
+        onEventClick={handleRestart}
+
+
     />
 )}
 
+{ isEnd && feedback &&(
+    <OnScreenMessage
+        message={feedback}
+        buttonMessage="Restart the Intervew"
+        onEventClick={handleRestart}
+
+    />
+)}
       <StatusBar interviewDetails={interviewDetails} />
       <MessageList messages={messages} />
       <ControlPanel
@@ -63,6 +75,8 @@ const InterviewChat = () => {
         onPause={handlePause}
         onResume={handleResume}
         isPaused={isPaused}
+        onEnd={()=> handleEnd(false)}
+
       />
     </Container>
     </ThemeProvider>

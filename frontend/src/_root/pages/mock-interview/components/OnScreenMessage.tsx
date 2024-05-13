@@ -2,11 +2,10 @@ import React from 'react';
 import { Box, Button, TextField, Typography, duration } from '@mui/material';
 import { indigo } from '@mui/material/colors';
 
-const OnScreenMessage = ({ message, buttonMessage, onEventClick, showMessage }) => {
+const OnScreenMessage = ({ message, buttonMessage, onEventClick }) => {
 
-    if (!showMessage) {
-        return null;
-    }
+
+
   return (
 
 
@@ -27,8 +26,8 @@ const OnScreenMessage = ({ message, buttonMessage, onEventClick, showMessage }) 
       padding: 4
 
     }}>
-      <Box sx={{ maxWidth:'30%'}}>
-      <Typography variant="h6" color="common.white" sx={{ mb: 2, backgroundColor: 'white', color:indigo[600], borderRadius:'10px', padding: '1rem' }}>
+      <Box sx={{ maxWidth:'80%', height:'500px'}}>
+      <Typography variant="h6" color="common.white" sx={{ mb: 2, backgroundColor: 'white', color:indigo[600], borderRadius:'10px', padding: '1rem',maxHeight:'300px', overflowY:'scroll'}}>
        {message}
       </Typography>
 

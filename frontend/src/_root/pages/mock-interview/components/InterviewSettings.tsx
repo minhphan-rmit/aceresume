@@ -56,8 +56,8 @@ const InterviewSettings = ({ onStartInterview }) => {
         onChange={(e) => setJobDescription(e.target.value)}
         sx={{ mb: 2, backgroundColor: 'common.white', width: '100%', borderRadius: '10px' }}
       />
-      <Button variant="contained" color="primary" onClick={() => onStartInterview(duration, role, false)} sx={{ padding: 2, height: '100', width:'100%' }}>
-        Next
+      <Button variant="contained" color="primary" onClick={() => onStartInterview(duration, role, jobDescription)} sx={{ padding: 2, height: '100', width:'100%' }}>
+        Start Interview
       </Button>
       </Box>
     </Box>

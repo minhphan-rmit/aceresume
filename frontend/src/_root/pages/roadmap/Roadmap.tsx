@@ -70,7 +70,7 @@ const Roadmap = () => {
       <RoadmapSideBar onChange={handleComponentChange}/>
 
 
-        <div className="flex flex-col gap-4 items-center w-full h-full text-gray-700 bg-none rounded-lg overflow-y-auto  ">
+        <div className="flex flex-col items-center w-full h-full text-gray-700 bg-none rounded-lg overflow-y-auto gap-4">
         {renderComponent()}</div>
 </div>
 
