@@ -1,7 +1,11 @@
 import React from 'react';
+import { useEffect } from 'react';
 
 const CVPreview = ({fileUrl}) => {
-    const uploadedFileUrl = fileUrl ? fileUrl : localStorage.getItem('uploadedFileUrl');
+    // listen to change in fileUrl and update localStorage
+    const uploadedFileUrl = localStorage.getItem('uploadedFileUrl') ?? fileUrl;
+
+
     return (
         <>
             <div className="container">

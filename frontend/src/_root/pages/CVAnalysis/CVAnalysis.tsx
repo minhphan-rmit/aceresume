@@ -19,7 +19,7 @@ import { ThemeProvider, createTheme } from "@mui/material/styles";
 
 const CVAnalysis = () => {
   const [fileUrl, setFileUrl] = useState<string | null>(null);
-  const [resumeAnalysis, setResumeAnalysis] = useState(JSON || null);
+  const [resumeId, setResumeId] = useState<string | null>(null);
   const navigate = useNavigate();
   const location = useLocation();
   const query = new URLSearchParams(location.search);
@@ -30,11 +30,19 @@ const CVAnalysis = () => {
   const handleUploadSuccess = (url:string) => {
     setFileUrl(url);
     localStorage.setItem('uploadedFileUrl', url);
+
   };
 
-  const handleAnalysisSuccess = (resumeAnalysis: JSON) => {
-    setResumeAnalysis(resumeAnalysis);
+  const handleChangeSuccess = (resumeId: string, resumeUrl: string) => {
+    setFileUrl(resumeUrl);
+    setResumeId(resumeId);
+    localStorage.setItem('resumeId', resumeId);
+    localStorage.setItem('uploadedFileUrl', resumeUrl);
+    console.log('Resume ID:', resumeId);
+    setSelectedComponent('yourAnalysis');
   };
+
+
 
   // Update URL whenever the selected component or toggle changes
   useEffect(() => {
@@ -57,9 +65,9 @@ const CVAnalysis = () => {
       case 'newAnalysis':
        return <NewAnalysis onUploadSuccess={handleUploadSuccess}/>;
       case 'yourAnalysis':
-        return <YourAnalysis />;
+        return <YourAnalysis resumeID={resumeId}/>;
       case 'historyAnalysis':
-        return <HistoryAnalysis />;
+        return <HistoryAnalysis onChangeSuccess={handleChangeSuccess} />;
       default:
        return  <NewAnalysis onUploadSuccess={handleUploadSuccess}/>;
     }

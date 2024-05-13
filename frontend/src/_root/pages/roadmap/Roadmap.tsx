@@ -8,6 +8,7 @@ import GeneratedRoadmap from './components/generated-roadmap/GeneratedRoadmap';
 import CurrentRoadmap from './components/current-roadmap/CurrentRoadmap';
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import FeatureBar from '../../components/FeatureBar/FeatureBar';
+import axios from 'axios';
 
 const Roadmap = () => {
     const navigate = useNavigate();
@@ -15,6 +16,9 @@ const Roadmap = () => {
     const query = new URLSearchParams(location.search);
     const LPtheme = createTheme(getLPTheme());
     const [selectedComponent, setSelectedComponent] = React.useState(query.get('component') || 'newRoadmap');
+    const [roadmapId, setRoadmapId] = useState<string | null>(null);
+
+
 
  // Update URL whenever the selected component or toggle changes
  useEffect(() => {
@@ -25,18 +29,34 @@ const Roadmap = () => {
     setSelectedComponent(component);
   };
 
+  const handleGeneratedSuccess = (roadmapId: string) => {
+
+    setRoadmapId(roadmapId);
+    setSelectedComponent('currentRoadmap');
+    localStorage.setItem('roadmapId', roadmapId);
+
+  }
+  const handleCurrentSuccess = (roadmapId: string) => {
+
+    setRoadmapId(roadmapId);
+    localStorage.setItem('roadmapId', roadmapId);
+    setSelectedComponent('currentRoadmap');
+  }
+
+
+
 
   // render component based on selected component
   const renderComponent = () => {
     switch (selectedComponent) {
       case 'newRoadmap':
-        return <NewRoadmap />;
+        return <NewRoadmap onGeneratedSuccess={handleGeneratedSuccess}/>;
       case 'currentRoadmap':
-        return <CurrentRoadmap />;
+        return <CurrentRoadmap roadmapId={roadmapId}/>;
       case 'historyRoadmap':
-        return <GeneratedRoadmap />;
+        return <GeneratedRoadmap onChangeSuccess={handleCurrentSuccess}/>;
       default:
-        return <NewRoadmap />;
+        return <NewRoadmap onGeneratedSuccess={handleGeneratedSuccess}/>;
     }
   };
     return (

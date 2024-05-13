@@ -4,14 +4,14 @@ import Suggestion from "./Suggestion";
 import Weakness from "./Weakness";
 import axios from 'axios';
 import {useEffect, useState} from 'react';
-const YourAnalysis = () => {
+const YourAnalysis = ({resumeID}) => {
     const userId = '663852ecd568222769540792';
 
     const [analysis, setAnalysis] = useState<any>(null);
 
 
     useEffect(() => {
-        const resumeId = localStorage.getItem('resumeId');
+        const resumeId = localStorage.getItem('resumeId')? localStorage.getItem('resumeId'): resumeID;
         console.log('Resume ID:', resumeId);
         if (resumeId){
         getAnalysis(resumeId);}
@@ -33,7 +33,8 @@ const YourAnalysis = () => {
     return (
         <>
          <div className="flex flex-col p-10 items-start  w-full text-gray-700 bg-white rounded-lg shadow-lg">
-       <ScoreBar score={60} />
+         {analysis && <ScoreBar score={analysis.score} />}
+
   </div>
   <div className="flex flex-col  items-end w-full p-10 text-gray-700 bg-white rounded-lg shadow-lg">
   < h2 className=" text-3xl font-bold text-gray-700">

@@ -29,6 +29,7 @@ class ResumeAnalysis(BaseModel):
     pros: List[str] = Field(..., description="List of pros")
     cons: List[str] = Field(..., description="List of cons")
     add_ons: List[str] = Field(..., description="List of add-ons")
+    score: Optional[float] = None
     created_at: Optional[datetime] = None
 
 
@@ -37,10 +38,13 @@ class Target(BaseModel):
     topic_description: str = Field(..., description="Description of the topic")
     resources: List[str] = Field(..., description="List of resources")
     knowledge_list: List[str] = Field(..., description="List of knowledge")
+    is_done: bool = Field(default=False, description="Check if the topic is done")
 
 
 class RoadmapModel(BaseModel):
     level: str = Field(..., description="The level of knowledge of the client")
     list_of_roadmap: List[Target] = Field(..., description="A Roadmap for user")
     summary: str = Field(..., description="A brief description of the whole roadmap")
-    created_at: Optional[datetime] = None
+    progress: float = Field(
+        default=0.0, description="Percentage of the roadmap completed"
+    )

@@ -1,59 +1,41 @@
 import * as React from 'react';
 import { styled } from '@mui/material/styles';
 import Card from '@mui/material/Card';
-import CardHeader from '@mui/material/CardHeader';
 import CardMedia from '@mui/material/CardMedia';
 import CardContent from '@mui/material/CardContent';
 import CardActions from '@mui/material/CardActions';
 import Collapse from '@mui/material/Collapse';
-import Avatar from '@mui/material/Avatar';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
 import IconButton, { IconButtonProps } from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
-import { red } from '@mui/material/colors';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import ShareIcon from '@mui/icons-material/Share';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 
-interface ExpandMoreProps extends IconButtonProps {
-  expand: boolean;
-}
 
-const ExpandMore = styled((props: ExpandMoreProps) => {
-  const { expand, ...other } = props;
-  return <IconButton {...other} />;
-})(({ theme, expand }) => ({
-  transform: !expand ? 'rotate(0deg)' : 'rotate(180deg)',
-  marginLeft: 'auto',
-  transition: theme.transitions.create('transform', {
-    duration: theme.transitions.duration.shortest,
-  }),
-}));
 
-export default function HistoryCard({ filename, resume_id, resume_url, created_at }) {
+export default function HistoryCard ({filename, resume_id, resume_url, created_at, onClick }) {
   const [expanded, setExpanded] = React.useState(false);
   const dateString = created_at;
   const formattedDate = dateString.split('T')[0];
 
 
 
-  const handleExpandClick = () => {
-    setExpanded(!expanded);
-  };
-
   return (
-    <Card className='shadow-sm' sx={{ maxWidth: 200, maxHeight:300 }}>
-      <CardHeader
-       className='hover:outline outline-indigo-500 cursor-pointer '
-        action={
-          <IconButton aria-label="settings">
-            <MoreVertIcon />
-          </IconButton>
-        }
-        title={<Typography   className="text-wrap">{filename}</Typography>}
-        subheader={formattedDate}
-
-      />
+    <Card className='shadow-sm' sx={{ width: 200, height:300, textWrap:'wrap' }} onClick={() => onClick(resume_id, resume_url)} >
+      <div
+       className='hover:outline outline-indigo-500 cursor-pointer flex flex-row p-3 w-full '
+      >
+        <div className='w-4/5 overflow-wrap '>
+        <Typography className="break-words overflow-hidden" >{filename}</Typography>
+        <Typography className="break-words overflow-hidden text-gray-500">{formattedDate}</Typography>
+        </div>
+        <CardActions disableSpacing>
+        <IconButton aria-label="more" >
+          <MoreVertIcon/>
+        </IconButton>
+      </CardActions>
+      </div>
       <CardMedia
         component="img"
         height="194"
@@ -66,9 +48,7 @@ export default function HistoryCard({ filename, resume_id, resume_url, created_a
         </Typography>
       </CardContent>
 
-      <Collapse in={expanded} timeout="auto" unmountOnExit>
 
-      </Collapse>
     </Card>
   );
 }
