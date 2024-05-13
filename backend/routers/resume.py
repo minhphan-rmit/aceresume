@@ -191,7 +191,6 @@ async def feedback_resume(
     "/{user_id}/roadmap-generate",
     status_code=200,
     description="Generate Roadmap for the user based on the resume info and job description",
-    response_model=RoadmapModel,
     response_description="Roadmap in the format of JSON",
     responses={401: {"model": Message}, 500: {"model": Message}},
 )
@@ -200,7 +199,7 @@ async def generate_roadmap(
     resume_id: str,
     job_description: str,
     roadmap_name: str,
-) -> RoadmapModel:
+) -> str:
     # Check if the roadmap name already exists
     existing_roadmap = Constants.ROLE_ROADMAP.find_one(
         {"roadmap_name": roadmap_name}, {"user_id": user_id}
@@ -236,7 +235,6 @@ async def generate_roadmap(
     )
 
     roadmap_data = {
-        "roadmap_id": ObjectId(),  # Generate a new ObjectId for the roadmap
         "user_id": user_id,
         "resume_id": resume_id,
         "roadmap_name": roadmap_name,
@@ -247,9 +245,12 @@ async def generate_roadmap(
 
     roadmap_json = json.loads(json_util.dumps(roadmap_data))
 
-    Constants.ROLE_ROADMAP.insert_one(roadmap_json)
+    inserted_result = Constants.ROLE_ROADMAP.insert_one(roadmap_json)
+    inserted_id = inserted_result.inserted_id
+    # insert ID to string
+    inserted_id = str(inserted_id)
 
-    return roadmap_data
+    return inserted_id
 
 
 @router.get("/{user_id}/{resume_id}/get_roadmap")

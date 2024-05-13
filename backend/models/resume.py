@@ -41,9 +41,15 @@ class Target(BaseModel):
 
 
 class RoadmapModel(BaseModel):
-    level: str = Field(..., description="The level of knowledge of the client")
-    list_of_roadmap: List[Target] = Field(..., description="A Roadmap for user")
-    summary: str = Field(..., description="A brief description of the whole roadmap")
+    level: Optional[str] = Field(
+        ..., description="The level of knowledge of the client"
+    )
+    list_of_roadmap: Optional[List[Target]] = Field(
+        ..., description="A Roadmap for user"
+    )
+    summary: Optional[str] = Field(
+        ..., description="A brief description of the whole roadmap"
+    )
     progress: float = Field(
         default=0.0, description="Percentage of the roadmap completed"
     )

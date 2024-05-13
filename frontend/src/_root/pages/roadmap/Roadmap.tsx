@@ -34,6 +34,7 @@ const Roadmap = () => {
     setRoadmapId(roadmapId);
     setSelectedComponent('currentRoadmap');
     localStorage.setItem('roadmapId', roadmapId);
+    console.log('Roadmap ID:', roadmapId);
 
   }
   const handleCurrentSuccess = (roadmapId: string) => {

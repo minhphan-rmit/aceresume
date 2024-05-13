@@ -40,7 +40,7 @@ const GeneratedRoadmap: React.FC<GeneratedRoadmapProps> = ({ onChangeSuccess})  
     }
 
     return (
-        <div className="w-full bg-white h-full rounded-lg flex flex-row  p-10 flex-wrap justify-between items-center">
+        <div className="w-full bg-white h-full rounded-lg flex flex-row  p-10 flex-wrap justify-between items-center overflow-y-scroll">
                   <h1 className="text-3xl font-bold text-gray-700 text-center w-1/3">Generated Roadmaps</h1>
                   <div className="w-2/3 text-right flex items-center gap-4 flex-wrap">
 

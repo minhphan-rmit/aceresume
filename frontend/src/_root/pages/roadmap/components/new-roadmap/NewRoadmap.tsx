@@ -1,6 +1,7 @@
 import { useState,FormEvent } from "react";
-
+import { Box, Typography } from "@mui/material";
 import axios from 'axios';
+import { set } from "firebase/database";
 interface NewRoadmapProps {
     onGeneratedSuccess: (roadmapId: string) => void;
 
@@ -10,6 +11,7 @@ const NewRoadmap: React.FC<NewRoadmapProps> = ({ onGeneratedSuccess })  => {
      // State to manage dropdown visibility
      const userId = '663852ecd568222769540792'; // Assume this is the user ID
      const resumeId = localStorage.getItem('resumeId');
+     const [isGenerating, setIsGenerating] = useState(false);
 
      const [roadmapName, setRoadmapName] = useState('');
         const [jobDescription, setJobDescription] = useState('');
@@ -35,6 +37,7 @@ const NewRoadmap: React.FC<NewRoadmapProps> = ({ onGeneratedSuccess })  => {
 
 
             try {
+                setIsGenerating(true);
                 const response = await axios.post(`http://localhost:8000/api/aceresume/resume/${userId}/roadmap-generate`, null,
                 {
                     params:{
@@ -43,11 +46,14 @@ const NewRoadmap: React.FC<NewRoadmapProps> = ({ onGeneratedSuccess })  => {
                     roadmap_name: roadmapName
                     }
                 });
+                console.log('Generated roadmap:', response.data);
 
-
+                onGeneratedSuccess(response.data);
+                setIsGenerating(false);
 
 
             } catch (error) {
+                setIsGenerating(false);
                 console.error('Error generating roadmap:', error);
                 alert('Error generating roadmap');
             }
@@ -56,6 +62,25 @@ const NewRoadmap: React.FC<NewRoadmapProps> = ({ onGeneratedSuccess })  => {
 
     return (
         <div className="w-full bg-white h-full rounded-lg  flex flex-col items-center p-10">
+            {isGenerating && (<Box sx={{
+        height: '90vh',
+        borderRadius: '10px',
+        position: 'absolute',
+        top: 186,
+        left: 40,
+        right: 40,
+        bottom: 0,
+        zIndex: 1000,
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.6)',
+        padding: 4
+    }}>
+        <Typography variant="h5" color="common.white">Generating Roadmap...</Typography>
+    </Box>
+)}
             <div className=" w-full  bg-white rounded-xl z-10 flex flex-row items-center justify-between gap-10">
 		<div className=" ">
 			<h2 className="mt-5 text-3xl font-bold text-gray-900">

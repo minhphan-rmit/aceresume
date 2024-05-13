@@ -5,7 +5,7 @@ import Weakness from "./Weakness";
 import axios from 'axios';
 import {useEffect, useState} from 'react';
 const YourAnalysis = ({resumeID}) => {
-    const userId = '663852ecd568222769540792';
+    const userId = localStorage.getItem('userId')??'663852ecd568222769540792';
 
     const [analysis, setAnalysis] = useState<any>(null);
 
