@@ -202,7 +202,9 @@ async def generate_roadmap(
     roadmap_name: str,
 ) -> RoadmapModel:
     # Check if the roadmap name already exists
-    existing_roadmap = Constants.ROLE_ROADMAP.find_one({"roadmap_name": roadmap_name})
+    existing_roadmap = Constants.ROLE_ROADMAP.find_one(
+        {"roadmap_name": roadmap_name}, {"user_id": user_id}
+    )
     if existing_roadmap:
         raise HTTPException(status_code=409, detail="Roadmap name already exists")
 
@@ -234,6 +236,7 @@ async def generate_roadmap(
     )
 
     roadmap_data = {
+        "roadmap_id": ObjectId(),  # Generate a new ObjectId for the roadmap
         "user_id": user_id,
         "resume_id": resume_id,
         "roadmap_name": roadmap_name,
@@ -246,14 +249,12 @@ async def generate_roadmap(
 
     Constants.ROLE_ROADMAP.insert_one(roadmap_json)
 
-    return roadmap
+    return roadmap_data
 
 
 @router.get("/{user_id}/{resume_id}/get_roadmap")
-async def get_roadmap(
-    user_id: str, resume_id: str, roadmap_name: str
-) -> Dict[str, Any]:
-    query = {"user_id": user_id, "resume_id": resume_id, "roadmap_name": roadmap_name}
+async def get_roadmap(user_id: str, resume_id: str, roadmap_id: str) -> Dict[str, Any]:
+    query = {"user_id": user_id, "resume_id": resume_id, "_id": ObjectId(roadmap_id)}
     roadmap_data = Constants.ROLE_ROADMAP.find_one(query)
 
     if not roadmap_data:
@@ -284,6 +285,7 @@ async def get_roadmap(
 
     # Build a custom response that includes the model and the additional fields
     response_data = {
+        "roadmap_id": str(roadmap_data["_id"]),
         "roadmap": roadmap.dict(),  # Convert the Pydantic model to a dictionary
         "job_description": roadmap_data.get(
             "job_description", "No description provided"
@@ -298,8 +300,10 @@ async def get_roadmap(
 
 
 @router.get("/{user_id}/get_all_roadmaps")
-async def get_all_roadmaps(user_id: str) -> List[Dict[str, Any]]:
-    roadmaps_data = Constants.ROLE_ROADMAP.find({"user_id": user_id})
+async def get_all_roadmaps(user_id: str, resume_id: str) -> List[Dict[str, Any]]:
+    roadmaps_data = Constants.ROLE_ROADMAP.find(
+        {"user_id": user_id, "resume_id": resume_id}
+    )
 
     # Check if the user has any roadmaps
     if Constants.ROLE_ROADMAP.count_documents({"user_id": user_id}) == 0:
@@ -336,6 +340,9 @@ async def get_all_roadmaps(user_id: str) -> List[Dict[str, Any]]:
             roadmap_model = RoadmapModel(**parsed_roadmap)
             # Create a custom dictionary including the RoadmapModel data and additional fields
             roadmap_response = {
+                "roadmap_id": str(
+                    roadmap_data["_id"]
+                ),  # Convert ObjectId to string for JSON serialization
                 "roadmap_details": roadmap_model.dict(),
                 "job_description": parsed_roadmap["job_description"],
                 "roadmap_name": parsed_roadmap["roadmap_name"],
@@ -371,7 +378,7 @@ async def get_resume_analysis(user_id: str, resume_id: str) -> ResumeAnalysis:
         return ResumeAnalysis(
             pros=analysis_data.get("pros", []),
             cons=analysis_data.get("cons", []),
-            add_ons=analysis_data.get("add-ons", []),
+            add_ons=analysis_data.get("add_ons", []),
             score=analysis_data.get("score", None),
             created_at=analysis_data.get("analyse_at", None),
         )

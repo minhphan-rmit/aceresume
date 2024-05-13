@@ -1,50 +1,96 @@
-import React from 'react';
+import * as React from 'react';
+import CircularProgress, {
+  CircularProgressProps,
+} from '@mui/material/CircularProgress';
+import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import { useState } from 'react';
 
-// Assuming the roadmap data is structured as you described
-const RoadmapCard = ({ roadmap }) => {
-    const {
-        roadmap_name, // Using roadmap_name from the details
-        roadmap: [
-            [_, level], // Extracting level information
-            [__, list_of_roadmap], // Extracting list of topics
-            [___, summary], // Extracting summary
-            [____, progress] // Extracting progress
-        ]
-    } = roadmap;
+function CircularProgressWithLabel(
+  props: CircularProgressProps & { value: number },
+) {
+  return (
+    <Box sx={{ position: 'relative', display: 'inline-flex' }}>
+      <CircularProgress variant="determinate" {...props} />
+      <Box
+        sx={{
+          top: 0,
+          left: 0,
+          bottom: 0,
+          right: 0,
+          position: 'absolute',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <Typography
+          variant="caption"
+          component="div"
+          color="text.secondary"
+        >{`${Math.round(props.value)}%`}</Typography>
+      </Box>
+    </Box>
+  );
+}
 
-    // You might need additional checks if data might be inconsistent
+
+const RoadmapCard = ({ roadmap, onClick }) => {
+    const formattedDate = roadmap.created_at.split('T')[0];
+    const [isOpen, setIsOpen] = useState(false);
+
+    // Function to toggle the isOpen state
+    const toggleDetails = () => {
+        setIsOpen(!isOpen);
+    };
+
+
+    // Inline styles for expanding and collapsing
+    const detailStyles = {
+        maxHeight: isOpen ? '500px' : '0px', // Adjust max-height as needed
+        overflow: 'hidden',
+        transition: 'max-height 1s ease-in-out',
+        padding: isOpen ? '20px' : '0 20px' // Padding for visual effect
+    };
+
+
+
 
     return (
-        <div className="relative mt-6 flex w-full max-w-4xl flex-col rounded-xl bg-white shadow-md">
+        <div className="relative mt-6 flex w-96 flex-col rounded-xl bg-gray-50 text-gray-700 shadow-md cursor-pointer" >
+
             <div className="p-6">
-                <h4 className="text-lg font-semibold">{roadmap_name}</h4>
-                <p className="text-sm text-gray-500">Level: {level}</p>
-                <p className="mt-2 text-gray-700">{summary}</p>
+                <details className='open:row-span-2 ' > <summary  onClick={toggleDetails} style={{ cursor: 'pointer' }}>
+                <h5 className="mb-2 text-xl font-semibold text-gray-700">{roadmap.roadmap_name}</h5>
+                <p>Generated at: {formattedDate}</p>
+
+                <div className="pt-4 flex items-center">
+                    <p>Status:</p>
+                <CircularProgressWithLabel value={roadmap.roadmap_details.progress} />
+                </div></summary>
+                <div style={detailStyles}>
+                <p className="text-left text-gray-600 font-semibold">List of topics: </p>
+
+               {
+                     roadmap.roadmap_details.list_of_roadmap.map((task, index) => {
+                          return (
+                            <div key={index} className="p-4 border-b border-gray-200">
+                                 <h5 className="text-sm  text-gray-500">{task.topic_name}</h5>
+
+                            </div>
+                          )
+                     })
+               }
             </div>
-            <div className="px-6 py-4">
-                {list_of_roadmap.map((topic, index) => (
-                    <div key={index} className="mb-4">
-                        <h5 className="font-bold">{topic[0][1]}</h5>
-                        <p>{topic[1][1]}</p>
-                        <div className="text-sm text-gray-600">Resources:</div>
-                        <ul className="list-disc list-inside">
-                            {topic[2][1].map((resource, index) => (
-                                <li key={index} className="text-blue-600 hover:underline">
-                                    <a href={resource} target="_blank" rel="noopener noreferrer">{resource}</a>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
-                ))}
-            </div>
-            <div className="px-6 pt-4 pb-2">
-                <div className="bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
-                    <div className="bg-pink-600 h-2.5 rounded-full" style={{ width: `${progress}%` }}></div>
-                </div>
-                <p className="text-right text-sm text-gray-600">{progress}% Completed</p>
+                </details>
+
+                <Button variant="contained" color="primary" onClick={onClick} className="mt-4">
+                    View Details
+                </Button>
             </div>
         </div>
     );
-};
+}
 
 export default RoadmapCard;
