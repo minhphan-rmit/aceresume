@@ -39,6 +39,7 @@ const userTestimonials = [
 export default function Testimonials() {
   return (
     <Container
+      id="testimonials"
       sx={{
         pt: { xs: 4, sm: 12 },
         pb: { xs: 8, sm: 16 },
@@ -77,6 +78,7 @@ export default function Testimonials() {
                 flexDirection: "column",
                 justifyContent: "space-between",
                 height: "100%",
+                backgroundImage: 'linear-gradient(to bottom, #E8EAFF, #FFFFFF, #FCFCFD)'
               }}
             >
               <CardHeader

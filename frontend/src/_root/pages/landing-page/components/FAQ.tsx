@@ -50,7 +50,7 @@ export default function FAQ() {
             aria-controls="panel1d-content"
             id="panel1d-header"
           >
-            <Typography component="h3" variant="subtitle2">
+            <Typography component="h3" variant="subtitle2" sx={{ color: expanded === "panel1" ? "#7682FB" : "inherit" }}>
               How does the mock interview feature work?
             </Typography>
           </AccordionSummary>
@@ -76,7 +76,7 @@ export default function FAQ() {
             aria-controls="panel2d-content"
             id="panel2d-header"
           >
-            <Typography component="h3" variant="subtitle2">
+            <Typography component="h3" variant="subtitle2" sx={{ color: expanded === "panel2" ? "#7682FB" : "inherit" }}>
               What if I'm not satisfied with the subscription?
             </Typography>
           </AccordionSummary>
@@ -101,7 +101,7 @@ export default function FAQ() {
             aria-controls="panel3d-content"
             id="panel3d-header"
           >
-            <Typography component="h3" variant="subtitle2">
+            <Typography component="h3" variant="subtitle2" sx={{ color: expanded === "panel3" ? "#7682FB" : "inherit" }}>
               Can I upgrade or change my plan later on?
             </Typography>
           </AccordionSummary>
@@ -126,7 +126,7 @@ export default function FAQ() {
             aria-controls="panel4d-content"
             id="panel4d-header"
           >
-            <Typography component="h3" variant="subtitle2">
+            <Typography component="h3" variant="subtitle2" sx={{ color: expanded === "panel4" ? "#7682FB" : "inherit" }}>
               How do I get started with the interview preparation services?
             </Typography>
           </AccordionSummary>

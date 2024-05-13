@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from 'react';
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
@@ -11,77 +12,36 @@ import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import Divider from "@mui/material/Divider";
 import { indigo } from "@mui/material/colors";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
 
-const jobs = [
-  {
-    title: "Senior Software Developer",
-    category: "Developer",
-    type: "Full-time",
-    description:
-      "Develop high-quality software design and architecture. Identify, prioritize and execute tasks in the software development lifecycle.",
-    location: "New York, NY",
-    salary: "$120k - $150k",
-    companyName: "TechSphere",
-    companyLogo: "/static/images/logo1.png",
-  },
-  {
-    title: "Product Designer",
-    category: "UI/UX",
-    type: "Remote",
-    description:
-      "Create user-centered designs by understanding business requirements, the voice of the customer, user journeys, customer feedback.",
-    location: "Remote",
-    salary: "$95k - $120k",
-    companyName: "DesignPro",
-    companyLogo: "/static/images/logo2.png",
-  },
-  {
-    title: "Product Designer",
-    category: "UI/UX",
-    type: "Remote",
-    description:
-      "Create user-centered designs by understanding business requirements, the voice of the customer, user journeys, customer feedback.",
-    location: "Remote",
-    salary: "$95k - $120k",
-    companyName: "DesignPro",
-    companyLogo: "/static/images/logo2.png",
-  },
-  {
-    title: "Product Designer",
-    category: "UI/UX",
-    type: "Remote",
-    description:
-      "Create user-centered designs by understanding business requirements, the voice of the customer, user journeys, customer feedback.",
-    location: "Remote",
-    salary: "$95k - $120k",
-    companyName: "DesignPro",
-    companyLogo: "/static/images/logo2.png",
-  },
-  {
-    title: "Product Designer",
-    category: "UI/UX",
-    type: "Remote",
-    description:
-      "Create user-centered designs by understanding business requirements, the voice of the customer, user journeys, customer feedback.",
-    location: "Remote",
-    salary: "$95k - $120k",
-    companyName: "DesignPro",
-    companyLogo: "/static/images/logo2.png",
-  },
-  {
-    title: "Product Designer",
-    category: "UI/UX",
-    type: "Remote",
-    description:
-      "Create user-centered designs by understanding business requirements, the voice of the customer, user journeys, customer feedback.",
-    location: "Remote",
-    salary: "$95k - $120k",
-    companyName: "DesignPro",
-    companyLogo: "/static/images/logo2.png",
-  },
-];
+const randomColor = () => {
+  const colors = ['#f44336', '#e91e63', '#9c27b0', '#673ab7', '#3f51b5', '#2196f3', '#03a9f4', '#00bcd4', '#009688', '#4caf50', '#8bc34a', '#cddc39', '#ffeb3b', '#ffc107', '#ff9800', '#ff5722', '#795548', '#607d8b'];
+  return colors[Math.floor(Math.random() * colors.length)];
+};
 
-export default function TrendingJobs() {
+function TrendingJobs() {
+  const [jobs, setJobs] = useState([]);
+
+  useEffect(() => {
+    const fetchJobs = async () => {
+      try {
+        const response = await fetch(`http://localhost:8000/api/aceresume/job/find-jobs-available`, {
+          method: 'POST',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+          },
+        });
+        const data = await response.json();
+        setJobs(data.list_of_jobs);
+      } catch (error) {
+        console.error('Error fetching jobs:', error);
+      }
+    };
+
+    fetchJobs();
+  }, []);
+
   return (
     <Container sx={{ py: 4 }}>
       <Typography
@@ -111,8 +71,30 @@ export default function TrendingJobs() {
       <Grid container spacing={3}>
         {jobs.map((job, index) => (
           <Grid item xs={12} sm={6} md={4} key={index}>
-            <Card>
+            <Card sx={{ cursor: 'pointer', backgroundImage: 'linear-gradient(to bottom, #E8EAFF, #FFFFFF, #FFFFFF)', mb: 2}}>
               <CardContent>
+                <Box sx={{display: 'flex'}}>
+                  {job.logo_photo_url !== "None" ? (
+                    <Box sx={{ width: 50, height: 50, flexShrink: 0, mr: 1 }}>
+                      <img src={job.logo_photo_url} style={{borderRadius: "5px"}} alt="logo"/>
+                    </Box>
+                  ) : (
+                    <Box sx={{ width: 50, height: 50, flexShrink: 0, mr: 1, display: 'flex', justifyContent: 'center', alignItems: 'center', backgroundColor: randomColor(), borderRadius: "5px" }}>
+                      <Typography fontWeight="500" sx={{ color: 'white', fontSize: '20px' }}>{job.company.charAt(0)}</Typography>
+                    </Box>
+                  )}
+                  <Box>
+                    <Typography
+                      variant="h6"
+                      sx={{ fontSize: "14px", mb: 0.5, fontWeight: "bold" }}
+                    >
+                      {job.job_title}
+                    </Typography>
+                    <Typography variant="body2" sx={{ fontSize: "14px", mb: 2}}>
+                      {job.company}
+                    </Typography>
+                  </Box>
+                </Box>
                 <Box
                   sx={{
                     display: "flex",
@@ -123,24 +105,27 @@ export default function TrendingJobs() {
                   }}
                 >
                   <Chip
-                    label={job.category}
+                    label={job.location}
                     color="primary"
-                    sx={{ borderRadius: "4px" }}
+                    sx={{ borderRadius: "4px", bgcolor: "#D0D7FF"}}
                   />
-                  <Chip
-                    label={job.type}
-                    color="secondary"
-                    sx={{ borderRadius: "4px" }}
-                  />
+                  {job.job_type !== "None" && (
+                    <Chip
+                      label={job.job_type}
+                      color="secondary"
+                      sx={{ borderRadius: "4px", bgcolor: "#D0D7FF"}}
+                    />
+                  )}
+                  {job.is_remote === true && (
+                    <Chip
+                      label="Remote"
+                      color="secondary"
+                      sx={{ borderRadius: "4px", bgcolor: "#D0D7FF"}}
+                    />
+                  )}
                 </Box>
-                <Typography
-                  variant="h6"
-                  sx={{ fontSize: "20px", fontWeight: "bold", mb: 1 }}
-                >
-                  {job.title}
-                </Typography>
-                <Typography variant="body2" sx={{ mb: 2 }}>
-                  {job.description}
+                <Typography variant="body2" sx={{ mb: 2, maxHeight: 58, overflow: 'hidden', textOverflow: 'ellipsis', display: '-webkit-box', WebkitBoxOrient: 'vertical', WebkitLineClamp: 3 }}>
+                  <div dangerouslySetInnerHTML={{ __html: job.job_description.replace(/### (.*?)(?:\n|$)/g, "<h3>$1</h3>").replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>").replace(/\n/g, "<br/>").replace(/\* /g, "&#8226; ") }} />
                 </Typography>
                 <Box
                   sx={{
@@ -150,13 +135,15 @@ export default function TrendingJobs() {
                     mb: 2,
                   }}
                 >
-                  <Box sx={{ display: "flex", alignItems: "center" }}>
-                    <LocationOnIcon sx={{ mr: 0.5 }} />
-                    {job.location}
-                  </Box>
-                  <Box sx={{ display: "flex", alignItems: "center" }}>
-                    <AttachMoneyIcon sx={{ mr: 0.5 }} />
-                    {job.salary}
+                  <Box sx={{ display: "flex", alignItems: "center", fontSize: '12px' }}>
+                    <MonetizationOnIcon sx={{ mr: 0.5, fontSize: "small", color: 'grey' }} />
+                    {job.min_amount === "None" && job.max_amount === "None" ? (
+                      'Not listed'
+                    ): job.min_amount === job.max_amount ? (
+                      `$${parseFloat(job.max_amount).toLocaleString('en-US')}`
+                    ):(
+                      `$${parseFloat(job.min_amount).toLocaleString('en-US')} to $${parseFloat(job.max_amount).toLocaleString('en-US')}`
+                    )}
                   </Box>
                 </Box>
                 <Divider sx={{ my: 2 }} />
@@ -167,19 +154,14 @@ export default function TrendingJobs() {
                     alignItems: "center",
                   }}
                 >
-                  <Box sx={{ display: "flex", alignItems: "center" }}>
-                    <Box
-                      component="img"
-                      src={job.companyLogo}
-                      sx={{ width: 24, height: 24, mr: 1 }}
-                    />
-                    <Typography variant="body2" fontWeight="bold">
-                      {job.companyName}
-                    </Typography>
-                  </Box>
-                  <Button variant="contained" endIcon={<ArrowForwardIcon />}>
-                    Apply Now
-                  </Button>
+                  <Typography variant="body2" sx={{ mb: 2, color: 'grey', fontSize: '12px' }}>
+                    {job.date_posted}
+                  </Typography>
+                    <a href={job.job_url} target="_blank" rel="noopener noreferrer">
+                      <Button variant="contained" endIcon={<ArrowForwardIcon />}>
+                        Apply Now
+                      </Button>
+                    </a>
                 </Box>
               </CardContent>
             </Card>
@@ -189,3 +171,5 @@ export default function TrendingJobs() {
     </Container>
   );
 }
+
+export default TrendingJobs;

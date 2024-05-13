@@ -6,56 +6,21 @@ from constant import Message, Constants
 from bson import ObjectId
 import bson.binary
 import bcrypt
-import uuid
 from fastapi.encoders import jsonable_encoder
 from models.email import EmailSchema, send_email
 import jwt
-import os
-import uuid
+import random
+import string
 from datetime import datetime, timedelta
+from typing import List
 
 
-router = APIRouter(prefix="/api/v1", tags=["User Profile"])
+router = APIRouter(prefix="/api/aceresume", tags=["User Profile"])
 
 
-def generate_token(
-    user_id: str, expiry_hours: int = 24, one_time_use: bool = True
-) -> str:
-    secret_key = os.environ.get(
-        "JWT_SECRET", "649fb93ef34e4fdf4187709c84d643dd61ce730d91856418fdcf563f895ea40f"
-    )
-    unique_id = str(uuid.uuid4())
-    payload = {
-        "user_id": user_id,
-        "unique_id": unique_id,
-        "exp": datetime.utcnow() + timedelta(hours=expiry_hours),
-    }
-    if one_time_use:
-        payload["used"] = False  # Add a flag indicating whether the token has been used
-
-    return jwt.encode(payload, secret_key, algorithm="HS256")
-
-
-def verify_token(token: str):
-    try:
-        secret_key = os.environ.get(
-            "JWT_SECRET",
-            "649fb93ef34e4fdf4187709c84d643dd61ce730d91856418fdcf563f895ea40f",
-        )
-        payload = jwt.decode(token, secret_key, algorithms=["HS256"])
-        user_id = payload.get("user_id")
-
-        # Check if the token has been used
-        if payload.get("used"):
-            return None  # Token has already been used
-
-        return user_id
-    except jwt.ExpiredSignatureError:
-        # Token has expired
-        return None
-    except jwt.DecodeError:
-        # Token is invalid
-        return None
+def generate_otp(length=6):
+    otp = "".join(random.choices(string.digits, k=length))
+    return otp
 
 
 @router.get(
@@ -91,7 +56,7 @@ def update_profile(
     username: str = Form(None, description="Name of the user"),
     email: str = Form(None, description="Email of the user"),
     number: str = Form(None, description="Phone number of the user"),
-    preference_field: str = Form(None, description="Interest Field"),
+    preference_field: List[str] = Form(None, description="Interest Field"),
     level: str = Form(None, description="Level of the user"),
     password: str = Form(None, description="Password of the user"),
     password_verify: str = Form(...),
@@ -113,11 +78,15 @@ def update_profile(
             if email is not None:
                 update["email"] = email
             if preference_field is not None:
+                preference_field = [item for item in preference_field if item]
                 update["preference_field"] = preference_field
             if level is not None:
                 update["level"] = level
             if password is not None:
-                update["password"] = password
+                hashed_password = bcrypt.hashpw(
+                    password.encode("utf-8"), bcrypt.gensalt()
+                )
+                update["password"] = hashed_password.decode("utf-8")
 
             newAccount = Constants.USERS.find_one_and_update(
                 {"_id": ObjectId(id)},
@@ -144,29 +113,110 @@ def forgot_password(
     background_tasks: BackgroundTasks,
 ):
     """
-    Send a reset password link to the user's email, and update the password in the database.
+    Send a one-time password (OTP) to the user's email or phone for password reset.
     """
     account = Constants.USERS.find_one({"_id": ObjectId(id)})
 
     if account:
         email = account.get("email")
         if email:
-            # Generate token
-            token = generate_token(str(account["_id"]))
+            # Generate OTP
+            otp = generate_otp()
+            otp_expiry_time = datetime.now() + timedelta(minutes=5)
 
-            # Send email with reset password link containing the token
-            subject = "Reset Password"
-            body = f"Please click on the following link to reset password: http://localhost:3000/resetpass?token={token}"
+            Constants.USERS.update_one(
+                {"_id": ObjectId(id)},
+                {
+                    "$set": {
+                        "otp_code": otp,
+                        "otp_expiry_time": otp_expiry_time,
+                        "time_used": 0,
+                    }
+                },
+            )
+            # Send OTP via email or SMS
+            subject = "Reset Password OTP"
+            body = f"""
+                <html>
+                <div bgcolor="#ffffff" leftmargin="0" marginwidth="0" topmargin="0" marginheight="0" offset="0" style=" background-color: #ffffff; margin: 0; padding: 0; font-family: Helvetica, Arial, 'Lucida Grande', sans-serif; height: 100% !important; width: 100% !important; " >
+                    <center role="article" aria-roledescription="email" aria-label="email name" lang="en" dir="ltr" style="background-color: #ffffff; width: 100%; table-layout: fixed;">
+                        <table border="0" cellpadding="0" cellspacing="0" height="100%" width="100%" id="bodyTable" bgcolor="#ffffff" style="max-width: 100% !important; width: 100% !important; min-width: 100% !important;">
+                            <tr>
+                                <td align="center" valign="top" id="bodyCell" style="padding: 0;">
+                                    <table border="0" cellpadding="0" cellspacing="0" width="100%" id="emailBody" bgcolor="#ffffff" style="max-width: 100% !important; width: 100% !important; min-width: 100% !important;">
+                                        <tr>
+                                            <td align="center" valign="top" style="padding-top: 20px; padding-bottom: 20px;">
+                                                <table border="0" cellpadding="0" cellspacing="0" width="700" id="emailHeader" style="max-width: 700px !important; width: 100% !important; margin: auto; color: #7a7a7a; font-weight: normal;">
+                                                    <tr>
+                                                        <td align="center" valign="top">
+                                                            <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                                                                <tr>
+                                                                    <td align="center" valign="top" style="padding-right: 10px; padding-left: 10px;"></td>
+                                                                </tr>
+                                                            </table>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td align="center" valign="top">
+                                                <table border="0" cellpadding="0" cellspacing="0" width="700" id="emailBody" bgcolor="#ffffff" style="max-width: 700px !important; width: 100% !important; margin: auto; color: #7a7a7a; font-weight: normal;">
+                                                    <tr>
+                                                        <td align="center" valign="top">
+                                                            <table border="0" cellpadding="0" cellspacing="0" width="100%" style="color: #7a7a7a; font-weight: normal; font-family: Helvetica, Arial, sans-serif; font-size: 16px; line-height: 125%; text-align: left;">
+                                                                <tr>
+                                                                    <td align="center" valign="top" style="padding-top: 30px; padding-bottom: 20px;">
+                                                                        <h1 style="color: #333333; font-family: Helvetica, Arial, sans-serif; font-size: 26px; line-height: 150%; text-align: left; font-weight: bold;">Reset Your Password</h1>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td align="center" valign="top" style="padding-right: 40px; padding-left: 40px; padding-bottom: 20px;">
+                                                                        <p style="font-size: 16px; line-height: 150%; color: #666666;">Hi <strong style="color: #312e81;">{account["username"]}</strong>!</p>
+                                                                        <p style="font-size: 16px; line-height: 150%; color: #666666;">You have requested to reset your password. Please use the following OTP code to proceed:</p>
+                                                                        <p style="font-size: 24px; line-height: 150%; color: #333333; font-weight: bold;">{otp}</p>
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td align="center" valign="top">
+                                                <table border="0" cellpadding="0" cellspacing="0" width="700" id="emailFooter" bgcolor="#ffffff" style="max-width: 700px !important; width: 100% !important; margin: auto; color: #7a7a7a; font-weight: normal;">
+                                                    <tr>
+                                                        <td align="center" valign="top">
+                                                            <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                                                                <tr>
+                                                                    <td align="center" valign="top" style="padding-right: 10px; padding-left: 10px;">
+                                                                        <p style="font-size: 12px; color: #999999;">This email was sent to <a href="mailto:{email}" target="_blank" style="color: #999999; text-decoration: underline;">{email}</a>. You are receiving this email because you requested a password reset. If you did not request this, please ignore it.</p>
+                                                                        <p style="font-size: 12px; color: #999999;">© 2024 aceResume. All rights reserved.</p>
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                    </center>
+                </div>
+                </html>     """
             data = EmailSchema(to=email, subject=subject, body=body).dict()
             background_tasks.add_task(
                 send_email, data["to"], data["subject"], data["body"]
             )
 
-            # Return success message along with token
+            # Return success message
             return {
-                "message": "Reset password email sent successfully",
-                "token": token,
-                "email": email,
+                "message": "Reset password OTP sent successfully",
+                "otp_code": otp,
             }
         else:
             raise HTTPException(status_code=400, detail="Email not found for the user")
@@ -174,29 +224,49 @@ def forgot_password(
         raise HTTPException(status_code=404, detail="User not found")
 
 
-@router.put("/reset_password/{token}")
+@router.put("/reset_password/{id}")
 def reset_password(
-    token: str = Path(..., title="The token received in the reset password email"),
+    id: str = Path(..., title="The ID of the user"),
+    otp: str = Form(..., description="The OTP received for password reset"),
     new_password: str = Form(None, description="New Password"),
     confirm_password: str = Form(None, description="Confirm New Password"),
 ):
-    # Verify token (You need to implement your token verification logic here)
-    user_id = verify_token(
-        token
-    )  # This function should verify the token and return the user ID
-    if not user_id:
-        raise HTTPException(status_code=400, detail="Invalid or expired token")
+    # Retrieve user information based on ID
+    account = Constants.USERS.find_one({"_id": ObjectId(id)})
 
-    # Check if passwords match
-    if new_password != confirm_password:
-        raise HTTPException(status_code=400, detail="New passwords do not match")
+    # Verify OTP and expiry time
+    if account and account.get("otp_code") == otp:
+        time_used = account.get("time_used")
+        otp_expiry_time = account.get("otp_expiry_time")
+        current_time = datetime.now()
+        if time_used == 0:
+            if current_time < otp_expiry_time:
+                # Check if passwords match
+                if new_password != confirm_password:
+                    raise HTTPException(
+                        status_code=400, detail="New passwords do not match"
+                    )
 
-    new_hashed_password = bcrypt.hashpw(new_password.encode("utf-8"), bcrypt.gensalt())
+                # Hash the new password
+                new_hashed_password = bcrypt.hashpw(
+                    new_password.encode("utf-8"), bcrypt.gensalt()
+                )
 
-    # Update password in the database (You need to implement your database update logic here)
-    Constants.USERS.update_one(
-        {"_id": ObjectId(user_id)},
-        {"$set": {"password": new_hashed_password.decode("utf-8")}},
-    )
+                # Update the password in the database
+                Constants.USERS.update_one(
+                    {"_id": ObjectId(id)},
+                    {
+                        "$set": {
+                            "password": new_hashed_password.decode("utf-8"),
+                            "time_used": 1,
+                        }
+                    },
+                )
 
-    return {"message": "Password reset successfully"}
+                return {"message": "Password reset successfully"}
+            else:
+                raise HTTPException(status_code=400, detail="OTP has expired")
+        else:
+            raise HTTPException(status_code=400, detail="OTP has been used")
+    else:
+        raise HTTPException(status_code=400, detail="Invalid OTP or user ID")

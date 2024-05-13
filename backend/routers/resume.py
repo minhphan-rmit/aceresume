@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import logging
 from typing import Dict
+from bson import json_util
 
 from fastapi import APIRouter, File, HTTPException, UploadFile, File, Body
 from fastapi.responses import JSONResponse
@@ -194,12 +195,13 @@ async def feedback_resume(
 )
 async def generate_roadmap(
     user_id: str,
-    resume_info: str,
     resume_id: str,
     job_description: str,
     roadmap_name: str,
 ) -> RoadmapModel:
-    roadmap_result = await roadmap_generator(resume_info, job_description)
+    resume_info = await extract_resume_data(user_id, resume_id)
+    resume_info_str = resume_info.json()
+    roadmap_result = await roadmap_generator(resume_info_str, job_description)
     json_result = json.loads(roadmap_result[8:].strip().replace("`", ""))
 
     roadmap = RoadmapModel(
@@ -216,14 +218,18 @@ async def generate_roadmap(
         summary=json_result["roadmap"]["summary"],
     )
 
+    roadmap_str = roadmap.json()
     roadmap_data = {
         "roadmap_name": roadmap_name,
         "user_id": user_id,
         "resume_id": resume_id,
-        "roadmap_name": roadmap_name,
+        "job_description": job_description,
         "generate_at": datetime.utcnow(),
-        "roadmap": roadmap,
+        "roadmap": roadmap_str,
     }
+
+    # roadmap_json = json.loads(json_util.dumps(roadmap_data))
+
     Constants.ROLE_ROADMAP.insert_one(roadmap_data)
 
     return roadmap
@@ -249,9 +255,10 @@ async def get_resume_analysis(user_id: str, resume_id: str) -> ResumeAnalysis:
             raise HTTPException(status_code=404, detail="Analysis not found")
 
         return ResumeAnalysis(
+            score=analysis_data.get("score", None),
             pros=analysis_data.get("pros", []),
             cons=analysis_data.get("cons", []),
-            add_ons=analysis_data.get("add-ons", []),
+            add_ons=analysis_data.get("add_ons", []),
             created_at=analysis_data.get("analyse_at", None),
         )
     except Exception as e:
