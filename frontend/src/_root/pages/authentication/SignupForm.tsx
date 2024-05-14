@@ -38,6 +38,7 @@ import { ThemeProvider, createTheme } from "@mui/material/styles";
       <div
         className="py-12 bg-indigo-100 lg:bg-white flex justify-center lg:justify-start lg:px-12"
       >
+        <a href="/landing-page">
         <div className="cursor-pointer flex items-center">
           <div>
           <img
@@ -50,6 +51,7 @@ import { ThemeProvider, createTheme } from "@mui/material/styles";
             ace<span className="text-indigo-900">resume</span>
           </div>
         </div>
+        </a>
       </div>
       <div
         className=" px-12 sm:px-24 md:px-48 lg:px-12 lg:mt-6 xl:px-24 xl:max-w-2xl"
