@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import AppAppBar from "../../components/NavBar/AppAppBar";
+import HomeNavBar from "../../components/NavBar/HomeNavBar";
 import Button from '@mui/material/Button';
 import { Avatar, Chip, Modal, Box, TextField, IconButton, InputAdornment, InputLabel, MenuItem, FormControl } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
@@ -173,7 +173,7 @@ const Profile = () => {
 
   return (
     <ThemeProvider theme={LPtheme}>
-      <AppAppBar />
+      <HomeNavBar />
       <div className="flex items-start justify-center w-screen h-screen p-10 space-x-6 bg-gray-100">
         <div className="flex flex-row items-center w-full gap-5 h-full p-20">
           {userData && (
