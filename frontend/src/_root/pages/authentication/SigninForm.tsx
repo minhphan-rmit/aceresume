@@ -31,6 +31,7 @@ import useForm from './useForm';
     <div className="lg:flex w-full">
       <div className="lg:w-1/2 xl:max-w-screen-sm">
         <div className="py-12 bg-indigo-100 lg:bg-white flex justify-center lg:justify-start lg:px-12">
+          <a href='/landing-page'>
           <div className="cursor-pointer flex items-center">
           <img
               src={"../../static/aceresume_logo.svg"}
@@ -41,6 +42,7 @@ import useForm from './useForm';
             ace<span className="text-indigo-900">resume</span>
           </div>
           </div>
+          </a>
         </div>
         <div className="mt-10 px-12 sm:px-24 md:px-48 lg:px-12 lg:mt-16 xl:px-24 xl:max-w-2xl">
           <h2 className="text-center text-4xl text-indigo-900 font-display font-semibold lg:text-left xl:text-5xl xl:text-bold">
