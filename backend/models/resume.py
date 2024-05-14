@@ -25,6 +25,7 @@ class ResumeInfo(BaseModel):
 
 
 class ResumeAnalysis(BaseModel):
+    score: int = Field(..., description="The score of the resume")
     pros: List[str] = Field(..., description="List of pros")
     cons: List[str] = Field(..., description="List of cons")
     add_ons: List[str] = Field(..., description="List of add-ons")

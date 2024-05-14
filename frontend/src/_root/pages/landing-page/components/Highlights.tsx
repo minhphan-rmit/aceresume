@@ -3,7 +3,6 @@ import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
-import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import AssessmentRoundedIcon from "@mui/icons-material/AssessmentRounded"; // For CV Analysis
 import VideoCallRoundedIcon from "@mui/icons-material/VideoCallRounded"; // For Mock Interviews
@@ -13,31 +12,31 @@ import SupportAgentRoundedIcon from "@mui/icons-material/SupportAgentRounded"; /
 
 const items = [
   {
-    icon: <AssessmentRoundedIcon />,
+    icon: <AssessmentRoundedIcon sx={{ color: "#7682FB" }} />,
     title: "Detailed CV Analysis",
     description:
       "Utilize advanced algorithms to analyze and optimize your CV, ensuring you highlight the skills that matter most.",
   },
   {
-    icon: <VideoCallRoundedIcon />,
+    icon: <VideoCallRoundedIcon sx={{ color: "#7682FB" }} />,
     title: "Realistic Mock Interviews",
     description:
       "Engage in simulated interviews with our AI-driven system to practice and perfect your interview techniques.",
   },
   {
-    icon: <FeedbackRoundedIcon />,
+    icon: <FeedbackRoundedIcon sx={{ color: "#7682FB" }} />,
     title: "Instant Feedback",
     description:
       "Receive immediate, actionable feedback on your interview performance to rapidly improve your skills.",
   },
   {
-    icon: <WorkRoundedIcon />,
+    icon: <WorkRoundedIcon sx={{ color: "#7682FB" }} />,
     title: "Smart Job Matching",
     description:
       "Get matched with job opportunities that fit your profile and preparation, making your job search smarter and more targeted.",
   },
   {
-    icon: <SupportAgentRoundedIcon />,
+    icon: <SupportAgentRoundedIcon sx={{ color: "#7682FB" }} />,
     title: "24/7 Expert Support",
     description:
       "Access around-the-clock support from career experts to answer your questions and guide you through your job search journey.",
@@ -101,7 +100,7 @@ export default function Highlights() {
                 }}
               >
                 <Box sx={{ opacity: 0.6 }}>{item.icon}</Box>
-                <Typography fontWeight="medium" gutterBottom component="div">
+                <Typography fontWeight="medium" gutterBottom component="div" sx={{ color: "#7682FB" }}>
                   {item.title}
                 </Typography>
                 <Typography

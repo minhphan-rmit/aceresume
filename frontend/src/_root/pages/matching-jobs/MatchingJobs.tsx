@@ -11,14 +11,15 @@ import Divider from "@mui/material/Divider";
 import { indigo } from "@mui/material/colors";
 import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import TextField from "@mui/material/TextField";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import InputAdornment from '@mui/material/InputAdornment';
 import CircularProgress from '@mui/material/CircularProgress';
+import Modal from "@mui/material/Modal";
+import { Grid, Paper, CardMedia } from '@mui/material';
 import getLPTheme from "../../../styles/getLPTheme";
+import axios from 'axios';
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 
 const LPtheme = createTheme(getLPTheme());
@@ -31,10 +32,14 @@ const randomColor = () => {
 function MatchedJobs() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedJob, setSelectedJob] = useState(null);
-  const [selectedLocation, setSelectedLocation] = useState("");
+  const [selectedLocation, setSelectedLocation] = useState("USA");
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(false);
-  // const [selectedResume, setSelectedResume] = useState("");
+  const [openModal, setOpenModal] = useState(false);
+  const [uploadedCVs, setUploadedCVs] = useState([]);
+  const userId = '663852ecd568222769540792';
+  const [selectedCV, setSelectedCV] = useState("");
+  const [temporaryResumeId, setTemporaryResumeId] = useState(null);
 
   useEffect(() => {
     // Set the first job when jobs array updates
@@ -51,11 +56,32 @@ function MatchedJobs() {
     setSelectedLocation(event.target.value);
   };
 
-  // const handleResumeSelect = (event) => {
-  //   const selectedResume = event.target.value;
-  //   // Update the state with the selected resume
-  //   setSelectedResume(selectedResume);
-  // };
+  const fetchAllCVs = async () => {
+    try {
+      const response = await fetch(`http://localhost:8000/api/aceresume/resume/${userId}/get_all_resume`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch CVs');
+      }
+      const data = await response.json();
+      setUploadedCVs(data);
+    } catch (error) {
+      console.error('Error fetching CVs:', error);
+    }
+  };
+
+  const handleAddCVButtonClick = () => {
+    setOpenModal(true);
+    fetchAllCVs();
+  };
+
+  const handleCVSelect = (cv) => {
+    setTemporaryResumeId(cv.resume_id);
+    setSelectedCV(cv);
+    setOpenModal(false);
+  };
+  useEffect(() => {
+    console.log("Resume ID:", temporaryResumeId);
+  }, [temporaryResumeId]);
 
   const handleJobCardClick = (job) => {
     setSelectedJob(job);
@@ -64,63 +90,19 @@ function MatchedJobs() {
   const handleSearch = async () => {
     try {
       setLoading(true);
-      const resumeInfo = {
-        candidate_name: "HUY VO",
-        candidate_email: "huyvo6812@gmail.com",
-        candidate_skill: [
-          "NLP",
-          "Document AI",
-          "Causal Inferences",
-          "Python",
-          "R Script",
-          "Java",
-          "HuggingFace Transformers",
-          "PyTorch",
-          "Keras",
-          "Scikit-learn",
-          "Microsoft Azure",
-          "Google Cloud Platform",
-          "MySQL",
-          "Snowflake",
-          "MongoDB",
-          "Hadoop",
-          "PowerBI",
-          "Tableau",
-          "Streamlit",
-          "Git",
-          "Data Version Control",
-          "Bitbucket",
-          "Azure",
-          "Slack"
-        ],
-        candidate_experience: [
-          {
-            company_name: "Otrafy Technologies Inc",
-            job_title: "Machine Learning Engineer",
-            start_date: "2022",
-            end_date: "2023",
-            job_description: "Built and integrated Large Language Model on Microsoft Azure Machine Learning Studio for Otrafy's platform and maintaining the response time lower than 3 seconds with high relevancy for hundred of users.\nApplied LLM libraries like LlamaIndex and Langchain to develop Retrieval Augmented Generation tasks for Otrafy's platform.\nDesigned a robust infrastructure to support a scalable end-to-end Machine Learning System, ensuring a 90% uptime for Natural Language Processing tasks focused on Agriculture and Quality Assurance.\nLed a dynamic team that works with cross-functional department to build, deploy and maintain an end-to-end Machine Learning System that can serve million users."
-          },
-        ]
-      };
-      // const requestBody = {
-      //   job_title: searchQuery,
-      //   resume_info: null,
-      // };
-      const response = await fetch(`http://localhost:8000/api/aceresume/job/${encodeURIComponent(searchQuery)}/find-jobs`, {
+      const response = await fetch(`http://localhost:8000/api/aceresume/job/${encodeURIComponent(searchQuery)}/find-jobs?user_id=${userId}&resume_id=${temporaryResumeId}&location=${selectedLocation}`, {
         method: 'POST',
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(resumeInfo),
       });
       const data = await response.json();
       setJobs(data.list_of_jobs);
     } catch (error) {
       console.error('Error fetching jobs:', error);
     } finally {
-      setLoading(false); // Set loading to false when response is received
+      setLoading(false);
     }
   };
 
@@ -128,6 +110,24 @@ function MatchedJobs() {
     <ThemeProvider theme={LPtheme}>
       <AppNavBar />
       <Container sx={{ py: 4 }}>
+        <Button variant="contained" onClick={handleAddCVButtonClick} sx={{my: 2}}>
+            Add your CV
+        </Button>
+        <Box sx={{mb: 2}}>
+          {selectedCV && (
+            <Paper style={{ padding: 10, borderRadius: "10px", width: 150, maxHeight: 250 }}>
+              <CardMedia
+                  component="img"
+                  height="30"
+                  image={selectedCV.resume_url}
+                  alt={selectedCV.filename}
+                />
+              <Typography style={{paddingTop: 10, color: '#6182FB', fontWeight: '300', fontSize: '14px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                {selectedCV.filename}
+              </Typography>
+            </Paper>
+          )}
+        </Box>
         <Box mb={3} sx={{ position: 'relative'}}>
           <TextField
             label="Search Jobs"
@@ -148,8 +148,11 @@ function MatchedJobs() {
                     <MenuItem value="" disabled>
                       Select Location
                     </MenuItem>
-                    <MenuItem value="San Francisco, CA">San Francisco, CA</MenuItem>
-                    <MenuItem value="Austin, TX">Austin, TX</MenuItem>
+                    <MenuItem value="Canada">Canada</MenuItem>
+                    <MenuItem value="USA">USA</MenuItem>
+                    <MenuItem value="Vietnam">Vietnam</MenuItem>
+                    <MenuItem value="Japan">Japan</MenuItem>
+                    <MenuItem value="UK">UK</MenuItem>
                     {/* Add more locations as needed */}
                   </Select>
                   <Button variant="contained" onClick={handleSearch}>
@@ -160,6 +163,50 @@ function MatchedJobs() {
             }}
           />
         </Box>
+        <Modal
+          aria-labelledby="transition-modal-title"
+          aria-describedby="transition-modal-description"
+          open={openModal}
+          onClose={() => setOpenModal(false)}
+        >
+          <Box
+            sx={{
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              width: 500,
+              maxHeight: 500,
+              bgcolor: 'background.paper',
+              boxShadow: 24,
+              borderRadius: 4,
+              p: 2,
+              overflowY: 'auto',
+            }}
+          >
+            <Typography variant="h5" id="modal-modal-title" sx={{fontFamily:'Montserrat, sans-serif', fontWeight: 'bold', mb: 2, textAlign: 'center' }}>
+              Uploaded Resumes
+            </Typography>
+            <Grid container spacing={2}>
+              {/* Render each uploaded CV */}
+              {uploadedCVs.map((cv, index) => (
+                <Grid item xs={12} sm={6} md={4} key={index} onClick={() => handleCVSelect(cv)}>
+                  <Paper elevation={3} style={{ padding: 10, borderRadius: "10px"}}>
+                    <CardMedia
+                        component="img"
+                        height="80"
+                        image={cv.resume_url}
+                        alt={cv.filename}
+                      />
+                    <Typography style={{paddingTop: 10, color: '#6182FB', fontWeight: '300', fontSize: '14px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                      {cv.filename}
+                    </Typography>
+                  </Paper>
+                </Grid>
+              ))}
+            </Grid>
+          </Box>
+        </Modal>
         <Typography
           variant="h4"
           sx={{
