@@ -112,7 +112,7 @@ const AppAppBar = () => {
               variant="outlined"
               color="primary"
               component="a"
-              href="/sign-in/"
+              href="/sign-in"
               sx={{ width: 100 }}
             >
               Sign in
@@ -121,7 +121,7 @@ const AppAppBar = () => {
               variant="contained"
               color="primary"
               component="a"
-              href="/sign-up/"
+              href="/sign-up"
               sx={{ width: 100 }}
             >
               Sign up
