@@ -34,7 +34,6 @@ export default function UserOption() {
       <Dropdown>
         <MenuButton>My account</MenuButton>
         <Menu>
-        <MenuItem >Signed in as  </MenuItem>
           <MenuItem onClick={createHandleMenuClick('Profile')}>Profile</MenuItem>
 
           <MenuItem onClick={createHandleMenuClick('Log out')}>Log out</MenuItem>
