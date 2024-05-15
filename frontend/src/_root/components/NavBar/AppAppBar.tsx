@@ -27,6 +27,7 @@ const AppAppBar = () => {
   const [open, setOpen] = React.useState(false);
   const theme = useTheme();
   const userId = localStorage.getItem('userId') || null;
+  const username = localStorage.getItem('userName') || null;
 
 
   const toggleDrawer = (newOpen: boolean) => () => {
@@ -108,25 +109,37 @@ const AppAppBar = () => {
             </MenuItem>
           </Box>
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-            <Button
-              variant="outlined"
-              color="primary"
-              component="a"
-              href="/sign-in"
-              sx={{ width: 100 }}
-            >
-              Sign in
-            </Button>
-            <Button
-              variant="contained"
-              color="primary"
-              component="a"
-              href="/sign-up"
-              sx={{ width: 100 }}
-            >
-              Sign up
-            </Button>
-            <UserOption userId={userId} />
+            { !username && (
+              <>
+              <Button
+                variant="outlined"
+                color="primary"
+                component="a"
+                href="/sign-in"
+                sx={{ width: 100 }}
+              >
+                Sign in
+              </Button>
+
+              <Button
+                variant="contained"
+                color="primary"
+                component="a"
+                href="/sign-up"
+                sx={{ width: 100 }}
+              >
+                Sign up
+              </Button>
+              </>
+              )}
+
+              { username && (
+                <Link to="/profile">
+                <Box sx={{ width: 40, height: 40, flexShrink: 0, mr: 1, display: 'flex', justifyContent: 'center', alignItems: 'center', backgroundColor: "#6182FB", borderRadius: "50%" }}>
+                  <Typography fontWeight="500" sx={{ color: 'white', fontSize: '18px' }}>{username.charAt(0)}</Typography>
+                </Box>
+              </Link>
+              )}
           </Box>
           <Box
             sx={{ display: { xs: "flex", md: "none" }, alignItems: "center" }}
