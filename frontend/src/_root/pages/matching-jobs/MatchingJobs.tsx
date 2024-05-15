@@ -37,7 +37,7 @@ function MatchedJobs() {
   const [loading, setLoading] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const [uploadedCVs, setUploadedCVs] = useState([]);
-  const userId = '663852ecd568222769540792';
+  const userId = localStorage.getItem('userId');
   const [selectedCV, setSelectedCV] = useState("");
   const [temporaryResumeId, setTemporaryResumeId] = useState(null);
 

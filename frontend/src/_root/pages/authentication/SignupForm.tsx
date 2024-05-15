@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import useGoogleAuth from './useGoogleAuth';
 import {Link} from 'react-router-dom';
 import getLPTheme from "../../../styles/getLPTheme";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
-
+import { useLocation } from 'react-router-dom';
+import { ChangeEvent } from 'react';
   import useForm from './useForm';
 
 
@@ -17,6 +18,21 @@ import { ThemeProvider, createTheme } from "@mui/material/styles";
         repassword: '',
       },
     });
+
+    const location = useLocation();
+    const emailtest = location.state?.email;
+
+    useEffect(() => {
+      if (emailtest) {
+        const syntheticEvent: ChangeEvent<HTMLInputElement> = {
+            target: {
+                name: 'email',
+                value: emailtest
+            } as HTMLInputElement
+        };
+        handleChange(syntheticEvent);
+    }
+  }, [emailtest]);
 
 
   const {signUpWithGoogle, user, error} = useGoogleAuth();
@@ -38,6 +54,7 @@ import { ThemeProvider, createTheme } from "@mui/material/styles";
       <div
         className="py-12 bg-indigo-100 lg:bg-white flex justify-center lg:justify-start lg:px-12"
       >
+        <a href="/landing-page">
         <div className="cursor-pointer flex items-center">
           <div>
           <img
@@ -50,6 +67,7 @@ import { ThemeProvider, createTheme } from "@mui/material/styles";
             ace<span className="text-indigo-900">resume</span>
           </div>
         </div>
+        </a>
       </div>
       <div
         className=" px-12 sm:px-24 md:px-48 lg:px-12 lg:mt-6 xl:px-24 xl:max-w-2xl"
