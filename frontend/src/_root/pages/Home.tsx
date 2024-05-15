@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Container, Typography, Grid, Paper } from '@mui/material';
+import { Box, Container, Typography, Grid, Paper, Avatar } from '@mui/material';
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import AppNavBar from "../components/NavBar/AppAppBar";
 import axios from 'axios';
@@ -23,6 +23,10 @@ const LPtheme = createTheme({
     },
   },
 });
+
+const userImage = {
+  profilePic: "https://i.pravatar.cc/300", // Placeholder image service
+};
 
 const Home = () => {
   // State to store uploaded CVs
@@ -121,9 +125,12 @@ const Home = () => {
       <AppNavBar />
       <Container>
         <Box my={4}>
-          <Typography variant="h4" gutterBottom sx={{mb: 2}}>
-            Nice to see you, {username}!
-          </Typography>
+          <Box sx={{display:"flex", py:3, alignItems:"center"}}>
+            <Avatar src={userImage.profilePic} sx={{ width: 70, height: 70}} />
+            <Typography variant="h4" gutterBottom sx={{mb: 2, pl: 2, fontSize: '25px'}}>
+              Nice to see you, {username}!
+            </Typography>
+          </Box>
           <Box sx={{ display: "flex", mb: 2 }}>
             <Link to="/mock-interview">
             <Box sx={{ backgroundColor: "#94C9FF", mr: 1, mb: 2, alignItems: "center", justifyContent: 'center', color: "white", borderRadius: "10px", textAlign: "center" }}>
