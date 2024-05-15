@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import useGoogleAuth from './useGoogleAuth';
 import {Link} from 'react-router-dom';
 import getLPTheme from "../../../styles/getLPTheme";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
-
+import { useLocation } from 'react-router-dom';
+import { ChangeEvent } from 'react';
   import useForm from './useForm';
 
 
@@ -17,6 +18,21 @@ import { ThemeProvider, createTheme } from "@mui/material/styles";
         repassword: '',
       },
     });
+
+    const location = useLocation();
+    const emailtest = location.state?.email;
+
+    useEffect(() => {
+      if (emailtest) {
+        const syntheticEvent: ChangeEvent<HTMLInputElement> = {
+            target: {
+                name: 'email',
+                value: emailtest
+            } as HTMLInputElement
+        };
+        handleChange(syntheticEvent);
+    }
+  }, [emailtest]);
 
 
   const {signUpWithGoogle, user, error} = useGoogleAuth();
