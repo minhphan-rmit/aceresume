@@ -80,6 +80,7 @@ const useForm = ({ initialValues }: UseFormProps) => {
   };
 
   const register = async (e: FormEvent<HTMLFormElement>) => {
+
     e.preventDefault();
 
     if (!validateForm()) {
