@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import HomeNavBar from "../../components/NavBar/HomeNavBar";
+import AppAppBar from "../../components/NavBar/AppAppBar";
 import Button from '@mui/material/Button';
 import { Avatar, Chip, Modal, Box, TextField, IconButton, InputAdornment, InputLabel, MenuItem, FormControl } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import getLPTheme from "../../../styles/getLPTheme";
+import { Link } from 'react-router-dom';
 
 const userImage = {
   profilePic: "https://i.pravatar.cc/300", // Placeholder image service
@@ -40,8 +41,7 @@ const Profile = () => {
   const [tempLevel, setTempLevel] = useState('');
   const [tempPass, setTempPass] = useState('');
 
-  const userId = '663852ecd568222769540792';
-
+  const userId =localStorage.getItem('userId');
   const fetchUserProfile = async () => {
     try {
       const response = await axios.get(`http://localhost:8000/api/aceresume/profile/${userId}`);
@@ -56,6 +56,10 @@ const Profile = () => {
   const handleForgotPass = () => {
     sentOTP();
     handleOpenOTPModal();
+  }
+
+  const handleLogOut = () => {
+    localStorage.clear();
   }
 
   const sentOTP = async () => {
@@ -173,7 +177,7 @@ const Profile = () => {
 
   return (
     <ThemeProvider theme={LPtheme}>
-      <HomeNavBar />
+      <AppAppBar />
       <div className="flex items-start justify-center w-screen h-screen p-10 space-x-6 bg-gray-100">
         <div className="flex flex-row items-center w-full gap-5 h-full p-20">
           {userData && (
@@ -214,7 +218,9 @@ const Profile = () => {
                 <div className="flex flex-row justify-between w-full pt-5">
                   <Button variant="outlined" color="primary" onClick={handleOpenModal}>Update user profile</Button>
                   <Button variant="outlined" color="primary" onClick={handleForgotPass}>Change your password</Button>
-                  <Button variant="contained">Log out</Button>
+                  <Link to="/sign-in">
+                    <Button variant="contained" onClick={handleLogOut} >Log out</Button>
+                  </Link>
                 </div>
               </div>
             </div>

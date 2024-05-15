@@ -33,7 +33,7 @@ const Home = () => {
   } = FileUploadUtils();
   const [uploadedCVs, setUploadedCVs] = useState([]);
   const [username, setUsername] = useState('');
-  const userId = '663852ecd568222769540792';
+  const userId = localStorage.getItem('userId');
 
   useEffect(() => {
     // Fetch user profile data

@@ -13,7 +13,7 @@ interface HistoryAnalysisProps {
 const HistoryAnalysis : React.FC<HistoryAnalysisProps> = ({ onChangeSuccess})  => {
 const navigate = useNavigate();
     const [resumes, setResumes] = useState([]);
-    const userId = '663852ecd568222769540792'; // Adjust the userId as necessary
+    const userId = localStorage.getItem('userId'); // Adjust the userId as necessary
 
     useEffect(() => {
         const fetchResumes = async () => {
