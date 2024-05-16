@@ -58,26 +58,34 @@ const API_BASE_URL = 'http://localhost:8000/api/aceresume/chat-interview'; // Ad
   const handleSendMessage = async () => {
     if (inputText.trim()) {
       const newMessage = { text: inputText, sender: 'user', name: username, timestamp: new Date().toLocaleTimeString() };
-      setMessages([...messages, newMessage]);
 
-        // call api to send message
+      // Set user message and then add the placeholder in the next state update
+      setMessages(prevMessages => [...prevMessages, newMessage]);
 
-        const response = await sendMessage(userId, inputText, role, jobDescription);
-        if (response) {
+      // Add a placeholder for the AI response
+      setMessages(prevMessages => [...prevMessages, { text: '...', sender: 'ai', name: "AI Interviewer", timestamp: new Date().toLocaleTimeString() }]);
 
-            // Assuming response indicates success and now you want to start listening
-            console.log(response);
-            const responseMsg={
-                            text: response,
-                            sender: 'ai',
-                            name: "AI Interviewer",
-                            timestamp: new Date().toLocaleTimeString()
-                        }
-            setMessages(prevMessages => [...prevMessages, responseMsg]);
-        }
+      // Call the API to send the message
+      const response = await sendMessage(userId, inputText, role, jobDescription);
+      if (response) {
+        console.log(response);
+
+        // Update the placeholder message with the actual response
+        setMessages(prevMessages => {
+          const updatedMessages = [...prevMessages];
+          updatedMessages[updatedMessages.length - 1] = {
+            text: response,
+            sender: 'ai',
+            name: "AI Interviewer",
+            timestamp: new Date().toLocaleTimeString()
+          };
+          return updatedMessages;
+        });
+      }
     }
     setInputText('');
   };
+
 
 
 
