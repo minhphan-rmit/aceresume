@@ -2,6 +2,8 @@ import RoadmapOverview from "./RoadmapOverview";
 import TaskList from "./TaskList";
 import Progress from "./Progress";
 import axios from "axios";
+import showNotification from '../../../../components/Notification/Notification';
+
 import { useState, useEffect } from "react";
 const CurrentRoadmap = (roadmapId) => {
     const userId = localStorage.getItem('userId') || '663852ecd568222769540792'; // Default to a user ID if not found
@@ -30,7 +32,7 @@ const getCurrentRoadmap = async (roadmapId: string) => {
     }
     catch (error) {
         console.error('Error getting current roadmap:', error);
-        alert('Error getting current roadmap');
+        showNotification({type: 'error', message: 'Error getting current roadmap'});
     }
 }
 

@@ -56,21 +56,15 @@ const Home = () => {
     fetchAllCVs();
   }, []); // Empty dependency array ensures the effect runs only once when the component mounts
 
+
   const handleUpload = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!selectedFile) {
         alert('Please select a file to upload.');
         return;
     }
+    navigate('/cv-analysis?component=newAnalysis&toggle=guides', { state: { selectedFile } });
 
-    uploadFile(
-        (url: string) => {
-            handleSubmit(url);  // This will now correctly handle the URL after it's available
-        },
-        (error: any) => {
-            alert('Error uploading file: ' + error.message);
-        }
-      );
   };
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
       const file = event.target.files ? event.target.files[0] : null;
@@ -81,29 +75,7 @@ const Home = () => {
       }
   };
 
-  const handleSubmit = async (url: string) => {
-    if (!selectedFile) {
-        alert('Please select a file to upload.');
-        return;
-    }
 
-    const formData = new FormData();
-    formData.append('resume', selectedFile);
-    formData.append('resume_url', url);
-
-    try {
-        const response = await axios.post(`http://localhost:8000/api/aceresume/resume/${userId}/upload`, formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data'
-            }
-        });
-        alert('Upload successful');
-        localStorage.setItem('resumeId', response.data.object_id);
-        fetchAllCVs();
-    } catch (error) {
-        console.error('Error uploading file:', error);
-    }
-  };
 
   const LPtheme = createTheme(getLPTheme());
   const navigate = useNavigate();
@@ -192,7 +164,7 @@ const Home = () => {
             Click here to upload your resume
           </div>
           {selectedFile &&
-            <div className="text-sm text-gray-600 mb-2.5">
+            <div className="text-sm text-gray-600 mb-2.5 break-words">
               Selected file: {selectedFile.name}
             </div>
           }
@@ -209,7 +181,7 @@ const Home = () => {
           Your Resume
         </h2>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 h-96 ">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 h-96 overflow-y-scroll ">
           {uploadedCVs.map((cv, index) => (
 
             <div key={index} className="col-span-1 " onClick={() => handleResumeClick(cv.resume_id, cv.resume_url)}>

@@ -1,9 +1,11 @@
 import {useState, useEffect} from 'react';
 import {ChangeEvent, FormEvent} from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Box, Typography } from '@mui/material';
 import FileUploadUtils from '../../../../../config/FileUploadUtils'
+import showNotification from '../../../../components/Notification/Notification';
+
 
 
 
@@ -23,12 +25,18 @@ const NewAnalysis: React.FC<NewAnalysisProps> = ({ onUploadSuccess }) =>{
       } = FileUploadUtils();
 
     const navigate = useNavigate();
+    const location = useLocation();
       const [isExtractingData, setIsExtractingData] = useState(false);
       const [isAnalyzingData, setIsAnalyzingData] = useState(false);
     const userId = localStorage.getItem('userId') || '663852ecd568222769540792';
+    const transferedFile = location.state?.selectedFile;
 
 
-
+    useEffect(() => {
+        if (transferedFile) {
+            setSelectedFile(transferedFile);
+        }
+    }, [transferedFile, setSelectedFile]);
     const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files ? event.target.files[0] : null;
         if (file) {
@@ -53,7 +61,7 @@ const NewAnalysis: React.FC<NewAnalysisProps> = ({ onUploadSuccess }) =>{
 
             },
             (error: any) => {
-                alert('Error uploading file: ' + error.message);
+               showNotification({type: 'error', message: 'Error uploading file'});
             }
         );
     };
@@ -68,10 +76,11 @@ const NewAnalysis: React.FC<NewAnalysisProps> = ({ onUploadSuccess }) =>{
             console.log("Resume Info:", response.data);
 
             analyzingData(resumeId, response.data);
+            showNotification({type: 'success', message: 'Data extracted successfully!'});
 
         }catch (error) {
             console.error('Error extracting data from file:', error);
-           alert('Error extracting data from file');
+          showNotification({type: 'error', message: 'Error extracting data from file'});
         }
       }
 
@@ -95,11 +104,13 @@ const NewAnalysis: React.FC<NewAnalysisProps> = ({ onUploadSuccess }) =>{
 
             );
             setIsAnalyzingData(false);
-            navigate('?component=yourAnalysis');
+            navigate('/cv-analysis?component=yourAnalysis&toggle=preview');
+            window.location.reload();
+            showNotification({type: 'success', message: 'Data analyzed successfully!'});
 
         }catch (error) {
             console.error('Error analyzing data from file:', error);
-           alert('Error analyzing data from file');
+           showNotification({type: 'error', message: 'Error analyzing data from file'});
         }
       }
 
@@ -120,7 +131,7 @@ const NewAnalysis: React.FC<NewAnalysisProps> = ({ onUploadSuccess }) =>{
                     'Content-Type': 'multipart/form-data'
                 }
             });
-            alert('Upload successful');
+            showNotification({type: 'success', message: 'File uploaded successfully!'});
             console.log(response.data);
             localStorage.setItem('resumeId', response.data.object_id);
             console.log('Resume ID:', response.data.object_id);
@@ -132,7 +143,7 @@ const NewAnalysis: React.FC<NewAnalysisProps> = ({ onUploadSuccess }) =>{
 
         } catch (error) {
             console.error('Error uploading file:', error);
-            alert('Error uploading file');
+           showNotification({type: 'error', message: 'Error uploading file'});
         }
     };
 
@@ -214,7 +225,7 @@ const NewAnalysis: React.FC<NewAnalysisProps> = ({ onUploadSuccess }) =>{
                     <div>
                         <button type="submit" className="my-5 w-full flex justify-center bg-indigo-500 text-gray-100 p-4  rounded-full tracking-wide
                                     font-semibold  focus:outline-none focus:shadow-outline hover:bg-indigo-600 shadow-lg cursor-pointer transition ease-in duration-300">
-                        Upload
+{selectedFile ? 'Analyse' : 'Upload'}
                     </button>
                     </div>
         </form>

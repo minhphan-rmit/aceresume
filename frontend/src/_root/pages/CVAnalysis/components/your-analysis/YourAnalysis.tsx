@@ -1,7 +1,6 @@
 import ScoreBar from "./ScoreBar";
-import Strength from "./Strength";
-import Suggestion from "./Suggestion";
-import Weakness from "./Weakness";
+import showNotification from '../../../../components/Notification/Notification';
+
 import axios from 'axios';
 import {useEffect, useState} from 'react';
 const YourAnalysis = ({resumeID}) => {
@@ -25,7 +24,7 @@ const YourAnalysis = ({resumeID}) => {
 
     }catch (error) {
         console.error('Error getting analysis:', error);
-        alert('Error getting analysis');
+        showNotification({type: 'error', message: 'Error getting analysis'});
     }
 }
 
@@ -56,7 +55,7 @@ const YourAnalysis = ({resumeID}) => {
 			</h2>
             {analysis && analysis.cons && analysis.cons.length > 0 && (
                 <ul className="list-disc pl-5 space-y-2 mt-4">
-                    {analysis.pros.map((pro, index) => (
+                    {analysis.cons.map((pro, index) => (
                         <li key={index} className="text-gray-600 text-sm md:text-base">
                             {pro}
                         </li>
@@ -70,7 +69,7 @@ const YourAnalysis = ({resumeID}) => {
 			</h2>
             {analysis && analysis.add_ons && analysis.add_ons.length > 0 && (
                 <ul className="list-disc pl-5 space-y-2 mt-4">
-                    {analysis.pros.map((pro, index) => (
+                    {analysis.add_ons.map((pro, index) => (
                         <li key={index} className="text-gray-600 text-sm md:text-base">
                             {pro}
                         </li>

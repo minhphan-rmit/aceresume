@@ -28,7 +28,8 @@ const OnScreenMessage = ({ message, buttonMessage, onEventClick }) => {
     }}>
       <Box sx={{ maxWidth:'80%', height:'500px'}}>
       <Typography variant="h6" color="common.white" sx={{ mb: 2, backgroundColor: 'white', color:indigo[600], borderRadius:'10px', padding: '1rem',maxHeight:'300px', overflowY:'scroll'}}>
-       {message}
+      <div dangerouslySetInnerHTML={{ __html: message.replace(/### (.*?)(?:\n|$)/g, "<h3>$1</h3>").replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>").replace(/\n/g, "<br/>").replace(/\* /g, "&#8226; ") }} />
+
       </Typography>
 
       <Button variant="contained" color="primary"  sx={{ padding: 2, height: '100', width:'100%' }} onClick={()=> onEventClick()}>

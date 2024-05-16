@@ -7,7 +7,11 @@ const StatusBar = ({ interviewDetails }) => (
       <Grid item xs key={key}>
         <Paper elevation={3} sx={{ padding: 1, textAlign: 'center' }}>
           <Typography variant="caption" sx={{ display: 'block', fontWeight: 'bold' }}>{key.replace(/([A-Z])/g, ' $1').trim()}</Typography>
-          <Typography variant="body2">{value}</Typography>
+          {
+
+          key =="remainingTime" && <Typography variant="body2">{`${Math.floor(value / 60)} minutes ${value % 60} seconds`} </Typography>}
+
+          {key !=="remainingTime" && <Typography variant="body2">{value}  </Typography>}
         </Paper>
       </Grid>
     ))}

@@ -3,6 +3,7 @@ import RoadmapCard from "./RoadmapCard";
 import axios from 'axios';
 import { Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import showNotification from '../../../../components/Notification/Notification';
 
 interface GeneratedRoadmapProps {
     onChangeSuccess: (roadmapId: string) => void;
@@ -33,7 +34,7 @@ const GeneratedRoadmap: React.FC<GeneratedRoadmapProps> = ({ onChangeSuccess})  
             setRoadmapList(response.data);
         } catch (error) {
             console.error('Error getting roadmaps:', error);
-            alert('Error getting roadmaps');
+           showNotification({type: 'error', message: 'Error getting roadmaps'});
         }
     }
 
