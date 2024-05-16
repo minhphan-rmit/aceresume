@@ -94,6 +94,7 @@ class ChainStreamHandler(StreamingStdOutCallbackHandler):
 def chat_history_form(chat_history: list[dict]):
     chat_list = []
     for value in chat_history:
+        print(value)
         for key, message in value.items():
             chat_list.append(f"{key}: {message}")
 
@@ -156,27 +157,37 @@ def chain(prompt, chat_history, resume_info, role, job_description, input_type):
 
 @router.post("/new_chat/{user_id}/{role}")
 async def start_new_chat(user_id: str, role: str):
-    CHATBOT_AVAILABLE.append({user_id: {"AI": INTRO_MESSAGE.format(role=role)}})
+    CHATBOT_AVAILABLE.append({user_id: [{"AI": INTRO_MESSAGE.format(role=role)}]})
 
     return INTRO_MESSAGE.format(role=role)
 
 
 @router.post("/chat/{user_id}/{role}")
-async def stream(user_id: str, message: str, role: str, job_description: str):
+async def stream(user_id: str, message: str, role: str, job_description: str, ai_previous_message: str = None):
     # TODO: Use User ID to find Resume Information
     resume_info = None
-    chat_history = [value[user_id] for value in CHATBOT_AVAILABLE if user_id in value]
-    if len(chat_history) == 0:
-        return HTTPException(status_code=404, detail="No chat history found")
+    for history in CHATBOT_AVAILABLE:
+        if user_id in history:
+            chat_history = history[user_id]
 
-    chat_history.append({"User": message})
+    if ai_previous_message is not None:
+        chat_history.append({"AI": ai_previous_message, "User": message})
+    else:
+        chat_history[0]["User"] = message # for the first run only
+
+    #chat_history.append({"User": message})
     output = StreamingResponse(
         chain(message, chat_history, resume_info, role, job_description, "interview"),
         media_type="text/event-stream",
     )
+    
+    # Update the chat_history back to CHATBOT_AVAILABLE
+    for value in CHATBOT_AVAILABLE:
+        if user_id in value:
+            value[user_id] = chat_history
 
-    chat_history.append({"AI": output})
-
+    print(chat_history)
+    print(CHATBOT_AVAILABLE)
     return output
 
 
@@ -185,9 +196,14 @@ async def review_interview(user_id: str, role: str, job_description: str):
     # TODO: Use User ID to find Resume Information
     resume_info = None
 
-    chat_history = [value[user_id] for value in CHATBOT_AVAILABLE if user_id in value]
+    for history in CHATBOT_AVAILABLE:
+        if user_id in history:
+            chat_history = history[user_id]
+
     if len(chat_history) == 0:
         return HTTPException(status_code=404, detail="No chat history found")
+    
+    print(chat_history)
 
     return StreamingResponse(
         chain(None, chat_history, resume_info, role, job_description, "review"),
