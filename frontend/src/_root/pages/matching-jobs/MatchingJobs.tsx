@@ -144,6 +144,7 @@ function MatchedJobs() {
                     variant="outlined"
                     displayEmpty
                     sx={{ minWidth: 120 }}
+                    className="border-none"
                   >
                     <MenuItem value="" disabled>
                       Select Location

@@ -7,8 +7,7 @@ import axios from 'axios';
 import { Link } from 'react-router-dom'
 import FileUploadUtils from '../../config/FileUploadUtils'
 import { FormEvent, ChangeEvent } from 'react';
-import CardMedia from '@mui/material/CardMedia';
-import { indigo } from '@mui/material/colors';
+import { useNavigate } from 'react-router-dom';
 import { getLPTheme } from '../../styles/getLPTheme';
 
 
@@ -45,6 +44,7 @@ const Home = () => {
         throw new Error('Failed to fetch CVs');
       }
       const data = await response.json();
+
       setUploadedCVs(data);
     } catch (error) {
       console.error('Error fetching CVs:', error);
@@ -106,6 +106,16 @@ const Home = () => {
   };
 
   const LPtheme = createTheme(getLPTheme());
+  const navigate = useNavigate();
+
+
+  const handleResumeClick = (resumeId: string, resumeUrl: string) => {
+
+    localStorage.setItem('resumeId', resumeId);
+   localStorage.setItem('uploadedFileUrl', resumeUrl);
+    navigate('/cv-analysis?component=yourAnalysis&toggle=preview');
+
+  }
   return (
     <ThemeProvider theme={LPtheme}>
       <AppNavBar />
@@ -201,8 +211,9 @@ const Home = () => {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 h-96 ">
           {uploadedCVs.map((cv, index) => (
-            <div key={index} className="col-span-1 ">
-              <div className="p-2.5 rounded-lg shadow-md h-full">
+
+            <div key={index} className="col-span-1 " onClick={() => handleResumeClick(cv.resume_id, cv.resume_url)}>
+              <div className="p-2.5 rounded-lg shadow-md h-full cursor-pointer hover:bg-indigo-300  " style={{ transition: 'background-color 0.5s ease'}}>
                 <iframe src={cv.resume_url} alt={cv.filename} className="h-80 w-full object-cover" />
                 <p className="pt-2.5 text-indigo-500 font-semibold  text-sm whitespace-nowrap overflow-hidden overflow-ellipsis">
                   {cv.filename}

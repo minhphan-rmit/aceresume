@@ -49,7 +49,7 @@ const AppAppBar = () => {
   return (
     <ThemeProvider theme={LPtheme}>
     <AppBar position="sticky" sx={{ bgcolor: theme.palette.background.paper }}>
-      <Container maxWidth="lg">
+      <Container maxWidth="lg" >
         <Toolbar variant="regular" sx={{ justifyContent: "space-between" }}>
             <Link to="/landing-page">
           <Box  sx={{ display: "flex", alignItems: "center" }} >
@@ -66,7 +66,7 @@ const AppAppBar = () => {
           </Box>
           </Link>
 
-          <Box sx={{ flexGrow: 1, display: "flex", justifyContent: "center" }}>
+          <Box sx={{ flexGrow: 1, display: "flex", justifyContent: "center", paddingRight:'7rem' }}>
           <MenuItem
               onClick={() => handleClickNav("home")}
               sx={{
