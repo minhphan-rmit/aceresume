@@ -9,6 +9,7 @@ import FileUploadUtils from '../../config/FileUploadUtils'
 import { FormEvent, ChangeEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getLPTheme } from '../../styles/getLPTheme';
+import { indigo } from '@mui/material/colors';
 
 
 
@@ -94,15 +95,22 @@ const Home = () => {
       <Container  >
         <Box my={4}>
 
-        <h1 className="text-3xl font-bold text-indigo-700 pt-16 pb-5 flex gap-3">
+
+      <Typography
+        variant="h5"
+        sx={{ fontSize: "35px", fontWeight: "bold", textAlign: "left", display: "flex", alignItems: "center", gap: 2, flexWrap: "wrap", marginTop: "5rem", marginBottom: "1rem"}}
+      >
         <Box sx={{ width: 40, height: 40, flexShrink: 0, mr: 1, display: 'flex', justifyContent: 'center', alignItems: 'center', backgroundColor: "#6182FB", borderRadius: "50%" }}>
                   <Typography fontWeight="500" sx={{ color: 'white', fontSize: '18px' }}>{username.charAt(0).toUpperCase()}</Typography>
                 </Box>
-        Nice to see you, {username}!
-      </h1>
-      <h2 className=" text-lg text-gray-400 italic">
-        Today's a good day to analyze your resume ^^
-      </h2>
+        Nice to see you, <span style={{ color: indigo[500] }}>  {username}!</span>
+      </Typography>
+      <Typography
+        variant="body1"
+        sx={{ color: "text.secondary", mb: 3, textAlign: "left" }}
+      >
+         Today's a good day to analyze your resume ^^
+      </Typography>
           <Box className="flex my-4 w-full">
             <div className="w-1/2 flex gap-2">
   <Link to="/cv-analysis" >
