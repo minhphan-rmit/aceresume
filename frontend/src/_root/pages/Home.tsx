@@ -181,19 +181,22 @@ const Home = () => {
           Your Resume
         </h2>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 h-96 overflow-y-scroll ">
-          {uploadedCVs.map((cv, index) => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 h-96 overflow-x-auto relative">
+  <button className='absolute bg-indigo-500 p-2 bottom-5 right-5 rounded-full shadow-lg h-12 w-12 flex items-center'>
+  <svg width="64px" height="64px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M12 6V18M12 18L7 13M12 18L17 13" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
+  </button>
+  {uploadedCVs.map((cv, index) => (
+    <div key={index} className="col-span-1">
+      <div className="p-2.5 rounded-lg shadow-md h-full cursor-pointer hover:bg-indigo-300" style={{ transition: 'background-color 0.5s ease'}}>
+        <iframe src={cv.resume_url} alt={cv.filename} className="h-80 w-full object-cover" />
+        <p className="pt-2.5 text-indigo-500 font-semibold text-sm whitespace-nowrap overflow-hidden overflow-ellipsis">
+          {cv.filename}
+        </p>
+      </div>
+    </div>
+  ))}
+</div>
 
-            <div key={index} className="col-span-1 " onClick={() => handleResumeClick(cv.resume_id, cv.resume_url)}>
-              <div className="p-2.5 rounded-lg shadow-md h-full cursor-pointer hover:bg-indigo-300  " style={{ transition: 'background-color 0.5s ease'}}>
-                <iframe src={cv.resume_url} alt={cv.filename} className="h-80 w-full object-cover" />
-                <p className="pt-2.5 text-indigo-500 font-semibold  text-sm whitespace-nowrap overflow-hidden overflow-ellipsis">
-                  {cv.filename}
-                </p>
-              </div>
-            </div>
-          ))}
-        </div>
       </div>
     </div>
 
