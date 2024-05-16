@@ -391,3 +391,74 @@ async def get_resume_analysis(user_id: str, resume_id: str) -> ResumeAnalysis:
         raise HTTPException(
             status_code=500, detail="Failed to retrieve resume analysis"
         )
+
+
+@router.put(
+    "/{roadmap_id}/update_target",
+    status_code=200,
+    description="Update the 'is_done' status of a specific target in the roadmap and recalculate progress",
+    response_description="Updated roadmap with recalculated progress",
+    responses={
+        404: {"model": Message, "description": "Roadmap not found"},
+        500: {"model": Message, "description": "Internal Server Error"},
+    },
+)
+async def update_target_status(
+    user_id: str,
+    resume_id: str,
+    roadmap_id: str,
+    target_index: int = Body(..., embed=True),
+    is_done: bool = Body(..., embed=True),
+) -> Dict[str, Any]:
+    query = {"user_id": user_id, "resume_id": resume_id, "_id": ObjectId(roadmap_id)}
+    roadmap_data = Constants.ROLE_ROADMAP.find_one(query)
+
+    if not roadmap_data:
+        raise HTTPException(status_code=404, detail="Roadmap not found")
+
+    # Extract the roadmap
+    roadmap = roadmap_data.get("roadmap")
+    if not roadmap or not isinstance(roadmap, dict):
+        raise HTTPException(
+            status_code=404, detail="Roadmap data is invalid or missing"
+        )
+
+    # Update the 'is_done' status of the specified target
+    if target_index < 0 or target_index >= len(roadmap["list_of_roadmap"]):
+        raise HTTPException(status_code=400, detail="Invalid target index")
+
+    roadmap["list_of_roadmap"][target_index]["is_done"] = is_done
+
+    # Recalculate the progress
+    total_topics = len(roadmap["list_of_roadmap"])
+    completed_topics = sum(topic["is_done"] for topic in roadmap["list_of_roadmap"])
+    roadmap["progress"] = (
+        (completed_topics / total_topics) * 100 if total_topics > 0 else 0
+    )
+
+    # Update the roadmap in the database
+    update_result = Constants.ROLE_ROADMAP.update_one(
+        {"_id": ObjectId(roadmap_id)},
+        {
+            "$set": {
+                "roadmap.list_of_roadmap": roadmap["list_of_roadmap"],
+                "roadmap.progress": roadmap["progress"],
+            }
+        },
+    )
+
+    if update_result.modified_count == 0:
+        raise HTTPException(status_code=500, detail="Failed to update roadmap")
+
+    # Prepare the response data
+    response_data = {
+        "roadmap_id": str(roadmap_data["_id"]),
+        "roadmap": roadmap,
+        "job_description": roadmap_data.get(
+            "job_description", "No description provided"
+        ),
+        "roadmap_name": roadmap_data.get("roadmap_name", "Unnamed Roadmap"),
+        "created_at": roadmap_data.get("created_at", None),
+    }
+
+    return JSONResponse(content=response_data)
