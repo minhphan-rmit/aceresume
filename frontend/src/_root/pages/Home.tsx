@@ -93,7 +93,11 @@ const Home = () => {
       <AppNavBar />
       <Container  >
         <Box my={4}>
-        <h1 className="text-3xl font-bold text-indigo-700 pt-16 pb-5">
+
+        <h1 className="text-3xl font-bold text-indigo-700 pt-16 pb-5 flex gap-3">
+        <Box sx={{ width: 40, height: 40, flexShrink: 0, mr: 1, display: 'flex', justifyContent: 'center', alignItems: 'center', backgroundColor: "#6182FB", borderRadius: "50%" }}>
+                  <Typography fontWeight="500" sx={{ color: 'white', fontSize: '18px' }}>{username.charAt(0).toUpperCase()}</Typography>
+                </Box>
         Nice to see you, {username}!
       </h1>
       <h2 className=" text-lg text-gray-400 italic">
