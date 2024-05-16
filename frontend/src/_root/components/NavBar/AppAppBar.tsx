@@ -39,7 +39,7 @@ const AppAppBar = () => {
       window.location.href = "/home";
     }
     if (sectionName === "features") {
-      window.location.href = "/features";
+      window.location.href = "/landing-page#features";
     }
     if (sectionName === "jobs") {
       window.location.href = "/matching-jobs";

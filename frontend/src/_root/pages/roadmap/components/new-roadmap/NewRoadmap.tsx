@@ -1,7 +1,8 @@
-import { useState,FormEvent } from "react";
+import { useState,FormEvent, useEffect } from "react";
 import { Box, Typography } from "@mui/material";
 import axios from 'axios';
-import { set } from "firebase/database";
+import showNotification from '../../../../components/Notification/Notification';
+
 interface NewRoadmapProps {
     onGeneratedSuccess: (roadmapId: string) => void;
 
@@ -9,8 +10,15 @@ interface NewRoadmapProps {
 const NewRoadmap: React.FC<NewRoadmapProps> = ({ onGeneratedSuccess })  => {
 
      // State to manage dropdown visibility
-     const userId = '663852ecd568222769540792'; // Assume this is the user ID
+     const userId = localStorage.getItem('userId'); // Assume this is the user ID
+
+
      const resumeId = localStorage.getItem('resumeId');
+     useEffect(() => {
+        if (!resumeId) {
+          showNotification({ type: 'info', message: 'No resume selected. Please select a resume to proceed' });
+        }
+      }, [resumeId]);
      const [isGenerating, setIsGenerating] = useState(false);
 
      const [roadmapName, setRoadmapName] = useState('');
@@ -112,10 +120,14 @@ const NewRoadmap: React.FC<NewRoadmapProps> = ({ onGeneratedSuccess })  => {
                     </div>
 
                     <div>
-                        <button  className="my-5 w-full flex justify-center bg-indigo-500 text-gray-100 p-4  rounded-full tracking-wide
-                                    font-semibold  focus:outline-none focus:shadow-outline hover:bg-indigo-600 shadow-lg cursor-pointer transition ease-in duration-300">
-                        Generate
-                    </button>
+                    <button
+        disabled={!resumeId}
+        className={`my-5 w-full flex justify-center p-4 rounded-full tracking-wide font-semibold focus:outline-none focus:shadow-outline shadow-lg transition ease-in duration-300 ${
+          resumeId ? 'bg-indigo-500 hover:bg-indigo-600 cursor-pointer text-gray-100' : 'bg-gray-400 cursor-not-allowed text-gray-200'
+        }`}
+      >
+        Generate
+      </button>
                     </div>
         </form>
 	</div>
