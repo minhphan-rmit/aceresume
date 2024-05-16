@@ -2,6 +2,7 @@ import { ChangeEvent, FormEvent, useRef, useState } from 'react';
 import axios from 'axios';
 import { UserFormData, validateEmail, validatePassword } from './UserFormData';
 import showNotification from '../../components/Notification/Notification';
+import {useNavigate} from 'react-router-dom';
 
 interface InputRefs {
   [key: string]: React.RefObject<HTMLInputElement>;
@@ -14,6 +15,7 @@ interface UseFormProps {
 const useForm = ({ initialValues }: UseFormProps) => {
   const [formData, setFormData] = useState<UserFormData>(initialValues);
   const inputRefs = useRef<InputRefs>({});
+  const navigate = useNavigate();
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -78,6 +80,7 @@ const useForm = ({ initialValues }: UseFormProps) => {
   };
 
   const register = async (e: FormEvent<HTMLFormElement>) => {
+
     e.preventDefault();
 
     if (!validateForm()) {
@@ -96,7 +99,8 @@ const useForm = ({ initialValues }: UseFormProps) => {
       // if response is successful, show notification
       if (response.status === 200){
       showNotification({type: 'info', message: 'Registration almost complete! Check your email to activate your account!'})
-      clearForm();}
+      clearForm();
+      navigate('/sign-up')}
     } catch (error: any) {
       console.error('Registration failed:', error.response?.data?.detail || error.message);
       alert(`Registration failed: ${error.response?.data?.message || error.message}`);
@@ -117,10 +121,12 @@ const useForm = ({ initialValues }: UseFormProps) => {
       });
 
       if(response.status === 200){
-        const username = response.data.user_id;
+        const username = response.data.username;
         console.log('Login successful:', response.data);
         showNotification({type: 'success', message: 'Login successful! Welcome back, ' + username + '!'})
-        // redirect to dashboard
+        localStorage.setItem('userId', response.data.user_id)
+        localStorage.setItem('userName', response.data.username)
+        navigate('/home')
       }
       else {
         showNotification({type: 'error', message: 'Login failed:' })

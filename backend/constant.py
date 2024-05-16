@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import certifi
 import os
-import urllib
+import urllib.parse
 
 from pydantic import BaseModel
 

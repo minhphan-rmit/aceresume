@@ -39,8 +39,8 @@ app.include_router(resume.router)
 app.include_router(job.router)
 app.include_router(login.router)
 app.include_router(profile.router)
-app.include_router(activate_account.router)
 app.include_router(interview.router)
+app.include_router(activate_account.router)
 
 delete_inactive_accounts()
 

@@ -2,6 +2,7 @@
 
 from typing import Optional, List
 from pydantic import BaseModel, Field
+from datetime import datetime
 
 
 class CandidateExperience(BaseModel):
@@ -24,9 +25,12 @@ class ResumeInfo(BaseModel):
 
 
 class ResumeAnalysis(BaseModel):
+    score: int = Field(..., description="The score of the resume")
     pros: List[str] = Field(..., description="List of pros")
     cons: List[str] = Field(..., description="List of cons")
     add_ons: List[str] = Field(..., description="List of add-ons")
+    score: Optional[float] = None
+    created_at: Optional[datetime] = None
 
 
 class Target(BaseModel):
@@ -34,8 +38,19 @@ class Target(BaseModel):
     topic_description: str = Field(..., description="Description of the topic")
     resources: List[str] = Field(..., description="List of resources")
     knowledge_list: List[str] = Field(..., description="List of knowledge")
+    is_done: bool = Field(default=False, description="Check if the topic is done")
 
 
 class RoadmapModel(BaseModel):
-    level: str = Field(..., description="The level of knowledge of the client")
-    list_of_roadmap: List[Target] = Field(..., description="A Roadmap for user")
+    level: Optional[str] = Field(
+        ..., description="The level of knowledge of the client"
+    )
+    list_of_roadmap: Optional[List[Target]] = Field(
+        ..., description="A Roadmap for user"
+    )
+    summary: Optional[str] = Field(
+        ..., description="A brief description of the whole roadmap"
+    )
+    progress: float = Field(
+        default=0.0, description="Percentage of the roadmap completed"
+    )

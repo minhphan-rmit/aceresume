@@ -39,7 +39,7 @@ export function ContactSection() {
       >
         <EmailIcon sx={{ mr: 1 }} />
         <Link href="mailto:support@aceresume.com" color="inherit">
-          support@aceresume.com
+        hello.aceresume@gmail.com
         </Link>
       </Box>
       <Box
@@ -93,9 +93,9 @@ export function ContactSection() {
 
 function Copyright() {
   return (
-    <Typography variant="body2" color="text.secondary" mt={1}>
+    <Typography variant="body2" color="text.primary" mt={1}>
       {"Copyright © "}
-      <Link href="https://mui.com/">AceResume | Ace Your Career</Link>{" "}
+      <Link href="#">AceResume | Ace Your Career</Link>{" "}
       {new Date().getFullYear()}
     </Typography>
   );
@@ -124,13 +124,11 @@ export default function Footer() {
         gutterBottom
         sx={{
           fontWeight: "bold", // Making the text bold
-          color: "text.primary", // Ensures the non-highlighted text uses the primary text color
-          "& span": {
-            color: "indigo", // Applies indigo color to the "AceResume" part
-          },
+          color: "text.primary" // Ensures the non-highlighted text uses the primary text color
+
         }}
       >
-        <span>AceResume</span> | Ace Your Career
+        <span className="text-indigo-700">AceResume</span> | Ace Your Career
       </Typography>
       <Box
         sx={{

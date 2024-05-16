@@ -8,7 +8,10 @@ import MenuItem from "@mui/material/MenuItem";
 import Drawer from "@mui/material/Drawer";
 import MenuIcon from "@mui/icons-material/Menu";
 import Box from "@mui/material/Box";
-import { useTheme } from "@mui/material/styles";
+import { Link } from 'react-router-dom'
+import { createTheme, ThemeProvider, useTheme } from "@mui/material/styles";
+import getLPTheme from "../../../styles/getLPTheme";
+import UserOption from "./UserOption";
 
 const logoStyle = {
   width: "auto",
@@ -16,27 +19,40 @@ const logoStyle = {
   cursor: "pointer",
 };
 
+const LPtheme = createTheme(getLPTheme());
+
+
+
 const AppAppBar = () => {
   const [open, setOpen] = React.useState(false);
   const theme = useTheme();
+  const userId = localStorage.getItem('userId') || null;
+  const username = localStorage.getItem('userName') || null;
+
 
   const toggleDrawer = (newOpen: boolean) => () => {
     setOpen(newOpen);
   };
 
-  const scrollToSection = (sectionId: string) => {
-    const sectionElement = document.getElementById(sectionId);
-    if (sectionElement) {
-      sectionElement.scrollIntoView({ behavior: "smooth" });
-      setOpen(false);
+  const handleClickNav = (sectionName: string) => {
+   if (sectionName === "home") {
+      window.location.href = "/home";
+    }
+    if (sectionName === "features") {
+      window.location.href = "/features";
+    }
+    if (sectionName === "jobs") {
+      window.location.href = "/matching-jobs";
     }
   };
 
   return (
+    <ThemeProvider theme={LPtheme}>
     <AppBar position="sticky" sx={{ bgcolor: theme.palette.background.paper }}>
-      <Container maxWidth="lg">
+      <Container maxWidth="lg" >
         <Toolbar variant="regular" sx={{ justifyContent: "space-between" }}>
-          <Box sx={{ display: "flex", alignItems: "center" }}>
+            <Link to="/landing-page">
+          <Box  sx={{ display: "flex", alignItems: "center" }} >
             <img
               src={"./static/aceresume_logo.svg"}
               style={logoStyle}
@@ -48,9 +64,20 @@ const AppAppBar = () => {
           </div>
 
           </Box>
-          <Box sx={{ flexGrow: 1, display: "flex", justifyContent: "center" }}>
+          </Link>
+
+          <Box sx={{ flexGrow: 1, display: "flex", justifyContent: "center", paddingRight:'7rem' }}>
+          <MenuItem
+              onClick={() => handleClickNav("home")}
+              sx={{
+                color: theme.palette.text.primary,
+                "&:hover": { color: theme.palette.primary.main },
+              }}
+            >
+              <Typography>Home</Typography>
+            </MenuItem>
             <MenuItem
-              onClick={() => scrollToSection("features")}
+              onClick={() => handleClickNav("features")}
               sx={{
                 color: theme.palette.text.primary,
                 "&:hover": { color: theme.palette.primary.main },
@@ -58,62 +85,51 @@ const AppAppBar = () => {
             >
               <Typography>Features</Typography>
             </MenuItem>
+
+
+
             <MenuItem
-              onClick={() => scrollToSection("testimonials")}
+              onClick={() => handleClickNav("jobs")}
               sx={{
                 color: theme.palette.text.primary,
                 "&:hover": { color: theme.palette.primary.main },
               }}
             >
-              <Typography>Testimonials</Typography>
-            </MenuItem>
-            <MenuItem
-              onClick={() => scrollToSection("highlights")}
-              sx={{
-                color: theme.palette.text.primary,
-                "&:hover": { color: theme.palette.primary.main },
-              }}
-            >
-              <Typography>Highlights</Typography>
-            </MenuItem>
-            <MenuItem
-              onClick={() => scrollToSection("pricing")}
-              sx={{
-                color: theme.palette.text.primary,
-                "&:hover": { color: theme.palette.primary.main },
-              }}
-            >
-              <Typography>Pricing</Typography>
-            </MenuItem>
-            <MenuItem
-              onClick={() => scrollToSection("faq")}
-              sx={{
-                color: theme.palette.text.primary,
-                "&:hover": { color: theme.palette.primary.main },
-              }}
-            >
-              <Typography>FAQ</Typography>
+              <Typography>Jobs</Typography>
             </MenuItem>
           </Box>
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-            <Button
-              variant="outlined"
-              color="primary"
-              component="a"
-              href="/sign-in/"
-              sx={{ width: 100 }}
-            >
-              Sign in
-            </Button>
-            <Button
-              variant="contained"
-              color="primary"
-              component="a"
-              href="/sign-up/"
-              sx={{ width: 100 }}
-            >
-              Sign up
-            </Button>
+            { !username && (
+              <>
+              <Button
+                variant="outlined"
+                color="primary"
+                component="a"
+                href="/sign-in"
+                sx={{ width: 100 }}
+              >
+                Sign in
+              </Button>
+
+              <Button
+                variant="contained"
+                color="primary"
+                component="a"
+                href="/sign-up"
+                sx={{ width: 100 }}
+              >
+                Sign up
+              </Button>
+              </>
+              )}
+
+              { username && (
+                <Link to="/profile">
+                <Box sx={{ width: 40, height: 40, flexShrink: 0, mr: 1, display: 'flex', justifyContent: 'center', alignItems: 'center', backgroundColor: "#6182FB", borderRadius: "50%" }}>
+                  <Typography fontWeight="500" sx={{ color: 'white', fontSize: '18px' }}>{username.charAt(0)}</Typography>
+                </Box>
+              </Link>
+              )}
           </Box>
           <Box
             sx={{ display: { xs: "flex", md: "none" }, alignItems: "center" }}
@@ -129,30 +145,9 @@ const AppAppBar = () => {
           </Box>
         </Toolbar>
       </Container>
-      <Drawer anchor="right" open={open} onClose={toggleDrawer(false)}>
-        <Box
-          sx={{
-            minWidth: "250px",
-            p: 2,
-            bgcolor: theme.palette.background.paper,
-          }}
-        >
-          <MenuItem onClick={() => scrollToSection("features")}>
-            Features
-          </MenuItem>
-          <MenuItem onClick={() => scrollToSection("testimonials")}>
-            Testimonials
-          </MenuItem>
-          <MenuItem onClick={() => scrollToSection("highlights")}>
-            Highlights
-          </MenuItem>
-          <MenuItem onClick={() => scrollToSection("pricing")}>
-            Pricing
-          </MenuItem>
-          <MenuItem onClick={() => scrollToSection("faq")}>FAQ</MenuItem>
-        </Box>
-      </Drawer>
+
     </AppBar>
+    </ThemeProvider>
   );
 };
 

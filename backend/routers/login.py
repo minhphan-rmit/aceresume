@@ -56,7 +56,11 @@ def login(
             Constants.USER_TOKENS.insert_one(user_token.dict())
 
             return JSONResponse(
-                content={"email": email, "user_id": str(account["_id"])}
+                content={
+                    "email": email,
+                    "user_id": str(account["_id"]),
+                    "username": str(account["username"]),
+                }
             )
         else:
             return JSONResponse(
@@ -106,7 +110,13 @@ def login(
             expires_at=datetime.utcnow() + timedelta(hours=24),  # Token expiration time
         )
         Constants.USER_TOKENS.insert_one(user_token.dict())
-        return JSONResponse(content={"email": email, "user_id": str(account["_id"])})
+        return JSONResponse(
+            content={
+                "email": email,
+                "user_id": str(account["_id"]),
+                "username": str(account["username"]),
+            }
+        )
     else:
         return JSONResponse(
             status_code=404, content={"message": "User does not exist."}

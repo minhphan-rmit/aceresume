@@ -33,6 +33,9 @@ const useGoogleAuth = () => {
       }
       if (response.status === 200) {
        showNotification({type: 'success', message: 'Login successful! Welcome back!, ' + email + '!'})
+       localStorage.setItem('userId', response.data.user_id)
+        localStorage.setItem('userName', response.data.username)
+        navigate('/home')
       }
     } catch (error: any) {
       console.error('Error sending email to backend:', error);
