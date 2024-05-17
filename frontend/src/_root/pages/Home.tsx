@@ -9,6 +9,7 @@ import FileUploadUtils from '../../config/FileUploadUtils'
 import { FormEvent, ChangeEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getLPTheme } from '../../styles/getLPTheme';
+import { indigo } from '@mui/material/colors';
 
 
 
@@ -21,7 +22,7 @@ const Home = () => {
   } = FileUploadUtils();
   const [uploadedCVs, setUploadedCVs] = useState([]);
   const [username, setUsername] = useState('');
-  const userId = '663852ecd568222769540792';
+  const userId = localStorage.getItem('userId') ;
 
   useEffect(() => {
     // Fetch user profile data
@@ -93,12 +94,23 @@ const Home = () => {
       <AppNavBar />
       <Container  >
         <Box my={4}>
-        <h1 className="text-3xl font-bold text-indigo-700 pt-16 pb-5">
-        Nice to see you, {username}!
-      </h1>
-      <h2 className=" text-lg text-gray-400 italic">
-        Today's a good day to analyze your resume ^^
-      </h2>
+
+
+      <Typography
+        variant="h5"
+        sx={{ fontSize: "35px", fontWeight: "bold", textAlign: "left", display: "flex", alignItems: "center", gap: 2, flexWrap: "wrap", marginTop: "5rem", marginBottom: "1rem"}}
+      >
+        <Box sx={{ width: 40, height: 40, flexShrink: 0, mr: 1, display: 'flex', justifyContent: 'center', alignItems: 'center', backgroundColor: "#6182FB", borderRadius: "50%" }}>
+                  <Typography fontWeight="500" sx={{ color: 'white', fontSize: '18px' }}>{username.charAt(0).toUpperCase()}</Typography>
+                </Box>
+        Nice to see you, <span style={{ color: indigo[500] }}>  {username}!</span>
+      </Typography>
+      <Typography
+        variant="body1"
+        sx={{ color: "text.secondary", mb: 3, textAlign: "left" }}
+      >
+         Today's a good day to analyze your resume ^^
+      </Typography>
           <Box className="flex my-4 w-full">
             <div className="w-1/2 flex gap-2">
   <Link to="/cv-analysis" >
@@ -185,6 +197,7 @@ const Home = () => {
   <button className='absolute bg-indigo-500 p-2 bottom-5 right-5 rounded-full shadow-lg h-12 w-12 flex items-center'>
   <svg width="64px" height="64px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M12 6V18M12 18L7 13M12 18L17 13" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
   </button>
+  {uploadedCVs.length === 0 && <p className="text-gray-400 italic w-full">No resumes uploaded yet</p>}
   {uploadedCVs.map((cv, index) => (
     <div key={index} className="col-span-1" onClick={() => handleResumeClick(cv.resume_id, cv.resume_url)}>
       <div className="p-2.5 rounded-lg shadow-md h-full cursor-pointer hover:bg-indigo-300" style={{ transition: 'background-color 0.5s ease'}}>

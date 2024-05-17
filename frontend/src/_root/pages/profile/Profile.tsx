@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import AppAppBar from "../../components/NavBar/AppAppBar";
 import Button from '@mui/material/Button';
-import { Avatar, Chip, Modal, Box, TextField, IconButton, InputAdornment, InputLabel, MenuItem, FormControl } from '@mui/material';
+import { Avatar, Chip, Modal, Box, TextField, IconButton, InputAdornment, InputLabel, MenuItem, FormControl, Typography } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { ThemeProvider, createTheme } from "@mui/material/styles";
@@ -181,11 +181,19 @@ const Profile = () => {
       <div className="flex items-start justify-center w-screen h-screen p-10 space-x-6 bg-gray-100">
         <div className="flex flex-row items-center w-full gap-5 h-full p-20">
           {userData && (
-            <div id="personal-info" className="flex flex-col p-10 items-center h-full w-1/5 text-gray-700 bg-white rounded-lg shadow-lg">
-              <Avatar src={userImage.profilePic} sx={{ width: 150, height: 150 }} />
-              <h2 className="mt-4 font-semibold text-lg">{userData.username}</h2>
-              <p className="pt-4">{userData.email}</p>
-              <p className="pt-4">+{userData.number}</p>
+            <div id="personal-info" className="flex flex-col p-10 items-center h-full w-1/5 text-gray-700 bg-white rounded-lg shadow-lg px-3">
+             <Box sx={{ width: 150, height: 150, flexShrink: 0, mr: 1, display: 'flex', justifyContent: 'center', alignItems: 'center', backgroundColor: "#6182FB", borderRadius: "50%" }}>
+             <Typography fontWeight="500" sx={{ color: 'white', fontSize: '3rem' }}>
+  {userData.username.charAt(0).toUpperCase()}
+</Typography>
+                </Box>
+
+              <h2 className="mt-4 font-semibold text-lg w-full p-4 ">{userData.username}</h2>
+              <p className=" w-full break-words p-4"><span className='font-bold'>Email: </span>{userData.email}</p>
+              <p className="p-4">
+  <span className="font-bold">Number: </span>
+  {userData.number ?? 'No number available'}
+</p>
               <p className="pt-4">{userData.level}</p>
             </div>
           )}

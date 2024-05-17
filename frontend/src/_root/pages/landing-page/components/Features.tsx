@@ -11,6 +11,7 @@ import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
 import AssessmentIcon from "@mui/icons-material/Assessment";
 import MapIcon from "@mui/icons-material/Map";
 import VideoCallIcon from "@mui/icons-material/VideoCall";
+import { useNavigate } from "react-router-dom";
 
 const items = [
   {
@@ -34,10 +35,22 @@ const items = [
 ];
 
 export default function Features() {
+  const navigate = useNavigate();
   const [selectedItemIndex, setSelectedItemIndex] = useState(0);
 
   const handleItemClick = (index: number) => {
     setSelectedItemIndex(index);
+
+    if (index === 0) {
+      navigate("/cv-analysis");
+    }
+    if (index === 1) {
+      navigate("/roadmap");
+    }
+    if (index === 2) {
+      navigate("/mock-interview");
+    }
+
   };
 
   const selectedFeature = items[selectedItemIndex];

@@ -17,9 +17,9 @@ import MenuItem from "@mui/material/MenuItem";
 import InputAdornment from '@mui/material/InputAdornment';
 import CircularProgress from '@mui/material/CircularProgress';
 import Modal from "@mui/material/Modal";
-import { Grid, Paper, CardMedia } from '@mui/material';
+import { Grid, Paper, CardMedia, InputLabel } from '@mui/material';
 import getLPTheme from "../../../styles/getLPTheme";
-import axios from 'axios';
+
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 
 const LPtheme = createTheme(getLPTheme());
@@ -109,26 +109,28 @@ function MatchedJobs() {
   return (
     <ThemeProvider theme={LPtheme}>
       <AppNavBar />
+
       <Container sx={{ py: 4 }}>
-        <Button variant="contained" onClick={handleAddCVButtonClick} sx={{my: 2}}>
-            Add your CV
-        </Button>
-        <Box sx={{mb: 2}}>
-          {selectedCV && (
-            <Paper style={{ padding: 10, borderRadius: "10px", width: 150, maxHeight: 250 }}>
-              <CardMedia
-                  component="img"
-                  height="30"
-                  image={selectedCV.resume_url}
-                  alt={selectedCV.filename}
-                />
-              <Typography style={{paddingTop: 10, color: '#6182FB', fontWeight: '300', fontSize: '14px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                {selectedCV.filename}
-              </Typography>
-            </Paper>
-          )}
-        </Box>
-        <Box mb={3} sx={{ position: 'relative'}}>
+        <div className="flex justify-between gap-6">
+       <div className="flex flex-col w-4/5 gap-8">
+        <div className="flex flex-col items-start ">
+      <Typography
+        variant="h5"
+        sx={{ fontSize: "50px", fontWeight: "bold", textAlign: "right" }}
+      >
+        Top <span style={{ color: indigo[500] }}>Picked Jobs</span>
+      </Typography>
+      <Typography
+        variant="body1"
+        sx={{ color: "text.secondary", mb: 3, textAlign: "right" }}
+      >
+        Explore the top trending jobs handpicked just for you based on your
+        skills and interests.
+      </Typography>
+      </div>
+
+
+        <Box mb={3} sx={{ position: 'relative'}} className=" flex gap-3 w-3/4">
           <TextField
             label="Search Jobs"
             variant="outlined"
@@ -138,10 +140,13 @@ function MatchedJobs() {
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
+
                   <Select
+                  labelId="demo-simple-select-standard-label"
+                  id="demo-simple-select-standard"
                     value={selectedLocation}
                     onChange={handleLocationChange}
-                    variant="outlined"
+
                     displayEmpty
                     sx={{ minWidth: 120 }}
                     className="border-none"
@@ -156,14 +161,41 @@ function MatchedJobs() {
                     <MenuItem value="UK">UK</MenuItem>
                     {/* Add more locations as needed */}
                   </Select>
-                  <Button variant="contained" onClick={handleSearch}>
-                    Search
-                  </Button>
+
                 </InputAdornment>
               ),
             }}
           />
+          <Button variant="contained" onClick={handleSearch}>
+                    Search
+                  </Button>
         </Box>
+
+</div>
+<div className="w-1/5">
+        <Button variant="contained" onClick={handleAddCVButtonClick} sx={{my: 2, width: '100%'}}>
+            Use data from CV
+        </Button>
+        <div className="border-2 border-dashed border-indigo-300 rounded-lg  text-center relative h-full flex flex-col justify-center items-center">
+{!selectedCV && <div className="text-gray-500 font-light italic"> No resume data used</div>}
+
+          {selectedCV && (
+            <Paper style={{ padding: 5, borderRadius: "10px", width: 150, maxHeight: 250 }}>
+              <CardMedia
+                  component="img"
+                  height="30"
+                  image={selectedCV.resume_url}
+                  alt={selectedCV.filename}
+                />
+              <Typography style={{paddingTop: 10, color: '#6182FB', fontWeight: '300', fontSize: '14px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                {selectedCV.filename}
+              </Typography>
+            </Paper>
+          )}
+
+        </div>
+        </div>
+</div>
         <Modal
           aria-labelledby="transition-modal-title"
           aria-describedby="transition-modal-description"

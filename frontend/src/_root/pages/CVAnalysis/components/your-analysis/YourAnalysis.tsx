@@ -4,7 +4,7 @@ import showNotification from '../../../../components/Notification/Notification';
 import axios from 'axios';
 import {useEffect, useState} from 'react';
 const YourAnalysis = ({resumeID}) => {
-    const userId = localStorage.getItem('userId')??'663852ecd568222769540792';
+    const userId = localStorage.getItem('userId');
 
     const [analysis, setAnalysis] = useState<any>(null);
 
@@ -14,6 +14,7 @@ const YourAnalysis = ({resumeID}) => {
         console.log('Resume ID:', resumeId);
         if (resumeId){
         getAnalysis(resumeId);}
+
     }, []);
 
     const getAnalysis = async (resumeId: string) => {
@@ -31,6 +32,7 @@ const YourAnalysis = ({resumeID}) => {
 
     return (
         <>
+
          <div className="flex flex-col p-10 items-start  w-full text-gray-700 bg-white rounded-lg shadow-lg">
          {analysis && <ScoreBar score={analysis.score} />}
 
@@ -76,7 +78,11 @@ const YourAnalysis = ({resumeID}) => {
                     ))}
                 </ul>
             )}
-  </div></>
+  </div>
+
+
+  </>
+
     )
 }
 export default YourAnalysis;

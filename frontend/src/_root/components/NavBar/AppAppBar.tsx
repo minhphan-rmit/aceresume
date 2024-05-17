@@ -39,7 +39,7 @@ const AppAppBar = () => {
       window.location.href = "/home";
     }
     if (sectionName === "features") {
-      window.location.href = "/features";
+      window.location.href = "/landing-page#features";
     }
     if (sectionName === "jobs") {
       window.location.href = "/matching-jobs";
@@ -126,7 +126,7 @@ const AppAppBar = () => {
               { username && (
                 <Link to="/profile">
                 <Box sx={{ width: 40, height: 40, flexShrink: 0, mr: 1, display: 'flex', justifyContent: 'center', alignItems: 'center', backgroundColor: "#6182FB", borderRadius: "50%" }}>
-                  <Typography fontWeight="500" sx={{ color: 'white', fontSize: '18px' }}>{username.charAt(0)}</Typography>
+                  <Typography fontWeight="500" sx={{ color: 'white', fontSize: '18px' }}>{username.charAt(0).toUpperCase()}</Typography>
                 </Box>
               </Link>
               )}

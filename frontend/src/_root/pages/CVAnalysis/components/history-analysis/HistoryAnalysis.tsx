@@ -50,9 +50,11 @@ const navigate = useNavigate();
                     <h2 className="mt-5 text-3xl font-bold text-gray-900">
                         Previous Uploads
                     </h2>
-                    <p className="mt-2 text-sm text-gray-400">
+                    {resumes.length === 0 && <p className="mt-2 text-sm text-gray-400">No previous uploads</p>}
+
+                   {resumes.length !== 0 && <p className="mt-2 text-sm text-gray-400">
                         Review your previous analysis here
-                    </p>
+                    </p>}
                 </div>
                 <Button onClick={addNewAnalysis} className="hover:bg-none w-min h-min" style={{ minWidth: 'auto' }}>
                         <svg width="80px" height="80px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#6366f1">
