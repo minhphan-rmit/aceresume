@@ -176,7 +176,7 @@ function MatchedJobs() {
         <Button variant="contained" onClick={handleAddCVButtonClick} sx={{my: 2, width: '100%'}}>
             Use data from CV
         </Button>
-        <div className="border-2 border-dashed border-indigo-300 rounded-lg  text-center relative h-full flex flex-col justify-center items-center">
+        <div className="border-2 border-dashed border-indigo-300 rounded-lg  text-center relative h-min p-3 w-full  flex flex-col justify-center items-center">
 {!selectedCV && <div className="text-gray-500 font-light italic"> No resume data used</div>}
 
           {selectedCV && (
