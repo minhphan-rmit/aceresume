@@ -10,10 +10,13 @@ const [feedback, setFeedback] = useState('');
 
 const userId = localStorage.getItem('userId') ?? '663852ecd568222769540792';
 const username = localStorage.getItem('username') ?? 'Ha Phuong Tran';
-const API_BASE_URL = ' https://ace-resume-backend-7fotus647q-as.a.run.app/api/aceresume/chat-interview'; // Adjust according to your server address
+const API_BASE_URL = 'http://localhost:8000/api/aceresume/chat-interview'; // Adjust according to your server address
+
+
 
 
   const [messages, setMessages] = useState([]);
+  const [lastAiMessage, setLastAiMessage] = useState('');
   const [inputText, setInputText] = useState('');
   const [interviewDetails, setInterviewDetails] = useState({
     interviewer: "AI Interviewer",
@@ -57,34 +60,38 @@ const API_BASE_URL = ' https://ace-resume-backend-7fotus647q-as.a.run.app/api/ac
 
   const handleSendMessage = async () => {
     if (inputText.trim()) {
-      const newMessage = { text: inputText, sender: 'user', name: username, timestamp: new Date().toLocaleTimeString() };
+        const newMessage = { text: inputText, sender: 'user', name: username, timestamp: new Date().toLocaleTimeString() };
 
-      // Set user message and then add the placeholder in the next state update
-      setMessages(prevMessages => [...prevMessages, newMessage]);
+        // Set user message and then add the placeholder in the next state update
+        setMessages(prevMessages => [...prevMessages, newMessage]);
 
-      // Add a placeholder for the AI response
-      setMessages(prevMessages => [...prevMessages, { text: '...', sender: 'ai', name: "AI Interviewer", timestamp: new Date().toLocaleTimeString() }]);
+        // Add a placeholder for the AI response
+        setMessages(prevMessages => [...prevMessages, { text: '...', sender: 'ai', name: "AI Interviewer", timestamp: new Date().toLocaleTimeString() }]);
 
-      // Call the API to send the message
-      const response = await sendMessage(userId, inputText, role, jobDescription);
-      if (response) {
-        console.log(response);
+        // Call the API to send the message, including the last AI message
+        const response = await sendMessage(userId, inputText, role, jobDescription, lastAiMessage);
+        if (response) {
+            console.log(response);
 
-        // Update the placeholder message with the actual response
-        setMessages(prevMessages => {
-          const updatedMessages = [...prevMessages];
-          updatedMessages[updatedMessages.length - 1] = {
-            text: response,
-            sender: 'ai',
-            name: "AI Interviewer",
-            timestamp: new Date().toLocaleTimeString()
-          };
-          return updatedMessages;
-        });
-      }
+            // Update the placeholder message with the actual response
+            setMessages(prevMessages => {
+                const updatedMessages = [...prevMessages];
+                updatedMessages[updatedMessages.length - 1] = {
+                    text: response,
+                    sender: 'ai',
+                    name: "AI Interviewer",
+                    timestamp: new Date().toLocaleTimeString()
+                };
+                return updatedMessages;
+            });
+
+            // Update the last AI message state
+            setLastAiMessage(response);
+        }
     }
     setInputText('');
-  };
+};
+
 
 
 
@@ -120,44 +127,39 @@ const API_BASE_URL = ' https://ace-resume-backend-7fotus647q-as.a.run.app/api/ac
         setInterviewStarted(false);
         setMessages([]);
     }
-  const startInterview = async (duration, role, jobDescription) => {
+    const startInterview = async (duration, role, jobDescription) => {
+      setJobDescription(jobDescription);
+      setRole(role);
+      const response = await startNewChat(userId, role);
+      if (response){
+          setWelcomeMessage(response);
+          setInterviewStarted(true);
 
-    setJobDescription(jobDescription);
-    setRole(role);
-    const response = await startNewChat(userId, role);
-    if (response){
-    setWelcomeMessage(response);
-    setInterviewStarted(true);
+          const welcomeMsg = {
+              text: response,  // Use the welcome message as the text for the message
+              sender: 'ai',    // Assuming 'ai' is the identifier for system messages
+              name: "AI Interviewer",
+              timestamp: new Date().toLocaleTimeString()
+          };
 
-    const welcomeMsg = {
-        text: response,  // Use the welcome message as the text for the message
-        sender: 'ai',    // Assuming 'ai' is the identifier for system messages
-        name: "AI Interviewer",
-        timestamp: new Date().toLocaleTimeString()
-    };
+          // Update the messages state to include the welcome message
+          setMessages(prevMessages => [...prevMessages, welcomeMsg]);
 
-    // Update the messages state to include the welcome message
-    setMessages(prevMessages => [...prevMessages, welcomeMsg]);
+          // Reset the last AI message
+          setLastAiMessage(response);
 
-        setInterviewDetails({
-          interviewer: "AI Interviewer",
-          interviewee: username,
-          startTime: new Date().toLocaleTimeString(),
-          duration: `${duration} minutes`,
-          role,
-          remainingTime: parseInt(duration) * 60
-        })
-
-
-    }
-
-
-
-
-
-
-
+          setInterviewDetails({
+              interviewer: "AI Interviewer",
+              interviewee: username,
+              startTime: new Date().toLocaleTimeString(),
+              duration: `${duration} minutes`,
+              role,
+              remainingTime: parseInt(duration) * 60
+          });
+      }
   };
+
+
 
   const handlePause = () => setIsPaused(true);
   const handleResume = () => setIsPaused(false);

@@ -13,12 +13,12 @@ export const startNewChat = async (userId: string, role: string) => {
   }
 };
 
-export const sendMessage = async (userId: string, message: string, role: string, jobDescription: string) => {
+export const sendMessage = async (userId: string, message: string, role: string, jobDescription: string,aiMessage: string) => {
   try {
     const url = new URL(`${API_BASE_URL}/chat/${userId}/${role}`);
     url.searchParams.append('message', message);
     url.searchParams.append('job_description', jobDescription);
-
+    url.searchParams.append('ai_previous_message', aiMessage);
 
     const response = await axios.post(url.href);
 
