@@ -404,13 +404,11 @@ async def get_resume_analysis(user_id: str, resume_id: str) -> ResumeAnalysis:
     },
 )
 async def update_target_status(
-    user_id: str,
-    resume_id: str,
     roadmap_id: str,
     target_index: int = Body(..., embed=True),
     is_done: bool = Body(..., embed=True),
 ) -> Dict[str, Any]:
-    query = {"user_id": user_id, "resume_id": resume_id, "_id": ObjectId(roadmap_id)}
+    query = {"_id": ObjectId(roadmap_id)}
     roadmap_data = Constants.ROLE_ROADMAP.find_one(query)
 
     if not roadmap_data:
@@ -418,31 +416,28 @@ async def update_target_status(
 
     # Extract the roadmap
     roadmap = roadmap_data.get("roadmap")
-    if not roadmap or not isinstance(roadmap, dict):
-        raise HTTPException(
-            status_code=404, detail="Roadmap data is invalid or missing"
-        )
+
+    # Extract the list_of_roadmap from the roadmap
+    list_of_roadmap = roadmap[1][1]
 
     # Update the 'is_done' status of the specified target
-    if target_index < 0 or target_index >= len(roadmap["list_of_roadmap"]):
+    if target_index < 0 or target_index >= len(list_of_roadmap):
         raise HTTPException(status_code=400, detail="Invalid target index")
 
-    roadmap["list_of_roadmap"][target_index]["is_done"] = is_done
+    list_of_roadmap[target_index][4][1] = is_done
 
     # Recalculate the progress
-    total_topics = len(roadmap["list_of_roadmap"])
-    completed_topics = sum(topic["is_done"] for topic in roadmap["list_of_roadmap"])
-    roadmap["progress"] = (
-        (completed_topics / total_topics) * 100 if total_topics > 0 else 0
-    )
+    total_topics = len(list_of_roadmap)
+    completed_topics = sum(topic[4][1] for topic in list_of_roadmap)
+    roadmap[3][1] = (completed_topics / total_topics) * 100 if total_topics > 0 else 0
 
     # Update the roadmap in the database
     update_result = Constants.ROLE_ROADMAP.update_one(
         {"_id": ObjectId(roadmap_id)},
         {
             "$set": {
-                "roadmap.list_of_roadmap": roadmap["list_of_roadmap"],
-                "roadmap.progress": roadmap["progress"],
+                "roadmap.1.1": list_of_roadmap,
+                "roadmap.3.1": roadmap[3][1],
             }
         },
     )
