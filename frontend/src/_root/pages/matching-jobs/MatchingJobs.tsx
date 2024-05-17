@@ -58,7 +58,7 @@ function MatchedJobs() {
 
   const fetchAllCVs = async () => {
     try {
-      const response = await fetch(`http://localhost:8000/api/aceresume/resume/${userId}/get_all_resume`);
+      const response = await fetch(` https://ace-resume-backend-7fotus647q-as.a.run.app/api/aceresume/resume/${userId}/get_all_resume`);
       if (!response.ok) {
         throw new Error('Failed to fetch CVs');
       }
@@ -90,7 +90,7 @@ function MatchedJobs() {
   const handleSearch = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`http://localhost:8000/api/aceresume/job/${encodeURIComponent(searchQuery)}/find-jobs?user_id=${userId}&resume_id=${temporaryResumeId}&location=${selectedLocation}`, {
+      const response = await fetch(` https://ace-resume-backend-7fotus647q-as.a.run.app/api/aceresume/job/${encodeURIComponent(searchQuery)}/find-jobs?user_id=${userId}&resume_id=${temporaryResumeId}&location=${selectedLocation}`, {
         method: 'POST',
         headers: {
           'Accept': 'application/json',

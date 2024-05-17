@@ -44,7 +44,7 @@ const Profile = () => {
   const userId =localStorage.getItem('userId');
   const fetchUserProfile = async () => {
     try {
-      const response = await axios.get(`http://localhost:8000/api/aceresume/profile/${userId}`);
+      const response = await axios.get(` https://ace-resume-backend-7fotus647q-as.a.run.app/api/aceresume/profile/${userId}`);
       setUserData(response.data);
     } catch (error) {
       console.error('Error fetching user profile:', error);
@@ -64,7 +64,7 @@ const Profile = () => {
 
   const sentOTP = async () => {
     try {
-      const response = await axios.post(`http://localhost:8000/api/aceresume/forgot_password/${userId}`);
+      const response = await axios.post(` https://ace-resume-backend-7fotus647q-as.a.run.app/api/aceresume/forgot_password/${userId}`);
       console.log('OTP sent successfully:', response.data);
     } catch (error) {
       console.error('Error fetching user profile:', error);
@@ -98,7 +98,7 @@ const Profile = () => {
       formData.append('password', tempPass);
       formData.append('password_verify', password_verify);
 
-      const response = await axios.put(`http://localhost:8000/api/aceresume/profile_update/${userId}`, formData, {
+      const response = await axios.put(` https://ace-resume-backend-7fotus647q-as.a.run.app/api/aceresume/profile_update/${userId}`, formData, {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
         },
@@ -118,7 +118,7 @@ const Profile = () => {
       formData.append('new_password', new_password);
       formData.append('confirm_password', confirm_password);
 
-      const response = await axios.put(`http://localhost:8000/api/aceresume/reset_password/${userId}`, formData, {
+      const response = await axios.put(` https://ace-resume-backend-7fotus647q-as.a.run.app/api/aceresume/reset_password/${userId}`, formData, {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
         },
