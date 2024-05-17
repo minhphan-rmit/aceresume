@@ -48,7 +48,7 @@ const getCurrentRoadmap = async (roadmapId: string) => {
          {roadmap && <RoadmapOverview roadmap={roadmap} />}
          </div>
          <div className="flex flex-col p-10 items-start  w-full text-gray-700 bg-white rounded-lg shadow-lg mt-4">
-           {roadmap && <TaskList roadmapDetails={roadmap.roadmap}/>}
+           {roadmap && <TaskList roadmapDetails={roadmap.roadmap} roadmapId = {roadmap.roadmap_id}/>}
          </div>
          </div>
 }

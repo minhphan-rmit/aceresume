@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Checkbox from '@mui/material/Checkbox';
+import axios from "axios";
+import showNotification from '../../../../components/Notification/Notification';
 
 
 interface Task {
@@ -18,10 +20,12 @@ interface Roadmap {
 }
 
 interface ListOfRoadmapProps {
+
   roadmapDetails?: Roadmap; // Make optional to handle cases where it might be undefined
+  roadmapId: string;
 }
 
-const ListOfRoadmap: React.FC<ListOfRoadmapProps> = ({ roadmapDetails }) => {
+const ListOfRoadmap: React.FC<ListOfRoadmapProps> = ({ roadmapDetails, roadmapId }) => {
   if (!roadmapDetails || !roadmapDetails.list_of_roadmap) {
     return <div>Loading roadmap details...</div>; // Display loading or any placeholder
   }
@@ -32,13 +36,34 @@ const ListOfRoadmap: React.FC<ListOfRoadmapProps> = ({ roadmapDetails }) => {
 
 
   // Handle change for each checkbox
-  const handleCheckboxChange = (index: number, isChecked: boolean) => {
+  const handleCheckboxChange = async (index: number, isChecked: boolean) => {
     const newCheckedStates = [...checkedStates];
     newCheckedStates[index] = isChecked;
     setCheckedStates(newCheckedStates);
 
-    // Here you could update the task status in your backend or context
-  };
+    // Update the target status in the backend
+    console.log('Updating target status:', roadmapId, index, isChecked);
+    await updateTargetStatus(roadmapId, index, isChecked);
+
+
+};
+const updateTargetStatus = async (roadmapId: string, targetIndex: number, isDone: boolean) => {
+  try {
+      const response = await axios.put(`http://localhost:8000/api/aceresume/resume/${roadmapId}/update_target`, {
+          target_index: targetIndex,
+          is_done: isDone
+      });
+
+      console.log('Update response:', response.data);
+      showNotification({type: 'success', message: 'Status updated successfully'});
+      return response.data;
+  } catch (error) {
+      console.error('Error updating target status:', error);
+      showNotification({type: 'error', message: 'Error updating status'});
+  }
+};
+
+
 
   const toggleEditMode = () => {
     setEditMode(!editMode);
@@ -47,6 +72,7 @@ const ListOfRoadmap: React.FC<ListOfRoadmapProps> = ({ roadmapDetails }) => {
   const saveChanges = () => {
     // Perform save to backend or local storage
     toggleEditMode(); // Disable edit mode after saving
+    window.location.reload();
   };
 
   return (
@@ -79,6 +105,7 @@ const ListOfRoadmap: React.FC<ListOfRoadmapProps> = ({ roadmapDetails }) => {
               onChange={(e) => handleCheckboxChange(index, e.target.checked)}
               disabled={!editMode}
               inputProps={{ 'aria-label': `controlled-${index}` }}
+              name={roadmapDetails.roadmap_id}
             />
           </summary>
           <div className="mt-2 space-y-3">
