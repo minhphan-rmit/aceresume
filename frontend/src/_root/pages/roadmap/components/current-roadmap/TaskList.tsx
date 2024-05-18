@@ -49,7 +49,7 @@ const ListOfRoadmap: React.FC<ListOfRoadmapProps> = ({ roadmapDetails, roadmapId
 };
 const updateTargetStatus = async (roadmapId: string, targetIndex: number, isDone: boolean) => {
   try {
-      const response = await axios.put(`http://localhost:8000/api/aceresume/resume/${roadmapId}/update_target`, {
+      const response = await axios.put(` https://ace-resume-backend-7fotus647q-as.a.run.app/api/aceresume/resume/${roadmapId}/update_target`, {
           target_index: targetIndex,
           is_done: isDone
       });

@@ -23,7 +23,7 @@ const GeneratedRoadmap: React.FC<GeneratedRoadmapProps> = ({ onChangeSuccess})  
 
     const getAllRoadmaps = async () => {
         try {
-            const response = await axios.get(`http://localhost:8000/api/aceresume/resume/${userId}/get_all_roadmaps`,
+            const response = await axios.get(` https://ace-resume-backend-7fotus647q-as.a.run.app/api/aceresume/resume/${userId}/get_all_roadmaps`,
             {
                 params: {
                     resume_id: localStorage.getItem('resumeId')

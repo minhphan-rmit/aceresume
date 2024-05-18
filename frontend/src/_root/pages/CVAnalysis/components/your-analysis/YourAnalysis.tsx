@@ -19,7 +19,7 @@ const YourAnalysis = ({resumeID}) => {
 
     const getAnalysis = async (resumeId: string) => {
     try {
-        const response = await axios.get(`http://localhost:8000/api/aceresume/resume/${userId}/${resumeId}/get_analysis`);
+        const response = await axios.get(` https://ace-resume-backend-7fotus647q-as.a.run.app/api/aceresume/resume/${userId}/${resumeId}/get_analysis`);
         console.log('Analysis:', response.data);
         setAnalysis(response.data);
 

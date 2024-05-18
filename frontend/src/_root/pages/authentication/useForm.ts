@@ -90,7 +90,7 @@ const useForm = ({ initialValues }: UseFormProps) => {
     try {
       const { repassword, ...submissionData } = formData;
       console.log('Submission data:', submissionData);
-      const response = await axios.post('http://localhost:8000/api/aceresume/register', submissionData, {
+      const response = await axios.post(' https://ace-resume-backend-7fotus647q-as.a.run.app/api/aceresume/register', submissionData, {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
         },
@@ -114,7 +114,7 @@ const useForm = ({ initialValues }: UseFormProps) => {
     try {
       const { ...submissionData } = formData;
       console.log('Submission data:', submissionData);
-      const response = await axios.post('http://localhost:8000/api/aceresume/login', submissionData, {
+      const response = await axios.post(' https://ace-resume-backend-7fotus647q-as.a.run.app/api/aceresume/login', submissionData, {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
         },
