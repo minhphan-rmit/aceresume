@@ -9,7 +9,7 @@ const [role, setRole] = useState('');
 const [feedback, setFeedback] = useState('');
 
 const userId = localStorage.getItem('userId') ?? '663852ecd568222769540792';
-const username = localStorage.getItem('username') ?? 'Ha Phuong Tran';
+const username = localStorage.getItem('userName') ?? '';
 const API_BASE_URL = 'http://localhost:8000/api/aceresume/chat-interview'; // Adjust according to your server address
 
 

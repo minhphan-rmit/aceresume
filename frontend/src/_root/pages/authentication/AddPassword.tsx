@@ -37,13 +37,13 @@ const AddPassword=()=>{
       const AddPassword = async (e: FormEvent<HTMLFormElement>) => {
 
           e.preventDefault(); // Prevent the default form submit action
-          console.log('Password:',password, 'Repassword:',repassword, 'Email:',email, 'User Name:',user_name)
+        
           if (password !== repassword) {
               alert("Passwords do not match!");
               return; // Stop the function if passwords do not match
           }
 
-          alert(email + ' ' + user_name + ' ' + password + ' ' + repassword)
+          
           // Here, insert your logic to handle the password update
           sendRegisteredDetailsToBackend(email, user_name, password);
 
