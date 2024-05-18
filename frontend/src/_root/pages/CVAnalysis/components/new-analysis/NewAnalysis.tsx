@@ -188,7 +188,7 @@ const NewAnalysis: React.FC<NewAnalysisProps> = ({ onUploadSuccess }) =>{
         backgroundColor: 'rgba(0, 0, 0, 0.6)',
         padding: 4
     }}>
-        <Typography variant="h5" color="common.white">Analying Data...</Typography>
+        <Typography variant="h5" color="common.white">Analyzing Data...</Typography>
     </Box>
 )}
        <div className="sm:max-w-lg w-full  bg-white rounded-xl z-10">
