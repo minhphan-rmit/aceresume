@@ -86,7 +86,7 @@ const Guide = () => {
         <p className="text-md text-gray-600 mb-3">
           Use clear headings, bullet points and a professional font. This ensures that your resume is easy to read and looks neat.
         </p>
-        <img src="https://via.placeholder.com/600x400" alt="Clean Layout Example" className="my-3 rounded-lg shadow-lg"/>
+        <img src="https://firebasestorage.googleapis.com/v0/b/aceresume-d9997.appspot.com/o/assets%2FGuideIllustration.png?alt=media&token=1954baa7-d2cc-40ea-9e43-cff0a522b7d2" alt="Clean Layout Example" className="my-3 rounded-lg shadow-lg"/>
       </div>
 
       <div id="proofread">
@@ -104,9 +104,11 @@ const Guide = () => {
       </div>
 
       <div className="mt-6">
+        <a download href="https://firebasestorage.googleapis.com/v0/b/aceresume-d9997.appspot.com/o/assets%2FGuide%20Resume.pdf?alt=media&token=fb35c78f-9ef7-498c-9ca8-92d41994d953">
         <button className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded">
           Download Sample Resume
         </button>
+        </a>
       </div>
     </div>
   );
