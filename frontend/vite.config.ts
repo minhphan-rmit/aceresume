@@ -7,5 +7,8 @@ export default defineConfig({
   plugins: [react()],
   server: {
     port: 8081 // Specify your desired port here
+  },
+  preview: {
+    port: 8081 // Specify your desired port here
   }
 })
