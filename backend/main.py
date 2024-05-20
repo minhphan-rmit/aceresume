@@ -22,7 +22,7 @@ origins = [
     "http://localhost:8081",
     "https://aceresume-d9997.firebaseapp.com",
     "https://aceresume-d9997.web.app",
-    "https://rmit2024a-isys2101-aceresume.vercel.app/"
+    "https://rmit2024a-isys2101-aceresume.vercel.app"
 ]
 
 app.add_middleware(
