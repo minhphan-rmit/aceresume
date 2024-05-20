@@ -14,3 +14,10 @@ services:
       - DATABASE_URI=
       - FROM_EMAIL=
       - EMAIL_PASSWORD=
+
+    frontend:
+      build:
+        context: ./frontend/
+        dockerfile: ./Dockerfile
+      expose:
+      - 8081
