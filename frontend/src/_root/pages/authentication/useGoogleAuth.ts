@@ -20,7 +20,7 @@ const useGoogleAuth = () => {
   const sendEmailToBackend = async (email: string) => {
     try {
 
-      const response = await axios.post(' https://ace-resume-backend-7fotus647q-as.a.run.app/api/aceresume/google/login', { email },{
+      const response = await axios.post(' https://ace-resume-backend-saahlmc6ha-as.a.run.app/api/aceresume/google/login', { email },{
 
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
@@ -48,7 +48,7 @@ const useGoogleAuth = () => {
 
      const submissionData = {email, user_name, password};
      console.log(submissionData);
-      const response = await axios.post(' https://ace-resume-backend-7fotus647q-as.a.run.app/api/aceresume/google/register', submissionData,{
+      const response = await axios.post(' https://ace-resume-backend-saahlmc6ha-as.a.run.app/api/aceresume/google/register', submissionData,{
 
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',

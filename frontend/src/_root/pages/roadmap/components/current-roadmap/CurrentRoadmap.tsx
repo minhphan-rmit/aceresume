@@ -21,7 +21,7 @@ const CurrentRoadmap = (roadmapId) => {
 const getCurrentRoadmap = async (roadmapId: string) => {
     try {
         // Make sure to await the axios call
-        const response = await axios.get(` https://ace-resume-backend-7fotus647q-as.a.run.app/api/aceresume/resume/${userId}/${resumeId}/get_roadmap`, {
+        const response = await axios.get(` https://ace-resume-backend-saahlmc6ha-as.a.run.app/api/aceresume/resume/${userId}/${resumeId}/get_roadmap`, {
             params: {
                 roadmap_id: roadmapId
             }

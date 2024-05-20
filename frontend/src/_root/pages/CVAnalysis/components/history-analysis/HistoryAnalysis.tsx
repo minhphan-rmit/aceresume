@@ -18,7 +18,7 @@ const navigate = useNavigate();
     useEffect(() => {
         const fetchResumes = async () => {
             try {
-                const response = await axios.get(` https://ace-resume-backend-7fotus647q-as.a.run.app/api/aceresume/resume/${userId}/get_all_resume`); // Replace `{user_id}` with actual user ID
+                const response = await axios.get(` https://ace-resume-backend-saahlmc6ha-as.a.run.app/api/aceresume/resume/${userId}/get_all_resume`); // Replace `{user_id}` with actual user ID
                 setResumes(response.data); // Assuming the data is returned directly
             } catch (error) {
                 console.error('Error fetching data:', error);

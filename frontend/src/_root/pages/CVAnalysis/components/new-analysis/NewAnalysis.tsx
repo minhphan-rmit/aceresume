@@ -69,7 +69,7 @@ const NewAnalysis: React.FC<NewAnalysisProps> = ({ onUploadSuccess }) =>{
       const extractData = async (resumeId: string) => {
         setIsExtractingData(true);
         try {
-            const response = await axios.post(` https://ace-resume-backend-7fotus647q-as.a.run.app/api/aceresume/resume/${userId}/${resumeId}/summarize`, {
+            const response = await axios.post(` https://ace-resume-backend-saahlmc6ha-as.a.run.app/api/aceresume/resume/${userId}/${resumeId}/summarize`, {
             });
             setIsExtractingData(false);
 
@@ -92,7 +92,7 @@ const NewAnalysis: React.FC<NewAnalysisProps> = ({ onUploadSuccess }) =>{
 
         try {
             const response = await axios.post(
-                ` https://ace-resume-backend-7fotus647q-as.a.run.app/api/aceresume/resume/${userId}/${resumeId}/analyse`,
+                ` https://ace-resume-backend-saahlmc6ha-as.a.run.app/api/aceresume/resume/${userId}/${resumeId}/analyse`,
                 {
                     filename: selectedFile.name,
                     resume_info: JSON.stringify(resumeInfo),
@@ -126,7 +126,7 @@ const NewAnalysis: React.FC<NewAnalysisProps> = ({ onUploadSuccess }) =>{
         formData.append('resume_url', url);
 
         try {
-            const response = await axios.post(` https://ace-resume-backend-7fotus647q-as.a.run.app/api/aceresume/resume/${userId}/upload`, formData, {
+            const response = await axios.post(` https://ace-resume-backend-saahlmc6ha-as.a.run.app/api/aceresume/resume/${userId}/upload`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }

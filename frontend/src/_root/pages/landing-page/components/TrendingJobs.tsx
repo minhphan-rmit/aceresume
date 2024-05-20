@@ -25,7 +25,7 @@ function TrendingJobs() {
   useEffect(() => {
     const fetchJobs = async () => {
       try {
-        const response = await fetch(` https://ace-resume-backend-7fotus647q-as.a.run.app/api/aceresume/job/find-jobs-available`, {
+        const response = await fetch(` https://ace-resume-backend-saahlmc6ha-as.a.run.app/api/aceresume/job/find-jobs-available`, {
           method: 'POST',
           headers: {
             'Accept': 'application/json',

@@ -28,7 +28,7 @@ const Home = () => {
     // Fetch user profile data
     const fetchUserProfile = async () => {
       try {
-        const response = await axios.get(` https://ace-resume-backend-7fotus647q-as.a.run.app/api/aceresume/profile/${userId}`);
+        const response = await axios.get(` https://ace-resume-backend-saahlmc6ha-as.a.run.app/api/aceresume/profile/${userId}`);
         setUsername(response.data.username);
       } catch (error) {
         console.error('Error fetching user profile:', error);
@@ -40,7 +40,7 @@ const Home = () => {
 
   const fetchAllCVs = async () => {
     try {
-      const response = await fetch(` https://ace-resume-backend-7fotus647q-as.a.run.app/api/aceresume/resume/${userId}/get_all_resume`);
+      const response = await fetch(` https://ace-resume-backend-saahlmc6ha-as.a.run.app/api/aceresume/resume/${userId}/get_all_resume`);
       if (!response.ok) {
         throw new Error('Failed to fetch CVs');
       }
