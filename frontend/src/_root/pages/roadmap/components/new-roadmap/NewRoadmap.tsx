@@ -46,7 +46,7 @@ const NewRoadmap: React.FC<NewRoadmapProps> = ({ onGeneratedSuccess })  => {
 
             try {
                 setIsGenerating(true);
-                const response = await axios.post(` https://ace-resume-backend-saahlmc6ha-as.a.run.app/api/aceresume/resume/${userId}/roadmap-generate`, null,
+                const response = await axios.post(` ${process.env.REACT_APP_API_BASE_URL}/resume/${userId}/roadmap-generate`, null,
                 {
                     params:{
                     resume_id: resumeId,

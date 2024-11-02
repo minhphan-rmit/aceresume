@@ -5,6 +5,7 @@ import App from './App';
 import firebaseApp from './config/firebase-config';
 import {reportWebVitals} from './config/reportWebVitals';
 
+
 ReactDOM.createRoot(document.getElementById('root')!).render(
     <BrowserRouter>
         <App />

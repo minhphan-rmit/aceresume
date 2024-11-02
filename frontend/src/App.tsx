@@ -13,7 +13,7 @@ import MatchingJobs from './_root/pages/matching-jobs/MatchingJobs';
 import Roadmap from './_root/pages/roadmap/Roadmap';
 import Profile from './_root/pages/profile/Profile';
 import ActivatingAccount from './_root/pages/authentication/ActivatingAccount';
-import React from 'react';
+
 
 
 const App = () => {

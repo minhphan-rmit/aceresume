@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = ' https://ace-resume-backend-saahlmc6ha-as.a.run.app/api/aceresume/chat-interview'; // Adjust according to your server address
+const API_BASE_URL = ` ${process.env.REACT_APP_API_BASE_URL}/chat-interview`; // Adjust according to your server address
 
 export const startNewChat = async (userId: string, role: string) => {
   try {

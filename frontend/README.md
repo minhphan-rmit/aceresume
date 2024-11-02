@@ -1,30 +1,45 @@
-# React + TypeScript + Vite
+# Frontend Deployment
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This readme provides instructions on how to deploy the frontend folder of the project.
 
-Currently, two official plugins are available:
+## Installation
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+1. Make sure you have Node.js and npm installed on your machine.
 
-## Expanding the ESLint configuration
+2. Open a terminal and navigate to the frontend folder of the project.
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+3. Run the following command to install the npm dependencies:
 
-- Configure the top-level `parserOptions` property like this:
+   ```bash
+   npm install
+   ```
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
+   This will install all the required packages specified in the `package.json` file.
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+4. Install the latest version of the Firebase package by running the following command:
+
+   ```bash
+   npm install firebase@latest
+   ```
+
+   This will ensure that you have the latest version of Firebase installed.
+
+## Deployment
+
+To deploy the frontend, follow these steps:
+
+1. Open a terminal and navigate to the frontend folder of the project.
+
+2. Run the following command to start the development server:
+
+   ```bash
+   npm run dev
+   ```
+
+   This will start the development server and compile the frontend code.
+
+3. Open a web browser and visit the `localhost://8081` to view the deployed frontend.
+
+## Additional Scripts
+
+The `package.json` file contains additional scripts that you can use for various purposes. To view the available scripts, open the `package.json` file and look for the `"scripts"` section.

@@ -28,7 +28,7 @@ const ActivateAccount=()=>{
             // Prepare form data
 
 
-              const response = await axios.get(' https://ace-resume-backend-saahlmc6ha-as.a.run.app/api/aceresume/activate?token='+token+'&email='+email);
+              const response = await axios.get(` ${process.env.REACT_APP_API_BASE_URL}/activate?token=`+token+'&email='+email);
 
 
 
