@@ -25,7 +25,7 @@ origins = [
     "https://rmit2024a-isys2101-aceresume.vercel.app",
     "https://rmit2024a-isys2101-aceresume.vercel.app/",
     "https://ace-resume-backend-7fotus647q-as.a.run.app/",
-    "https://rmit2024a-isys2101-aceresume-two.vercel.app/"
+    "https://rmit2024a-isys2101-aceresume-two.vercel.app/",
 ]
 
 app.add_middleware(

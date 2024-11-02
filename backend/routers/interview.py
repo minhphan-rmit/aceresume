@@ -163,7 +163,13 @@ async def start_new_chat(user_id: str, role: str):
 
 
 @router.post("/chat/{user_id}/{role}")
-async def stream(user_id: str, message: str, role: str, job_description: str, ai_previous_message: str = None):
+async def stream(
+    user_id: str,
+    message: str,
+    role: str,
+    job_description: str,
+    ai_previous_message: str = None,
+):
     # TODO: Use User ID to find Resume Information
     resume_info = None
     for history in CHATBOT_AVAILABLE:
@@ -173,14 +179,14 @@ async def stream(user_id: str, message: str, role: str, job_description: str, ai
     if ai_previous_message is not None:
         chat_history.append({"AI": ai_previous_message, "User": message})
     else:
-        chat_history[0]["User"] = message # for the first run only
+        chat_history[0]["User"] = message  # for the first run only
 
-    #chat_history.append({"User": message})
+    # chat_history.append({"User": message})
     output = StreamingResponse(
         chain(message, chat_history, resume_info, role, job_description, "interview"),
         media_type="text/event-stream",
     )
-    
+
     # Update the chat_history back to CHATBOT_AVAILABLE
     for value in CHATBOT_AVAILABLE:
         if user_id in value:
@@ -202,7 +208,7 @@ async def review_interview(user_id: str, role: str, job_description: str):
 
     if len(chat_history) == 0:
         return HTTPException(status_code=404, detail="No chat history found")
-    
+
     print(chat_history)
 
     return StreamingResponse(

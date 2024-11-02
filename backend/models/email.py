@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 import os
 
 # Load environment variables from the .env file
-load_dotenv(os.path.join(os.path.dirname(__file__), ".env.example"))
+load_dotenv(os.path.join(os.path.dirname(__file__), ".env.local"))
 
 
 class EmailSchema(BaseModel):
@@ -17,7 +17,7 @@ class EmailSchema(BaseModel):
 
 
 def send_email(to_addresses, subject, body):
-    from_email ="hello.aceresume@gmail.com"
+    from_email = "hello.aceresume@gmail.com"
     email_password = "jndwyqdpgllcpzpx"
 
     message = MIMEMultipart()
